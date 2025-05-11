@@ -17,7 +17,8 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/no",
+            "outputPath": "dist/public",
+            "baseHref": "/public/",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -100,5 +101,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "19ac3cbf-af34-4904-b5f0-43ddf9249332"
   }
 }
