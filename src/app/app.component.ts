@@ -34,7 +34,7 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    this.http.get(`${environment.apiBaseUrl}/${this.shortCode}`, {
+    this.http.get(`${environment.apiBaseUrl}${this.shortCode}`, {
       responseType: 'json',
       observe: 'response'
     }).subscribe({
@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
         return;
       }
       else {
-        this.http.get(`${environment.apiBaseUrl}/verify/${this.shortCode}/${password}`).subscribe({
+        this.http.get(`${environment.apiBaseUrl}verify/${this.shortCode}/${password}`).subscribe({
           next: (response: any) => {
             if (response?.status) {
               this.handleResponse(responseBody);
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit {
 
   private handleApiError(error: any) {
     console.error('Error calling public API:', error);
-    this.setErrorState('Oops! Something went wrong. Please try again later.');
+    this.setErrorState(error?.error || 'An error occurred while fetching the document. Please try again later.');
   }
 
   private setErrorState(message: string) {
