@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
 
 @Component({
@@ -9,111 +9,246 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  errorMessage: string = "";
-  download: boolean = false;
-  downloadHref: any;
-  constructor(private readonly http: HttpClient, private readonly sanitizer: DomSanitizer) { }
-  //importing the HttpClient module
+  errorMessage = '';
+  download = false;
+  downloadHref: string | null = null;
   shortCode = '';
-  isLoading: boolean = true;
+  isLoading = true;
   iframeSrc: SafeResourceUrl = '';
+  isProtected = false;
+
+  constructor(
+    private readonly http: HttpClient,
+    private readonly sanitizer: DomSanitizer
+  ) {}
+
   ngOnInit(): void {
-    //get query parameters
     const urlParams = new URLSearchParams(window.location.search);
     this.shortCode = urlParams.get('s') ?? '';
-
-    // Call the public API
-    this.publicApi();
-    // Call the private API
+    this.fetchDocumentMetadata();
   }
 
-  //function to handle the public api
-  publicApi() {
+  private fetchDocumentMetadata(): void {
     if (!this.shortCode) {
       this.setErrorState('Please verify your shared link!');
       return;
     }
 
-    this.http.get(`${environment.apiBaseUrl}${this.shortCode}`, {
-      responseType: 'json',
-      observe: 'response'
-    }).subscribe({
-      next: (response: any) => this.processApiResponse(response, environment),
+    this.http.get(`${environment.apiBaseUrl}/${this.shortCode}`).subscribe({
+      next: (res: any) => this.handleMetadataResponse(res),
       error: (error) => this.handleApiError(error)
     });
   }
 
-  private processApiResponse(response: any, environment: any) {
-    const responseBody = response.body;
+  private handleMetadataResponse(res: any): void {
+    this.download = !!res.isAllowDownload;
+    this.isProtected = !!res.isProtected;
+    this.downloadHref = environment.apiBaseUrl + res.documentUrl;
 
-    if (!responseBody?.documentBytes) {
-      this.setErrorState('No document found!');
+    this.fetchDocumentBlob();
+  }
+
+  private fetchDocumentBlob(): void {
+    if (!this.downloadHref) {
+      this.setErrorState('No document found for the provided short code.');
       return;
     }
 
-    this.isLoading = false;
+    this.http.get(this.downloadHref, {
+      headers: new HttpHeaders({ 'Accept': '*/*' }),
+      responseType: 'blob',
+      observe: 'response'
+    }).subscribe({
+      next: (response: HttpResponse<Blob>) => this.handleBlobResponse(response),
+      error: (error) => this.handleApiError(error)
+    });
+  }
 
-    if (responseBody.isProtected) {
-      const password = prompt('This document is protected. Please enter the password:');
-      if (!password) {
-        this.setErrorState('Password is required to view this document.');
-        return;
-      }
-      else {
-        this.http.get(`${environment.apiBaseUrl}verify/${this.shortCode}/${password}`).subscribe({
-          next: (response: any) => {
-            if (response?.status) {
-              this.handleResponse(responseBody);
-              this.download = !!responseBody.isAllowDownload;
-              this.downloadHref = this.download ? responseBody.documentUrl : null;
-            } else {
-              this.setErrorState('Incorrect password. Please try again.');
-            }
-            this.isLoading = false;
-          },
-          error: (error) => {
-            console.error('Error verifying password:', error);
-            this.setErrorState('An error occurred while verifying the password. Please try again.');
-            this.isLoading = false;
-            this.download = false;
-            this.downloadHref = null;
-            this.iframeSrc = "";
-          }
-        });
-        return;
-      }
+  private handleBlobResponse(response: HttpResponse<Blob>): void {
+    const contentType = response.headers.get('Content-Type') || '';
+    if (contentType.includes('application/json')) {
+      response.body?.text().then((text: string) => {
+        const json = JSON.parse(text);
+        this.handleJsonDocument(json);
+      });
+      return;
     }
 
-    this.handleResponse(responseBody);
-    this.download = !!responseBody.isAllowDownload;
-    this.downloadHref = this.download ? responseBody.documentUrl : null;
+    const blob = new Blob([response.body!], { type: contentType });
+    const url = URL.createObjectURL(blob);
+
+    const isProtected = this.isProtected || response.headers.get('X-Document-Protected') === 'true';
+    if (isProtected) {
+      this.promptPasswordAndVerify(url, () => {
+        this.displayFile(url, contentType);
+      });
+      return;
+    }
+
+    this.displayFile(url, contentType);
   }
 
-  private handleApiError(error: any) {
-    console.error('Error calling public API:', error);
-    this.setErrorState(error?.error || 'An error occurred while fetching the document. Please try again later.');
+  private handleJsonDocument(json: any): void {
+    if (json.isProtected) {
+      this.promptPasswordAndVerify(null, () => {
+        this.processApiResponse(json);
+      });
+    } else {
+      this.processApiResponse(json);
+    }
   }
 
-  private setErrorState(message: string) {
+  private promptPasswordAndVerify(url: string | null, onSuccess: () => void): void {
+    const password = prompt('This document is protected. Please enter the password:');
+    if (!password) {
+      this.setErrorState('Password is required to view this document.');
+      return;
+    }
+
+    this.http.get(`${environment.apiBaseUrl}verify/${this.shortCode}/${password}`).subscribe({
+      next: (res: any) => {
+        if (res?.status) {
+          onSuccess();
+        } else {
+          this.setErrorState('Incorrect password. Please try again.');
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error verifying password:', err);
+        this.setErrorState('An error occurred while verifying the password.');
+        this.isLoading = false;
+      }
+    });
+  }
+
+  private displayFile(url: string, contentType: string): void {
+    const mimeType = contentType;
+    const fileType = this.getFileExtension(this.downloadHref || '') || 'pdf';
+
+    if (this.isDisplayable(mimeType, fileType)) {
+      this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+      this.download = true;
+    } else {
+      this.downloadHref = url;
+      this.download = true;
+      this.errorMessage = `Preview not supported. <a href="${url}" download>Download the file to view.</a>`;
+    }
+    this.isLoading = false;
+  }
+
+  private processApiResponse(response: any): void {
+    this.isLoading = false;
+    let url: string | null = null;
+    let fileType = this.getFileExtension(response.documentUrl || '') || 'pdf';
+    const mimeType = this.getMimeType(fileType);
+
+    if (response.documentBytes) {
+      const byteCharacters = atob(response.documentBytes);
+      const byteArray = new Uint8Array([...byteCharacters].map(c => c.charCodeAt(0)));
+      const blob = new Blob([byteArray], { type: mimeType });
+      url = URL.createObjectURL(blob);
+    } else if (response.documentUrl) {
+      url = response.documentUrl;
+    }
+
+    this.downloadHref = url;
+    this.download = !!response.isAllowDownload;
+
+    if (url && this.isDisplayable(mimeType, fileType)) {
+      this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    } else if (url) {
+      this.downloadHref = url;
+      this.download = true;
+      this.errorMessage = `Preview not supported. <a href="${url}" download>Download the file to view.</a>`;
+    } else {
+      this.setErrorState('Unsupported file type or missing file URL.');
+    }
+  }
+
+  private isDisplayable(mimeType: string, fileType: string): boolean {
+    const displayableContentTypes = [
+      'application/pdf',
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/svg+xml',
+      'text/plain',
+      'text/csv',
+      'text/html',
+      'application/xml',
+      'application/json',
+      'audio/',
+      'video/'
+    ];
+    const displayableTypes = [
+      'pdf', 'jpg', 'jpeg', 'png', 'gif', 'svg', 'txt', 'csv', 'html', 'xml', 'json',
+      'mp3', 'wav', 'ogg', 'mp4', 'webm', 'flv', 'avi', 'mkv'
+    ];
+    return (
+      displayableContentTypes.some(type =>
+        type.endsWith('/') ? mimeType.startsWith(type) : mimeType === type
+      ) ||
+      displayableTypes.includes(fileType)
+    );
+  }
+
+  private getFileExtension(url: string): string {
+    return url.split('.').pop()?.toLowerCase() || '';
+  }
+
+  private getMimeType(extension: string): string {
+    const mimeMap: { [key: string]: string } = {
+      pdf: 'application/pdf',
+      pdfa: 'application/pdf',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      xls: 'application/vnd.ms-excel',
+      xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      ppt: 'application/vnd.ms-powerpoint',
+      pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      txt: 'text/plain',
+      csv: 'text/csv',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      png: 'image/png',
+      gif: 'image/gif',
+      svg: 'image/svg+xml',
+      zip: 'application/zip',
+      rar: 'application/x-rar-compressed',
+      mp4: 'video/mp4',
+      mp3: 'audio/mpeg',
+      wav: 'audio/wav',
+      webm: 'video/webm',
+      flv: 'video/x-flv',
+      avi: 'video/x-msvideo',
+      mkv: 'video/x-matroska',
+      json: 'application/json',
+      xml: 'application/xml',
+      html: 'text/html',
+      css: 'text/css',
+      js: 'application/javascript',
+      md: 'text/markdown',
+      epub: 'application/epub+zip'
+    };
+    return mimeMap[extension] || 'application/octet-stream';
+  }
+
+  private handleApiError(error: any): void {
+    console.error('API Error:', error);
+    this.setErrorState(error?.error || 'An error occurred while fetching the document.');
+    this.isLoading = false;
+    this.download = false;
+    this.downloadHref = null;
+    this.iframeSrc = '';
+  }
+
+  private setErrorState(message: string): void {
     this.isLoading = false;
     this.errorMessage = message;
+    this.download = false;
+    this.downloadHref = null;
+    this.iframeSrc = '';
     console.log(message);
   }
-
-  handleResponse(response: any) {
-    const byteCharacters = atob(response.documentBytes);
-    const byteNumbers = new Array(byteCharacters.length).fill(0).map((_, i) => byteCharacters.charCodeAt(i));
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: 'application/pdf' });
-    this.loadPdf(blob);
-  }
-
-  loadPdf(blob: Blob) {
-    const url = URL.createObjectURL(blob);
-    this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url); // Ensure sanitization
-    console.log('PDF Blob URL:', this.iframeSrc);
-  }
-
-
-
 }
