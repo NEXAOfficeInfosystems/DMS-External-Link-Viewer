@@ -35,16 +35,15 @@ export class AppComponent implements OnInit {
     }
 
     this.http.get(`${environment.apiBaseUrl}/${this.shortCode}`).subscribe({
-      next: (res: any) => this.handleMetadataResponse(res),
+      next: (res: any) => this.handleMetadataResponse(res, this.shortCode),
       error: (error) => this.handleApiError(error)
     });
   }
 
-  private handleMetadataResponse(res: any): void {
+  private handleMetadataResponse(res: any, shortCode: string): void {
     this.download = !!res.isAllowDownload;
     this.isProtected = !!res.isProtected;
     this.downloadHref = environment.apiBaseUrl + res.documentUrl;
-
     this.fetchDocumentBlob();
   }
 
