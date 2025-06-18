@@ -14,13 +14,17 @@ export class AppComponent implements OnInit {
   downloadHref: string | null = null;
   shortCode = '';
   isLoading = true;
+  fileName = '';
   iframeSrc: SafeResourceUrl = '';
   isProtected = false;
-
+  showPasswordPrompt: boolean = false;
+  password: string = '';
+  showPasswordError: boolean = false;
+  url: any = null;
   constructor(
     private readonly http: HttpClient,
     private readonly sanitizer: DomSanitizer
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const urlParams = new URLSearchParams(window.location.search);
@@ -43,6 +47,7 @@ export class AppComponent implements OnInit {
   private handleMetadataResponse(res: any, shortCode: string): void {
     this.download = !!res.isAllowDownload;
     this.isProtected = !!res.isProtected;
+    this.fileName = res.documentName;
     this.downloadHref = environment.apiBaseUrl + res.documentUrl;
     this.fetchDocumentBlob();
   }
@@ -74,48 +79,57 @@ export class AppComponent implements OnInit {
     }
 
     const blob = new Blob([response.body!], { type: contentType });
-    const url = URL.createObjectURL(blob);
+    this.url = URL.createObjectURL(blob);
 
     const isProtected = this.isProtected || response.headers.get('X-Document-Protected') === 'true';
     if (isProtected) {
-      this.promptPasswordAndVerify(url, () => {
-        this.displayFile(url, contentType);
-      });
+      this.showPasswordPrompt = true;
+      this.password = '';
+      this.isLoading = false;
       return;
     }
 
-    this.displayFile(url, contentType);
+    this.displayFile(this.url, contentType);
   }
-
+  submitPassword(): void {
+    if (!this.password) {
+      this.showPasswordError = true;
+      return;
+    } else {
+      this.showPasswordError = false;
+    }
+    this.isLoading = true;
+    this.promptPasswordAndVerify(this.url, () => {
+      this.showPasswordPrompt = false;
+      this.displayFile(this.url, 'application/pdf'); // You may want to detect contentType
+    });
+  }
   private handleJsonDocument(json: any): void {
     if (json.isProtected) {
-      this.promptPasswordAndVerify(null, () => {
-        this.processApiResponse(json);
-      });
+      this.showPasswordPrompt = true;
+      this.password = '';
+      this.isLoading = false;
     } else {
       this.processApiResponse(json);
     }
   }
 
   private promptPasswordAndVerify(url: string | null, onSuccess: () => void): void {
-    const password = prompt('This document is protected. Please enter the password:');
-    if (!password) {
-      this.setErrorState('Password is required to view this document.');
-      return;
-    }
-
-    this.http.get(`${environment.apiBaseUrl}verify/${this.shortCode}/${password}`).subscribe({
+    // Use the password from the input field
+    this.http.get(`${environment.apiBaseUrl}/verify/${this.shortCode}/${this.password}`).subscribe({
       next: (res: any) => {
         if (res?.status) {
+          this.showPasswordPrompt = false;
+          this.showPasswordError = false;
           onSuccess();
         } else {
-          this.setErrorState('Incorrect password. Please try again.');
+          this.showPasswordError = true;
         }
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error verifying password:', err);
-        this.setErrorState('An error occurred while verifying the password.');
+        this.showPasswordError = true;
         this.isLoading = false;
       }
     });
@@ -131,7 +145,7 @@ export class AppComponent implements OnInit {
     } else {
       this.downloadHref = url;
       this.download = true;
-      this.errorMessage = `Preview not supported. <a href="${url}" download>Download the file to view.</a>`;
+      this.errorMessage = `Preview not supported. <a href="${url}" download="${this.fileName}">Download the file to view.</a>`;
     }
     this.isLoading = false;
   }
@@ -235,7 +249,7 @@ export class AppComponent implements OnInit {
 
   private handleApiError(error: any): void {
     console.error('API Error:', error);
-    this.setErrorState(error?.error || 'An error occurred while fetching the document.');
+    this.setErrorState(error?.error?.error || 'An error occurred while fetching the document.');
     this.isLoading = false;
     this.download = false;
     this.downloadHref = null;
@@ -251,3 +265,4 @@ export class AppComponent implements OnInit {
     console.log(message);
   }
 }
+
