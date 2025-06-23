@@ -1,6 +1,6 @@
 <div class="loading" *ngIf="isLoading">
   <app-loader [isLoading]="isLoading"></app-loader>
- 
+
 </div>
 <div class="error-message" *ngIf="errorMessage">
   <div>
@@ -9,8 +9,8 @@
   <div [innerHTML]="errorMessage"></div>
 </div>
 <div *ngIf="iframeSrc && !errorMessage">
-  <iframe *ngIf="!(downloadHref?.endsWith('.mp4') || downloadHref?.endsWith('.mp3'))"
-          [src]="iframeSrc" class="i-frame" title="Document Preview"></iframe>
+  <iframe *ngIf="!(downloadHref?.endsWith('.mp4') || downloadHref?.endsWith('.mp3'))" [src]="iframeSrc" class="i-frame"
+    title="Document Preview"></iframe>
 
   <!-- Optional: Use HTML5 <video>/<audio> tags -->
   <video *ngIf="downloadHref?.endsWith('.mp4')" [src]="iframeSrc" controls width="100%"></video>
@@ -19,8 +19,16 @@
 <div class="password-prompt" *ngIf="showPasswordPrompt">
   <div class="password-modal">
     <label for="password">Enter Password:</label>
-    <input type="password" id="password" [(ngModel)]="password" />
-    <button (click)="submitPassword()">Submit</button>
+    <div class="password-input-container">
+      <input [type]="showPassword ? 'text' : 'password'" id="password" [(ngModel)]="password"
+        (keydown.space)="$event.preventDefault()" />
+      <button class="btnShowPassword" type="button" (click)="showPassword = !showPassword"
+        aria-label="Toggle password visibility" tabindex="-1">
+        <img *ngIf="!showPassword" src="assets/eye.svg" alt="Show password" class="eye-icon" />
+        <img *ngIf="showPassword" src="assets/eyeOff.svg" alt="Hide password" class="eye-icon" />
+      </button>
+    </div>
+    <button class="btnSubmit" (click)="submitPassword()">Submit</button>
     <div *ngIf="showPasswordError" class="error-message">
       Incorrect password. Please try again.
     </div>

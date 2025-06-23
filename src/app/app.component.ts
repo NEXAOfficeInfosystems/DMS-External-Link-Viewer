@@ -19,6 +19,7 @@ export class AppComponent implements OnInit {
   isProtected = false;
   showPasswordPrompt: boolean = false;
   password: string = '';
+  showPassword: boolean = false;
   showPasswordError: boolean = false;
   url: any = null;
   constructor(
