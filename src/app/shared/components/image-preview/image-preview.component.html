@@ -1,0 +1,9 @@
+<div class="center-img m-5" *ngIf="imageUrl" style="height: 60vh;">
+    <img class="img-fluid" [src]="imageUrl" [alt]="document.name">
+</div>
+<div *ngIf="isLoading">
+    <div class="loader-container">
+      <span class="loader"></span>
+      <span class="loader-text">{{ progress }}%</span>
+    </div>
+  </div>

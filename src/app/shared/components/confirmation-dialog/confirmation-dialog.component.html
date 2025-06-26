@@ -1,0 +1,34 @@
+<div class="popup-form-container">
+
+<!-- header sec -->
+<div class="dialog-header fixed-header">
+  <div class="folder-dialog-info">
+    <div class="section-title">
+      <h2>Logout</h2>
+    </div>
+  </div>
+  <div class="close-icon mt-1 ml-2 text-danger">
+    <span class="material-icons cursor-pointer" (click)="onCancel()"> close </span>
+  </div>
+</div>
+
+
+<!-- content sec -->
+<div class="dialog-body">
+  <div mat-dialog-content class="app-dialog-content">
+    Are you sure you want to logout?
+  </div>
+  <div mat-dialog-actions class="app-dialog-actions">
+    <button  class="btn btn-success btn-sm m-right-10" (click)="onConfirm()" cdkFocusInitial><i class="las la-thumbs-up"></i> Yes </button>
+    <button type="button" (click)="onCancel()" class="btn btn-danger btn-sm"><i class="las la-times-circle"></i> No </button>
+    <!-- <button type="button" class="btn btn-success action-button" style=" background-color: #449D44; border: none; box-shadow: none;" (click)="onConfirm()" cdkFocusInitial>Yes</button>
+    <button type="button" class="btn btn-danger action-button" style=" background-color: #EE636D; border: none; box-shadow: none;" (click)="onCancel()">No</button>
+  </div> -->
+</div>
+
+</div>
+
+<!-- footer -->
+<div class="dialog-footer fixed-footer"></div>
+
+</div>

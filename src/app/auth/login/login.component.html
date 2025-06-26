@@ -1,0 +1,100 @@
+<div class="login-container">
+
+<div class="brand-section">
+<h1><i class="fas fa-database"></i> DataRoom</h1>
+    <p>Welcome to DataRoom, your secure data management solution.</p>
+    <p>Manage your documents with ease and confidence.</p>
+  <ul>
+    <li>Granular Access Control</li>
+    <li>Encrypted Document Storage</li>
+    <li>Audit Logs & Activity Tracking</li>
+    <li>Collaborative File Sharing</li>
+    <li>Role-Based Permissions</li>
+    <li>Real-Time User Access Management</li>
+  </ul>
+</div>
+
+
+  <div class="login-section">
+
+    <div *ngIf="!showForgotPassword">
+      <h2>Login</h2>
+      <form [formGroup]="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" formControlName="email" class="form-control" placeholder="Enter your email"
+            [ngClass]="{ 'is-invalid': submitted && f['email'].errors }" required>
+          <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+            <div *ngIf="f['email'].errors['required']">Email is required</div>
+            <div *ngIf="f['email'].errors['email']">Email must be valid</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" formControlName="password" class="form-control"
+            placeholder="Enter your password" [ngClass]="{ 'is-invalid': submitted && f['password'].errors }" required>
+          <div *ngIf="submitted && f['password'].errors" class="invalid-feedback">
+            <div *ngIf="f['password'].errors['required']">Password is required</div>
+            <div *ngIf="f['password'].errors['minlength']">Password must be at least 6 characters</div>
+          </div>
+        </div>
+
+        <div class="pt10"><label for="captcha">Enter Captcha</label></div>
+        <div class="captcha-container">
+          <canvas id="captchaCanvas" width="250px" height="60px"></canvas>
+          <button type="button" class="captcha-refresh" (click)="generateCaptcha()"> ↻</button>
+        </div>
+        <div class="form-group captca-box" style="margin-top: 8px;">
+
+          <div>
+            <input type="text" id="captcha" formControlName="captchaInput" class="form-control"
+              placeholder="Enter the CAPTCHA" [ngClass]="{ 'is-invalid': submitted && f['captchaInput'].errors }"
+              required style="width: 300px;">
+            <div *ngIf="submitted && f['captchaInput'].errors" class="invalid-feedback">
+              <div *ngIf="f['captchaInput'].errors['required']">CAPTCHA is required</div>
+              <div *ngIf="f['captchaInput'].errors['pattern']">CAPTCHA doesn't match</div>
+            </div>
+
+          </div>
+        </div>
+
+
+
+
+
+        <div class="remembers">
+          <div class="flex flex-dir-row align-items-center gap-10">
+            <input type="checkbox" id="check">
+            <label for="check" style="font-weight: 500;">Remember me</label>
+          </div>
+          <div class="forgot">
+            <a  (click)="openForgotPasswordSection($event)">Forgot password?</a>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary login-btn" [disabled]="loading" (click)="onLoginSubmit()">
+          <span *ngIf="!loading">Login</span>
+        </button>
+
+  
+      </form>
+    </div>
+
+
+    <div *ngIf="showForgotPassword">
+    <h2>Forgot Password</h2>
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPasswordSubmit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" formControlName="email" class="form-control" placeholder="Enter your email">
+      </div>
+      <button type="submit" class="btn btn-primary">Send Reset Link</button>
+      <p><a href="" (click)="openLoginSection()">Back to Login</a></p>
+    </form>
+  </div>
+  </div>
+
+
+
+</div>

@@ -1,0 +1,13 @@
+<!-- <h3 md-dialog-title>{{primaryMessage}}</h3> -->
+ <div class="delete_popup">
+<h3 md-dialog-title>{{primaryMessage}}</h3>
+<div mat-dialog-actions class="dialog-actions">
+    <button class="custom-button btn-success" (click)="clickHandler(true)">
+        <i class="las la-check"></i> Yes
+    </button>
+    <button class="custom-button btn-danger" (click)="clickHandler(false)">
+        <i class="las la-times-circle"></i> Cancel
+    </button>
+</div>
+ </div>
+

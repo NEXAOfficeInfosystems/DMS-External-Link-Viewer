@@ -1,0 +1,532 @@
+/* Updated the background color to #F4F9FF */
+:host {
+  background-color: #dbe9fb;
+}
+
+/* Add your styles here */
+.pad_10
+{
+  padding: 15px;
+}
+
+.my-data-room {
+  /* Example style */
+  padding: 16px;
+}
+.data-room-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  padding: 10px;
+  gap: 15px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.list-column {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.list-column.name {
+  flex: 2; /* more width for name */
+}
+
+.list-column.actions {
+  flex: 1.5;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+.grid-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.grid-item {
+  flex: 1 1 calc(25% - 16px); /* 4 items per row with gap */
+  box-sizing: border-box;
+}
+
+@media (max-width: 1200px) { /* Optional: adjust breakpoint for 3 per row */
+  .grid-item {
+    flex: 1 1 calc(33.333% - 16px); /* 3 items per row */
+  }
+}
+
+@media (max-width: 900px) {
+  .grid-item {
+    flex: 1 1 calc(50% - 16px); /* 2 items per row */
+  }
+}
+
+@media (max-width: 600px) {
+  .grid-item {
+    flex: 1 1 100%; /* 1 item per row */
+  }
+}
+
+
+
+
+.paginator-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center; /* Center align the paginator */
+}
+
+
+/*data room design start*/
+
+.data-room-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.data-room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  
+}
+
+.data-room-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+
+.card-header {
+  margin-bottom: 5px;
+  padding: 0;
+}
+
+
+
+.room-detail {
+  font-size: 14px;
+  color: #555;
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+}
+
+.room-detail i {
+  margin-right: 8px;
+  color: #666;
+  min-width: 16px;
+  text-align: center;
+}
+
+
+
+.icon-btn {
+  background-color: #f1f3f4;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+}
+
+.icon-btn i {
+  color: #444;
+  font-size: 16px;
+}
+
+.icon-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.horizontal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+
+
+
+.icon-btn {
+  background-color: #f1f3f4;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.icon-btn i {
+  font-size: 16px;
+}
+
+
+
+.icon-btn:hover {
+  background-color: #e0e0e0;
+}
+
+
+/* Toggle View Icon Button */
+.toggle-view-btn {
+  background-color: #f1f3f5;
+  border-radius: 8px;
+  padding: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.toggle-view-btn:hover {
+  background-color: #e2e8f0;
+}
+
+/* Create Data Room Button */
+.create-room-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #84B936; /* Modern green */
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.create-room-btn i {
+  font-size: 14px;
+}
+
+.create-room-btn:hover {
+  background-color: #84B936;
+}
+
+/*new table design */
+
+
+
+.tab-content {
+  padding: 20px;
+}
+/* Ultra Minimal Tab Styling */
+
+
+/* Tab Header Container */
+::ng-deep .custom-tab-design.mat-tab-header {
+  border-bottom: 1px solid #E5E7EB !important; /* Light gray bottom border */
+  margin-bottom: 16px;
+}
+
+/* Individual Tab Labels */
+::ng-deep .custom-tab-design.mat-tab-label {
+  height: 48px;
+  padding: 0 16px;
+  min-width: 120px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563; /* Normal state gray text */
+  opacity: 1;
+  transition: color 0.2s ease;
+}
+
+/* Hover State */
+::ng-deep .custom-tab-design .mat-tab-label:hover {
+  color: #3B82F6; /* Blue hover color */
+  background-color: transparent;
+}
+
+/* Active State */
+::ng-deep .custom-tab-design .mat-tab-label.mat-tab-label-active {
+  color: #3B82F6; /* Blue active color */
+  font-weight: 600;
+}
+
+/* Active Indicator Bar */
+::ng-deep .custom-tab-design .mat-ink-bar {
+  height: 3px;
+  background-color: #3B82F6; /* Blue indicator */
+  border-radius: 3px 3px 0 0;
+}
+
+/* Remove default animations if needed */
+::ng-deep .custom-tab-design .mat-tab-body-content {
+  animation: none !important;
+}
+
+/* Tab body content styling */
+::ng-deep .custom-tab-design .mat-tab-body-wrapper {
+  padding: 16px 0;
+}
+
+/*tab-design-end*/
+
+.data-room-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.grid-item {
+  flex: 1 1 calc(33.333% - 20px);
+}
+
+
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.room-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 5px;
+  
+}
+
+.room-detail {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 8px 0;
+}
+
+.icon-buttons {
+  margin-top: 0px;
+  display: flex;
+  gap: 10px;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  color: #4b5563;
+  font-size: 16px;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+}
+
+.icon-btn:hover {
+  background-color: rgba(0, 0, 0, 0.07);
+  color: #1f2937;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+::ng-deep .mat-mdc-tab.mdc-tab--active:focus .mdc-tab__text-label
+{
+  color: #0d5cb9 !important;
+}
+
+.mat-mdc-tab-group, .mat-mdc-tab-nav-bar {
+    --mdc-tab-indicator-active-indicator-color: #0d5cb9;
+    --mat-tab-header-disabled-ripple-color: rgba(0, 0, 0, 0.38);
+    --mat-tab-header-pagination-icon-color: #000;
+    --mat-tab-header-inactive-label-text-color: rgba(0, 0, 0, 0.6);
+    --mat-tab-header-active-label-text-color: #0d5cb9;
+    --mat-tab-header-active-ripple-color: #0d5cb9;
+    --mat-tab-header-inactive-ripple-color: #0d5cb9;
+    --mat-tab-header-inactive-focus-label-text-color: rgba(0, 0, 0, 0.6);
+    --mat-tab-header-inactive-hover-label-text-color: rgba(0, 0, 0, 0.6);
+    --mat-tab-header-active-focus-label-text-color: #0d5cb9;
+    --mat-tab-header-active-hover-label-text-color: #7ab029;
+    --mat-tab-header-active-focus-indicator-color: #0d5cb9;
+    --mat-tab-header-active-hover-indicator-color: #0d5cb9;
+}
+
+.action-icon {
+  margin-right: 8px;
+}
+
+.text-blue {
+  color: #1e88e5; 
+}
+
+.text-teal {
+  color: #009688; 
+}
+
+.text-red {
+  color: #e53935; 
+}
+
+.no-padding-dialog .mat-mdc-dialog-surface.mdc-dialog__surface {
+  padding: 0 !important;
+}
+
+:host ::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+  padding: 0 !important;
+}
+
+
+.table-responsive,
+.datatable-wrapper .datatable-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 575.98px) {
+  .table-responsive-sm {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .table-responsive-md {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .table-responsive-lg {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .table-responsive-xl {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 1399.98px) {
+  .table-responsive-xxl {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+.min-height-table {
+    min-height: 190px; 
+}
+
+
+
+
+.search-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.search-toggle {
+  transition: transform 0.3s ease;
+}
+
+.search-wrapper {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-left: 8px;
+  border-bottom: 2px solid #007bff;
+  background: transparent;
+}
+
+.search-input {
+  width: 0;
+  opacity: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #333;
+  font-size: 14px;
+  padding: 4px 0;
+  transition: all 0.3s ease;
+}
+
+.search-container.expanded .search-input {
+  width: 160px;
+  opacity: 1;
+  padding: 4px 8px;
+}
+
+.close-icon {
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.3s ease;
+}
+
+.search-container.expanded .close-icon {
+  opacity: 1;
+  transform: scale(1);
+}
+.custom-nav-tabs .nav-link.active {
+  background-color: #007bff;
+  color: white;
+  font-weight: 500;
+  border-color: #dee2e6 #dee2e6 #fff;
+}
+
+/* Styling for the tab navigation */
+.nav-tabs {
+  border-bottom: 2px solid #ddd;
+  .nav-item {
+    .nav-link {
+      color: #007bff;
+      font-weight: bold;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 0;
+      &.active {
+        background-color: #007bff;
+        color: #fff;
+        border-radius: 5px 5px 0 0;
+      }
+      &:hover {
+        background-color: #f8f9fa;
+        color: #0056b3;
+      }
+    }
+  }
+}
+
+/* Styling for the tab content */
+.tab-content {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0 0 5px 5px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* General styling */
+.mat-elevation-z8 {
+  margin-top: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+}

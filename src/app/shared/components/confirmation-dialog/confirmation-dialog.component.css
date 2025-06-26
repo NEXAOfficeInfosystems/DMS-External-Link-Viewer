@@ -1,0 +1,100 @@
+
+
+.btn-danger.action-button:last-child {
+  margin-right: 0;
+}
+
+.dialog-container {
+  position: relative;
+  padding: 10px;
+}
+
+
+
+.app-dialog-content {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.app-dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+/* input.mat-chip-input {
+  width: 240px;
+  margin: 4px;
+  flex: 1 0 150px;
+} */
+
+
+
+@media (min-width: 992px)and (max-width: 1410px){
+.dialog-content{
+  font-size: 15px;
+  margin-top: 8px;
+  margin-left: 34px;
+  color: black;
+}
+
+}
+
+@media (min-width: 1411px) and (max-width: 1585px) {
+
+
+  .dialog-content{
+    font-size: 15px;
+    margin-top: 15px;
+    margin-left: 53px;
+    color: black;
+  }
+
+}
+
+@media (min-width: 1586px)and (max-width: 1691px){
+
+  
+  .dialog-content{
+    font-size: 15px;
+    margin-top: 30px;
+    margin-left: 82px;
+    color: black;
+  }
+  
+}
+
+
+@media (min-width: 1692px)and (max-width: 1902px){
+ 
+  .dialog-content{
+    font-size: 15px;
+    margin-top: 35px;
+    margin-left: 98px;
+    color: black;
+  }
+}
+
+
+@media (min-width: 1903px)and (max-width: 2559px){
+  
+  .dialog-content{
+    font-size: 15px;
+    margin-top: 50px;
+    margin-left: 123px;
+    color: black;
+  }
+}
+
+
+@media (min-width: 2537px)and (max-width: 3840px){
+  
+  .dialog-content{
+    font-size: 15px;
+    margin-top: 55px;
+    margin-left: 134px;
+    color: black;
+  }
+}

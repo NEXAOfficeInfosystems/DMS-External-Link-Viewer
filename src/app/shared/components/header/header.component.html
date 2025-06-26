@@ -1,0 +1,22 @@
+
+<div class="header-container fixed-top px-4 py-2 shadow-sm" style="display: flex;
+    align-items: center;justify-content: space-between;    padding: 0 10px 0 10px;">
+  <div>
+
+    <h1 class="m-0">My Data Rooms</h1>
+
+  </div>
+
+
+  <div *ngIf="userDetails$ | async as userDetails" class="text-end" style="float:end">
+    <span style="margin-right: 15px;">
+      Welcome, <strong>{{ userDetails.user.name }}</strong>
+      <span *ngIf="userDetails.user.isExternal">(External)</span>
+    </span>
+    <span class="badge text-white" [ngStyle]="{
+        'background-color': userDetails.user.isExternal ? '#9b59b6' : '#3498db'
+      }">
+      {{ userDetails.user.isExternal ? 'External User' : 'Internal User' }}
+    </span>
+  </div>
+</div>

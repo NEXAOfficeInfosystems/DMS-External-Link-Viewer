@@ -1,0 +1,41 @@
+.delete_popup
+{
+    padding: 20px !important;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* Space between buttons */
+}
+
+.custom-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 16px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: 4px;
+}
+
+.custom-button.btn-success {
+    background-color: #449D44;
+    color: #fff;
+    display: flex;
+    width: 94px;
+    justify-content: center;
+}
+
+.custom-button.btn-danger {
+    background-color: #EE636D;
+    color: #fff;
+}
+
+.custom-button i {
+    margin-right: 5px;
+}

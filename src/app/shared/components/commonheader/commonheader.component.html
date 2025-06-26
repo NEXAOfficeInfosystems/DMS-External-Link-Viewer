@@ -1,0 +1,9 @@
+<div class="section-title">
+  <nav class="breadcrumb data-room-breadcrumb">
+    <h2 (click)="goToMyDataRooms()">My Data Rooms</h2>
+    <ng-container *ngIf="dataRoom && dataRoom.name">
+      <span class="breadcrumb-separator"> → </span>
+      <span class="breadcrumb-current">{{ dataRoom.name }}</span>
+    </ng-container>
+  </nav>
+</div>

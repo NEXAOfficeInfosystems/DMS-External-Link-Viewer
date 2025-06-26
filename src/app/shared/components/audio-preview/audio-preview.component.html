@@ -1,0 +1,9 @@
+<div class="audio-div">
+    <audio #playerEl controls="controls"></audio>
+</div>
+<div *ngIf="isLoading">
+    <div class="loader-container">
+      <span class="loader"></span>
+      <span class="loader-text">{{ progress }}%</span>
+    </div>
+  </div>

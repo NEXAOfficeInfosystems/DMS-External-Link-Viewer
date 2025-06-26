@@ -1,0 +1,92 @@
+<div class="row">
+  <div class="col-left">
+    <app-commonheader [dataRoom]="dataRoom" style="cursor: pointer;"></app-commonheader>
+
+    <div class="expires-info">
+      <mat-icon class="calendar-icon">calendar_today</mat-icon>
+      Expires: {{ this.dataRoom?.expirationDate | date:'MMMM d, y' }}
+    </div>
+  </div>
+</div>
+  <div class="data-room-actions pr10" *ngIf="selectedTabIndex === 0">
+  <button class="btn btn-success btn-sm top-node"
+          (click)="openUploadModal()"
+          [disabled]="!canAddDocuments">
+    <i class="las la-plus"></i> Add Document
+  </button>
+</div>
+
+<mat-tab-group [(selectedIndex)]="selectedTabIndex" >
+  <mat-tab label="Files in this Data Room" class="custom-tab">
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="files?.length">
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef> Name </th>
+        <td mat-cell *matCellDef="let file"> {{ file.document.name }} </td>
+      </ng-container>
+
+      <!-- Size Column -->
+      <ng-container matColumnDef="size">
+        <th mat-header-cell *matHeaderCellDef> Size </th>
+        <td mat-cell *matCellDef="let file"> {{ formatFileSize(file.document.documentSize) }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="docType">
+        <th mat-header-cell *matHeaderCellDef> Type </th>
+        <td mat-cell *matCellDef="let file"> {{ file.document.docType }} </td>
+      </ng-container>
+
+      <!-- Permission Column -->
+      <ng-container matColumnDef="permission">
+        <th mat-header-cell *matHeaderCellDef> Permission </th>
+        <td mat-cell *matCellDef="let file"> {{ file.documentPermission }} </td>
+      </ng-container>
+
+   <ng-container matColumnDef="actions">
+  <th mat-header-cell *matHeaderCellDef> Actions </th>
+  <td mat-cell *matCellDef="let file">
+    <ng-container *ngIf="file.permissionFlags as perms">
+      
+      <button mat-icon-button matTooltip="Download"
+              (click)="downloadDocument(file.document)"
+              [disabled]="!perms.canDownload">
+        <mat-icon>download</mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="Edit"
+              (click)="editFile(file)"
+              [disabled]="!perms.canEdit">
+        <mat-icon>edit</mat-icon>
+      </button>
+
+      <button mat-icon-button color="warn" matTooltip="Delete"
+              (click)="deleteFile(file)"
+              [disabled]="!perms.canDelete">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+      <button mat-icon-button matTooltip="View"
+              (click)="viewFile(file)"
+              [disabled]="!perms.canView">
+        <mat-icon>visibility</mat-icon>
+      </button>
+
+    </ng-container>
+  </td>
+</ng-container>
+
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    </table>
+  </mat-tab>
+
+  <mat-tab label="Audit Log" class="custom-tab">
+   <a>helo</a>
+  </mat-tab>
+</mat-tab-group>
+
+
+

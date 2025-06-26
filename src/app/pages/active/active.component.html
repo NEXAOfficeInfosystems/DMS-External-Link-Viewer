@@ -1,0 +1,50 @@
+<div class="table-container">
+  <table mat-table [dataSource]="pagedDataRooms" matSort class="table">
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Name</th>
+      <td mat-cell *matCellDef="let room">
+        {{ room.name }}
+      </td>
+    </ng-container>
+
+    <!-- Expiration Date Column -->
+    <ng-container matColumnDef="expires">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Expiration Date</th>
+      <td mat-cell *matCellDef="let room">
+        <i class="far fa-calendar-alt"></i> {{ room.expires }}
+      </td>
+    </ng-container>
+
+    <!-- Users Column -->
+    <ng-container matColumnDef="users">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Default Permission</th>
+      <td mat-cell *matCellDef="let room">
+        <i class="fas fa-users"></i> {{ room.permission }}
+      </td>
+    </ng-container>
+
+    <!-- Files Column -->
+    <ng-container matColumnDef="files">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>Files</th>
+      <td mat-cell *matCellDef="let room">
+        <i class="fas fa-file"></i> {{ room.files }}
+      </td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef class="taC">Actions</th>
+      <td mat-cell *matCellDef="let room" class="taC">
+        <button class="icon-btn" (click)="navigateToDetail(room)" matTooltip="View">
+          <i class="fas fa-eye"></i>
+        </button>
+  
+      </td>
+    </ng-container>
+
+    <!-- Header and Row Definitions -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

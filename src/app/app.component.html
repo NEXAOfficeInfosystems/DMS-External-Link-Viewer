@@ -1,3 +1,4 @@
+<router-outlet></router-outlet>
 <div class="loading" *ngIf="isLoading">
   <app-loader [isLoading]="isLoading"></app-loader>
  
@@ -16,3 +17,6 @@
   <video *ngIf="downloadHref?.endsWith('.mp4')" [src]="iframeSrc" controls width="100%"></video>
   <audio *ngIf="downloadHref?.endsWith('.mp3')" [src]="iframeSrc" controls></audio>
 </div>
+
+
+

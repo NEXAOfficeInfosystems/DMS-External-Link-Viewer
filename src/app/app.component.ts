@@ -1,14 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { environment } from '../environments/environment';
-
+import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { EncryptionService } from './core/services/encryption.service';
+import { Subscription } from 'rxjs';
+import { CommonService } from './core/services/CommonService'; // Assuming you have a CommonService for loader management
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponent  implements OnInit, OnDestroy {
   errorMessage = '';
   download = false;
   downloadHref: string | null = null;
@@ -19,13 +24,48 @@ export class AppComponent implements OnInit {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly sanitizer: DomSanitizer
-  ) {}
+    private readonly sanitizer: DomSanitizer,
+    private readonly router: Router,
+    private toastr: ToastrService,
+    private cdr: ChangeDetectorRef,
+    private commonService: CommonService, // Assuming you have a CommonService for loader management 
 
+    private encryptionService: EncryptionService 
+  ) {}
+  showLoader: boolean = false; 
+  loaderSubscription: Subscription = new Subscription();
   ngOnInit(): void {
     const urlParams = new URLSearchParams(window.location.search);
+    // console.log('URL Params:', urlParams);
+
     this.shortCode = urlParams.get('s') ?? '';
-    this.fetchDocumentMetadata();
+    // console.log('Short Code:', this.shortCode);
+
+    const token = document.cookie.split('; ').find(row => row.startsWith('UserToken='))?.split('=')[1];
+    // console.log('UserToken:', token);
+
+    if (!token) {
+      console.log('UserToken is missing. Navigating to /auth.');
+      // const encryptedPath = this.encryptionService.encrypt('/auth');
+  const encryptedPath = EncryptionService.encryptToToken('/auth');
+  const decryptedPath = EncryptionService.decryptFromToken(encryptedPath);
+
+      this.router.navigate([decryptedPath]).then(() => {
+        this.isLoading = false; 
+      });
+      return;
+    }
+
+    // console.log('Short code and UserToken are valid. Fetching document metadata.');
+
+    if (!token) {
+      this.fetchDocumentMetadata();
+    }
+
+       this.loaderSubscription = this.commonService.loader$.subscribe((status: any) => {
+      this.showLoader = status;
+      this.cdr.detectChanges();
+    });
   }
 
   private fetchDocumentMetadata(): void {
@@ -249,5 +289,22 @@ export class AppComponent implements OnInit {
     this.downloadHref = null;
     this.iframeSrc = '';
     console.log(message);
+
+    // Navigate to /auth if shortCode is invalid or missing
+    // if (!this.shortCode) {
+    //   alert("ssss")
+    //   this.router.navigate(['/auth']);
+    // }
   }
+
+  showTestToast(): void {
+    this.toastr.success('This is a test toast!', 'Success');
+  }
+
+    ngOnDestroy() {
+    if (this.loaderSubscription) {
+      this.loaderSubscription.unsubscribe();
+    }
+  }
+
 }

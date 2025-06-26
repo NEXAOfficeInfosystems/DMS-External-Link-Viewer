@@ -1,0 +1,578 @@
+<!-- ////////////////////////////////////new view///////////////////////// -->
+<div *ngIf="type == 'pdf'" class="pdf-container">
+  <div class="main-content">
+    <div class="toolbar-sec">
+      <div class="toolbar-group">
+        <button class="toolbar" (click)="closePreview()">
+          <span class="icon">
+              <img src="assets/images/svg/thumbnails.svg" class="icon-sec" />
+          </span>
+          <span class="text"> Thumbnail </span>
+        </button>
+     
+        <div class="annotater" *ngIf="!presentationMode">
+       
+            <button class="toolbar" (click)="selectTool('pen', $event)" [ngClass]="{ selected: tool === 'pen' }">
+            <span class="icon">
+            <img src="assets/images/svg/pen.svg" class="icon-sec" />
+            </span>
+            <span class="text"> Pen </span>
+            </button>
+            <div *ngIf="tool === 'pen' && showToolSettings" class="tool-setting" [ngStyle]="{ top: settingPosition.y + 8 + 'px', left: settingPosition.x - 50 + 'px' }">
+            <div class="tool-setting-inner">
+              <label>Color:</label>
+              <input type="color" [(ngModel)]="toolSettings.penColor" />
+               <span class="color-preview" [ngStyle]="{ backgroundColor: toolSettings.penColor }" style="display: inline-block; width: 20px; height: 20px; border: 1px solid #000; margin-left: 5px;"></span>
+
+
+              <label>Thickness:</label>
+              <input type="number" [(ngModel)]="toolSettings.penThickness" min="1" max="10" />
+
+              <button (click)="applyToolSettings(); showToolSettings = false">Apply</button>
+            </div>
+            </div>
+          <button (click)="selectTool('text', $event)" class="toolbar" [ngClass]="{ selected: tool === 'text' }">
+            <span class="icon">
+              <i class="fas fa-font"></i>
+            </span>
+            <span class="text"> Text </span>
+          </button>
+          <div *ngIf="tool === 'text'" class="tool-setting"  [ngStyle]="{ top: settingPosition.y+8 + 'px', left: settingPosition.x-50 + 'px' }">
+            <div class="tool-setting-inner">
+              <label>Color:</label>
+              <input type="color" [(ngModel)]="toolSettings.textColor" />
+ <span class="color-preview" [ngStyle]="{ backgroundColor: toolSettings.textColor }" style="display: inline-block; width: 20px; height: 20px; border: 1px solid #000; margin-left: 5px;"></span>
+
+              <label>Thickness:</label>
+              <input type="number" [(ngModel)]="toolSettings.textFontSize" min="1" max="10" />
+
+              <button (click)="applyToolSettings()">Apply</button>
+            </div>
+          </div>
+
+          <button (click)="selectTool('eraser', $event)" class="toolbar" [ngClass]="{ selected: tool === 'eraser' }">
+            <span class="icon">
+                <img src="assets/images/svg/eraser-1.svg" class="icon-sec" />
+            </span>
+            <span class="text"> Erase </span>
+          </button>
+          <div *ngIf="tool === 'eraser'" class="tool-setting"  [ngStyle]="{ top: settingPosition.y+8 + 'px', left: settingPosition.x-50 + 'px' }">
+            <div class="tool-setting-inner"> 
+              <!-- <label>Color:</label> -->
+              <!-- <input type="color" [(ngModel)]="toolSettings.color" /> -->
+
+              <label>Thickness:</label>
+              <input type="number" [(ngModel)]="toolSettings.eraserThickness" min="1" max="10" />
+
+              <button (click)="applyToolSettings()">Apply</button>
+            </div>
+          </div>
+
+          <button (click)="selectTool('highlighter', $event)" class="toolbar" [ngClass]="{ selected: tool === 'highlighter' }"  >
+            <span class="icon">
+                 <img src="assets/images/svg/highlighter.svg" class="icon-sec" />
+            </span>
+            <span class="text"> Highlight </span>
+          </button>
+            <div *ngIf="tool === 'highlighter'" class="tool-setting" [ngStyle]="{ top: settingPosition.y+8 + 'px', left: settingPosition.x-50 + 'px' }">
+            <div class="tool-setting-inner">
+              <label>Color:</label>
+              <input type="color" [(ngModel)]="toolSettings.highlighterColor" />
+              <span class="color-preview" [ngStyle]="{ backgroundColor: toolSettings.highlighterColor }" style="display: inline-block; width: 20px; height: 20px; border: 1px solid #000; margin-left: 5px;"></span>
+
+              <label>Thickness:</label>
+              <input type="number" [(ngModel)]="toolSettings.highlighterThickness" min="1" max="10" />
+
+              <button (click)="applyToolSettings()">Apply</button>
+            </div>
+            </div>
+          <button (click)="selectTool('rectangle', $event)" class="toolbar" id="redactBtn"
+            [ngClass]="{ selected: tool === 'rectangle' }">
+            <span class="icon">
+                 <img src="assets/images/svg/rectangle-2.svg" class="icon-sec" />
+            </span>
+            <span class="text"> Rectangle </span>
+          </button>
+          <div *ngIf="tool === 'rectangle'" class="tool-setting" [ngStyle]="{ top: settingPosition.y+8 + 'px', left: settingPosition.x-50 + 'px' }">
+            <div class="tool-setting-inner">
+              <label>Color:</label>
+              <input type="color" [(ngModel)]="toolSettings.rectangleColor" />
+
+              <label>Thickness:</label>
+              <input type="number" [(ngModel)]="toolSettings.rectangleThickness" min="1" max="10" />
+
+              <button (click)="applyToolSettings()">Apply</button>
+            </div>
+          </div>
+             <button class="toolbar" [disabled]="undoStack.length > 1" (click)="selectTool('select')" [ngClass]="{ selected: tool === 'select' }">
+            <span class="icon">
+                <img src="assets/images/svg/cursor.svg" class="icon-sec" />
+            </span>
+            <span class="text"> Select </span>
+          </button>
+        </div>
+        <button (click)="togglePresentationMode()" class="toolbar" *ngIf="!presentationMode">
+          <span class="icon">
+              <img src="assets/images/svg/presentation.svg" class="icon-sec" />
+          </span>
+          <span class="text"> Presentation </span>
+        </button>
+         <button
+        class="toolbar"
+        (click)="openSignaturePopup()"
+       *ngIf="!presentationMode && (StepStatus == 'Review' || StepStatus == 'Review&Approve'||StepStatus=='Approve')"
+      >
+        <span class="icon">
+            <img src="assets/images/svg/signature-3.svg" class="icon-sec" />
+        </span>
+        <span class="text"> sign </span>
+      </button>
+          <div *ngIf="isSignaturePopup" class="signature-popup">
+          <div class="popup-header">
+            <h3>
+              <i class="fas fa-signature"></i> Signature Options
+            </h3>
+            <button class="close-btn" (click)="closeSignaturePopup()">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="popup-content">
+            <div class="button-grid">
+              <div class="option">
+                <button (click)="capturesig()">
+                  <i class="fas fa-pen-nib"></i> Capture Signature
+                </button>
+                <p>Capture your signature using a connected device (e.g., Signature Device)..</p>
+                
+              </div>
+           
+              <div class="option ">
+                <button  (click)="selectTool('signature',$event)">
+                  <i class="fas fa-signature"></i> Get Signature
+                </button>
+                <p>Retrieve a saved signature from your account.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+        class="toolbar"
+         (click)="selectTool('watermark',$event)"
+        *ngIf="!presentationMode && (StepStatus == 'Review' || StepStatus == 'Review&Approve'||StepStatus=='Approve')"
+      >
+        <span class="icon">
+             <img src="assets/images/svg/watermark-1.svg" class="icon-sec" />
+        </span>
+        <span class="text"> Watermark </span>
+      </button>
+      
+      <button
+        class="toolbar"
+        (click)="selectTool('companyseal',$event)"
+        *ngIf="!presentationMode && (StepStatus == 'Review' || StepStatus == 'Review&Approve'||StepStatus=='Approve')"
+      >
+        <span class="icon">
+           <img src="assets/images/svg/company.svg" class="icon-sec" />
+        </span>
+        <span class="text"> Company Seal </span>
+      </button>
+      <!-- Signature Popup -->
+      <div *ngIf="isWatermarkPopup" class="signature-popup">
+        <div class="popup-header">
+          <h3>
+            <i class="fas fa-water"></i> Watermark Options
+          </h3>
+          <button class="close-btn" (click)="closeWatermarkPopup()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="popup-content">
+          <div class="button-grid">
+          
+            <div class="option ">
+              <button (click)="selectTool('watermark',$event)">
+              <i class="fas fa-water"></i> Get Watermark
+              </button>
+              <p>Retrieve a saved watermark from your account.</p>
+            </div>
+            <div class="option ">
+              <button (click)="selectTool('companyseal',$event)">
+              <i class="fas fa-building"></i> Get CompanySeal
+              </button>
+              <p>Retrieve a saved companySeal from your account.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+        <button class="tool toolbar" (click)="CheckDevice()" *ngIf="!presentationMode && StepStatus == 'Review' || StepStatus == 'Review&Approve'||StepStatus=='Approve'"
+          [class.isSelected]="isdeviceDetected">
+          <span class="icon">
+               <img src="assets/images/svg/device.svg" class="icon-sec" />
+          </span>
+          <span class="text"> Device </span>
+        </button>
+
+        <!-- <button class="toolbar" (click)="capturesig()" *ngIf="!presentationMode">
+          <span class="icon">
+            <i class="fas fa-pen-nib"></i>
+          </span>
+          <span class="text">Capture Signature </span>
+        </button> -->
+        <button class="toolbar" (click)="selectTool('esignature')" *ngIf="!presentationMode && (StepStatus == 'Review' || StepStatus == 'Review&Approve '||StepStatus=='Approve')">
+          <span class="icon">
+            <img src="assets/images/svg/signature-4.svg" class="icon-sec" />
+          </span>
+          <span class="text">Apply Signature </span>
+        </button>
+
+        <!-- <button class="toolbar" id="redactBtn" *ngIf="!presentationMode">
+          <span class="icon">
+            <i class="fas fa-stamp"></i>
+          </span>
+          <span class="text"> Watermark </span>
+        </button> -->
+        <button (click)="clearCanvas()" class="toolbar" id="redactBtn" *ngIf="!presentationMode">
+          <span class="icon">
+             <img src="assets/images/svg/clear.svg" class="icon-sec" />
+          </span>
+          <span class="text"> Clear </span>
+        </button>
+        <div style="margin-left: 20px" class="toolbar" *ngIf="sign">
+          <img height="39px" [src]="sign" alt="Signature" class="signature-image" style="border: 2px solid #333" />
+        </div>
+      </div>
+      <!-- <div class="toolbar-group">
+        <button class="toolbar-btn" (click)="zoomOut()" id="zoomOutBtn">
+          <i class="fas fa-search-minus"></i>
+        </button>
+        <span class="page-indicator">{{ this.scale * 100 | number : "1.0-0" }}%</span>
+        <button class="toolbar-btn" (click)="zoomIn()" id="zoomInBtn">
+          <i class="fas fa-search-plus"></i>
+        </button>
+      </div> -->
+
+      <div class="toolbar-group" *ngIf="!presentationMode">
+     
+          <button class="toolbar" *ngIf="StepStatus == 'Review&Approve'  ||StepStatus=='Approve'" (click)="ReviewApproval('Approved')">
+            <span class="icon">
+              <img src="assets/images//svg/Approve.svg" class="icon-sec" />
+            </span>
+            <span class="text"> Approve </span>
+          </button>
+
+         
+      
+        <button (click)="downloadPDFWithDrawings()" class="toolbar" *ngIf="!presentationMode">
+          <span class="icon">
+             <img src="assets/images/svg/download.svg" class="icon-sec" />
+          </span>
+          <span class="text"> Download </span>
+        </button>
+
+        <button (click)="savePDFWithDrawings()" class="toolbar" *ngIf="!presentationMode">
+          <span class="icon">
+            <img src="assets/images/svg/save.svg" class="icon-sec" />
+          </span>
+          <span class="text"> Save </span>
+        </button>
+
+        <button class="toolbar" (click)="navigateToFolderList()" *ngIf="!presentationMode">
+          <span class="icon">
+              <img src="assets/images/svg/back.svg" class="icon-sec" />
+          </span>
+          <span class="text">Back </span>
+        </button>
+
+        <button class="toolbar" (click)="isShowDetails = !isShowDetails" *ngIf="!presentationMode">
+          <span class="icon">
+            <img src="assets/images/svg/details.svg" class="icon-sec" />
+          </span>
+          <span *ngIf="!isShowDetails" class="text"> Show Details </span>
+          <span *ngIf="isShowDetails" class="text"> Hide Details </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="document-display">
+      <div class="thumbnail-sidebar"   (scroll)="onPreviewsScroll()" [ngClass]="{ show: isShowPreview, hide: !isShowPreview }">
+        <div class="thumbnails" >
+          <canvas class="canvas-width" *ngFor="let page of previewPages; let i = index" #previewCanvas 
+            [attr.data-page-index]="i" [attr.id]="'preview-page-' + i" (click)="onPreviewPageClick(i)"
+            [class.selected]="currentPage - 1 === i">
+          </canvas>
+        </div>
+      </div>
+      
+    <div class="documentview" (scroll)="onCanvasScroll()">
+  <div class="document-viewport">
+    <ng-container *ngFor="let page of renderedPages; let i = index">
+     <div style="margin-top: 20px;">
+    <canvas
+      [attr.id]="'fabric-canvas-' + page"
+      #fabricCanvas
+      class="fabric-canvas"
+      [attr.data-page]="page"
+      style="margin-top: 20px;">
+    </canvas>
+  </div>
+    </ng-container>
+  </div>
+</div>
+
+
+
+      <div class="docdetails" *ngIf="isShowDetails">
+        <div class="document-sidebar-sec" [ngClass]="{ show: isShowDetails, hide: !isShowDetails }">
+          <div class="document-details-sidebar" id="documentDetailsSidebar">
+            <div class="sidebar-header">
+              <h3>Document Details</h3>
+             
+            </div>
+
+            <div class="document-info">
+              <div class="info-item">
+                <label for="filename">Filename :</label>
+                <span  id="filetype"   matTooltip="{{ pdfData.name }}"
+            >
+              {{
+                pdfData.name.length > 25
+                  ? (pdfData.name | slice : 0 : 25) + "..."
+                  : pdfData.name
+              }}
+              </span>
+              </div>
+
+              <div class="info-item">
+                <label for="filename">File Type :</label>
+                <span id="filetype" matTooltip="{{ getFileExtensions(pdfData.url) }}">{{ getFileExtensions(pdfData.url) }}</span>
+              </div>
+
+              <div class="info-item">
+                <label for="filename">File Size :</label>
+                <span id="filetype" matTooltip="{{ getDocumentSize(pdfData.documentSize) }}">{{
+                  getDocumentSize(pdfData.documentSize)
+                  }}</span>
+              </div>
+
+              <div class="info-item">
+                <label for="filename">Pages :</label>
+                <span id="filetype" matTooltip="{{totalPages}}">{{totalPages}}</span>
+              </div>
+
+              <div class="info-item">
+                <label for="filename">Created :</label>
+                <span id="filetype" matTooltip="{{pdfData.createdDate | date : 'dd/MM/yy'}}">{{
+                  pdfData.createdDate | date : "dd/MM/yy"
+                  }}</span>
+              </div>
+
+              <div class="info-item">
+                <label for="filename">Author :</label>
+                <span id="filetype">{{ pdfData.userName }}</span>
+              </div>
+
+              <div class="info-item">
+                <label for="filename">Description :</label>
+                <span id="filetype">{{ pdfData.description }}</span>
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+      
+          </div>
+        </div>
+
+
+
+
+
+
+
+      </div>
+    </div>
+    
+    <div *ngIf="showMenu" class="signature-menu" [ngStyle]="{
+        top: menuPosition.y + 'px',
+        left: menuPosition.x + 'px'
+      }">
+      <ul>
+        <li>
+
+          <a (click)="addSignature($event)">
+            <i class="fas fa-signature"></i>
+            Add Signature</a>
+        </li>
+        <li>
+
+          <a (click)="addWatermarks($event)">
+            <i class="fas fa-water"></i>
+            Add Watermark</a>
+        </li>
+        <li>
+
+          <a (click)="addCompanySeal($event)">
+            <i class="fas fa-building"></i>
+            Add CompanySeal</a>
+        </li>
+      </ul>
+    </div>
+    <div  class="zoom-controls">
+      <div class="toolbar-group">
+        <button class="toolbar-btn" (click)="zoomOut()" id="zoomOutBtn" [disabled]="scale <= 0.5">
+          <i class="fas fa-search-minus"></i>
+        </button>
+        <span class="page-indicator">{{ (scale * 100) | number : "1.0-0" }}%</span>
+        <button class="toolbar-btn" (click)="zoomIn()" id="zoomInBtn" [disabled]="scale >= 1.5">
+          <i class="fas fa-search-plus"></i>
+        </button>
+
+        <div >
+          <button class="zoom-btn" [disabled]="currentPage <= 1" id="zoomOutFixedBtn">
+            <i class="fas fa-arrow-left" (click)="prevPage()"> </i>
+          </button>
+          <span class="page-indicator">{{ currentPage }}-{{ totalPages }}</span>
+          <button [disabled]="currentPage >= totalPages" class="zoom-btn" id="zoomInFixedBtn">
+            <i class="fas fa-arrow-right" (click)="nextPage()"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="type != 'pdf'" class="row" style="background-color: #fff">
+  <div class="toolbar-sec display-right" style="position: relative; text-align: right; display: ruby">
+      <button (click)="togglePresentationMode()" class="toolbar" *ngIf="!presentationMode">
+          <span class="icon">
+              <img src="assets/images/svg/presentation.svg" class="icon-sec" />
+          </span>
+          <span class="text"> Presentation </span>
+        </button>
+    <div class="toolbar-group" *ngIf="!presentationMode">
+    
+      
+        <button (click)="downloadDocuments()" class="toolbar" *ngIf="!presentationMode">
+          <span class="icon">
+             <img src="assets/images/svg/download.svg" class="icon-sec" />
+          </span>
+          <span class="text"> Download </span>
+        </button>
+
+      <button class="toolbar" (click)="navigateToFolderList()" *ngIf="!presentationMode">
+        <span class="icon">
+          <img src="assets/images/svg/back.svg" class="icon-sec" />
+        </span>
+        <span class="text"> Back </span>
+      </button>
+
+       <button class="toolbar" (click)="isShowDetails = !isShowDetails" *ngIf="!presentationMode">
+          <span class="icon">
+            <img src="assets/images/svg/details.svg" class="icon-sec" />
+          </span>
+          <span *ngIf="!isShowDetails" class="text"> Show Details </span>
+          <span *ngIf="isShowDetails" class="text"> Hide Details </span>
+        </button>
+    </div>
+  </div>
+  <div [ngClass]="{
+      'col-lg-9 col-md-9 col-sm-12 mb-3': isShowDetails,
+      'col-12': !isShowDetails
+    }" [style.height]="!isShowDetails ? '150vh' : '100vh'" style="background-color: #414040">
+    <ng-container [ngSwitch]="type">
+      <app-image-preview [document]="pdfData" *ngSwitchCase="'image'"></app-image-preview>
+      <app-office-viewer [document]="pdfData" *ngSwitchCase="'office'"></app-office-viewer>
+
+      <app-text-preview [document]="pdfData" *ngSwitchCase="'text'"></app-text-preview>
+      <app-audio-preview [document]="pdfData" *ngSwitchCase="'audio'"></app-audio-preview>
+      <app-video-preview [document]="pdfData" *ngSwitchCase="'video'"></app-video-preview>
+    </ng-container>
+  </div>
+
+  <div class="col-lg-3 col-md-3 col-sm-12">
+    <div *ngIf="isShowDetails" class="document-sidebar-sec" [ngClass]="{ show: isShowDetails, hide: !isShowDetails }">
+      <div class="document-details-sidebar" id="documentDetailsSidebar">
+        <div class="sidebar-header">
+          <h3>Document Details</h3>
+          
+        </div>
+
+        <div class="document-info">
+          <div class="info-item">
+            <label for="filename">Filename :</label>
+            <span id="filetype" matTooltip="{{ pdfData.name }}">
+              {{
+                pdfData.name && pdfData.name.length > 25
+                  ? (pdfData.name | slice : 0 : 25) + "..."
+                  : pdfData.name
+              }}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <label for="filename">File Type :</label>
+            <span id="filetype" matTooltip="{{ getFileExtensions(pdfData.url) }}">
+              {{ getFileExtensions(pdfData.url) }}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <label for="filename">File Size :</label>
+            <span id="filetype" matTooltip="{{ getDocumentSize(pdfData.documentSize) }}">
+              {{ getDocumentSize(pdfData.documentSize) }}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <label for="filename">Pages :</label>
+            <span id="filetype" matTooltip="{{ totalPages }}">{{ totalPages }}</span>
+          </div>
+
+          <div class="info-item">
+            <label for="filename">Created :</label>
+            <span id="filetype" matTooltip="{{ pdfData.createdDate | date : 'dd/MM/yy' }}">
+              {{ pdfData.createdDate | date : "dd/MM/yy" }}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <label for="filename">Author :</label>
+            <span id="filetype" matTooltip="{{ pdfData.userName }}">
+              {{
+                pdfData.userName && pdfData.userName.length > 25
+                  ? (pdfData.userName | slice : 0 : 25) + "..."
+                  : pdfData.userName
+              }}
+            </span>
+          </div>
+
+          <div class="info-item">
+            <label for="filename">Description :</label>
+            <span id="filetype" matTooltip="{{ pdfData.description }}">
+              {{
+                pdfData.description && pdfData.description.length > 25
+                  ? (pdfData.description | slice : 0 : 25) + "..."
+                  : pdfData.description
+              }}
+            </span>
+          </div>
+        </div>
+
+
+        <div class="card-footer text-right" >
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

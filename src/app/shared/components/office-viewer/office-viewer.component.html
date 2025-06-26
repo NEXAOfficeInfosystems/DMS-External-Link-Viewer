@@ -1,0 +1,15 @@
+
+<iframe class="preview-object" *ngIf="isLive" #iframe  style="width: 100%;height: 100%;"></iframe>
+<div *ngIf="!isLive" style="text-align: center;">
+    <!-- <img class="m-5" src="../../../assets/images/file-preview.png" alt=""> -->
+    <img class="m-5" src="assets/images/ois_logo1.png" alt="">
+    <h5 class="text-light">Office View is not suporting the localhost please host your REST API and try again.</h5>
+</div>
+<div *ngIf="isLoading">
+    <div class="loader-container">
+      <span class="loader"></span>
+      <span class="loader-text">{{ progress }}%</span>
+    </div>
+  </div>
+
+  

@@ -1,0 +1,148 @@
+<div class="popup-form-container">
+
+<!-- header -->
+  <div class="dialog-header fixed-header">
+      <div class="folder-dialog-info">
+        <div class="section-title">
+          <h2>Upload Files to Data Room</h2>
+        </div>
+      </div>
+      <div class="close-icon m-2 text-danger" (click)="dialogRef.close()">
+        <span class="material-icons cursor-pointer">close</span>
+      </div>
+    </div>
+
+<!-- body -->
+<div class="dialog-body">
+  <div class="flex flex-dir-row align-items-start justify-content-between">
+    <!-- Add Files Section -->
+    <div class="upload-panel mb-4">
+      <div class="angular-upload-container">
+     <!-- Drag and Drop Area -->
+<div class="drag-drop-container drop-zone"
+     fileDragDrop
+     (filesChangeEmiter)="handleFileInput($event)"
+     (click)="fileInput.click()">
+  <div class="drag-drop-text">
+    <img src="assets/images/svg/cloud-upload.svg">
+    <a class="upload-button">Click to upload</a>
+    <span class="drag-drop-message">or drag and drop</span>
+    <input type="file"
+           multiple
+           [accept]="allowedFileExtensions"
+           (change)="handleFileInput($event)"
+           #fileInput />
+  </div>
+</div>
+
+
+        <div *ngIf="files.length > 0" class="file-container">
+          <table class="modern-file-table">
+            <thead>
+              <tr>
+                <th>File Name <span class="text-danger">*</span></th>
+                <th>Confidential</th>
+                <th>Tags</th>
+                <th>Description</th>
+                <th class="actions-col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let file of files; let i = index" [class.error-row]="!file?.isUploadable" [class.success-row]="file?.isUploadable">
+                <!-- File Name Column (Editable) -->
+                <td class="editable-cell">
+                  <div *ngIf="!file.editing" class="file-name" (click)="toggleEdit(file)">
+                    {{file.documentName}}
+                  </div>
+                  <input *ngIf="file.editing" type="text" [(ngModel)]="file.documentName" (blur)="saveFileEdit(file)" class="inline-edit-input">
+                </td>
+
+                <!-- Confidential Column (Editable) -->
+                <td class="editable-cell">
+                  <div *ngIf="!file.editing" (click)="toggleEdit(file)">
+                    {{file.doc_Type || 'Select type'}}
+                  </div>
+                  <select *ngIf="file.editing" [(ngModel)]="file.doc_Type" (blur)="saveFileEdit(file)" class="inline-edit-select">
+                    <option value="Confidential">Confidential</option>
+                    <option value="Non-Confidential">Non-Confidential</option>
+                  </select>
+                </td>
+
+                <!-- Tags Column (Editable) -->
+                <td class="tags-cell">
+                  <div class="tags-container">
+                    <span class="tag" *ngFor="let tag of file.documentMetaTags?.slice(0, 2)">
+                      {{tag}}
+                    </span>
+                    <!-- <span class="more-tags" *ngIf="file.documentMetaTags?.length > 2">
+                      +{{file.documentMetaTags.length - 2}}
+                    </span>
+                    <button class="add-tag-btn" (click)="openTagEditor(file, $event)">
+                      <i class="fas fa-plus"></i>
+                    </button> -->
+                  </div>
+                </td>
+
+                <!-- Description Column (Editable) -->
+                <td class="editable-cell">
+                  <div *ngIf="!file.editing" (click)="toggleEdit(file)" class="description-text">
+                    {{file.description || 'Click to add description'}}
+                  </div>
+                  <textarea *ngIf="file.editing" [(ngModel)]="file.description" (blur)="saveFileEdit(file)" class="inline-edit-textarea"></textarea>
+                </td>
+
+                <!-- Actions Column -->
+                <td class="actions-cell">
+                  <div class="action-buttons">
+                    <button class="icon-btn edit-btn" (click)="toggleEdit(file)">
+                      <i class="fas" [ngClass]="file.editing ? 'fa-check' : 'fa-edit'"></i>
+                    </button>
+                    <button class="icon-btn delete-btn" (click)="removeFile(file, i, $event)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div *ngIf="files.length === 0" class="no-files-message text-danger">
+          No files selected. Please select files to upload.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="form-group">
+    <label>Set Permissions for these files <span class="text-danger">*</span></label>
+    <select id="uploadPermissions" class="form-control" [(ngModel)]="selectedPermission" required>
+      <option value="inherit">Inherit from Data Room</option>
+      <option value="view">View Only</option>
+      <option value="view_download">View & Download</option>
+      <option value="contributor">Contributor (View, Download, Upload)</option>
+      <option value="editor">Editor (All permissions)</option>
+    </select>
+    <div *ngIf="!selectedPermission" class="text-danger">
+      Please select a permission.
+    </div>
+  </div> -->
+</div>
+
+
+
+
+
+
+<!-- //footer -->
+     <div class="dialog-footer fixed-footer">
+      <button class="btn btn-success btn-sm m-right-10"    (click)="uploadFiles()" cdkFocusInitial>
+        <i class="las la-save"></i> {{ 'SAVE' | translate }}
+      </button>
+      <button type="button" class="btn btn-danger btn-sm"  (click)="dialogRef.close()">
+        <i class="las la-times-circle"></i> {{ 'CANCEL' | translate }}
+      </button>
+    
+    </div>
+
+
+    </div>

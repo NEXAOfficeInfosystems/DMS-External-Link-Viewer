@@ -1,0 +1,12 @@
+<div class="fixed-header">
+  <app-header></app-header>
+</div>
+
+<div class="layout-container">
+  <app-sidebar [collapsed]="isSidebarCollapsed" (toggle)="onToggleSidebar()"></app-sidebar>
+
+  <div class="main-content" [class.collapsed]="isSidebarCollapsed">
+
+    <router-outlet></router-outlet>
+  </div>
+</div>
