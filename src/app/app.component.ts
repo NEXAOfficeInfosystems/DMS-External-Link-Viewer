@@ -8,6 +8,9 @@ import { ToastrService } from 'ngx-toastr';
 import { EncryptionService } from './core/services/encryption.service';
 import { Subscription } from 'rxjs';
 import { CommonService } from './core/services/CommonService'; // Assuming you have a CommonService for loader management
+import { FileUploadService, FileUploadStatus } from './core/helpers/file-upload.service';
+import { TranslationService } from './core/services/TranslationService';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -21,20 +24,74 @@ export class AppComponent  implements OnInit, OnDestroy {
   isLoading = true;
   iframeSrc: SafeResourceUrl = '';
   isProtected = false;
+  isRtl = false;
 
   constructor(
+        public translate: TranslateService,
+    private fileUploadService: FileUploadService,
     private readonly http: HttpClient,
     private readonly sanitizer: DomSanitizer,
     private readonly router: Router,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
-    private commonService: CommonService, // Assuming you have a CommonService for loader management 
+    private commonService: CommonService, 
+    private translationService: TranslationService, // Assuming you have a TranslationService for language management
 
     private encryptionService: EncryptionService 
-  ) {}
+  ) {
+ translate.addLangs(['en']);
+    translate.setDefaultLang('en');
+    this.setLanguage();
+  this.uploadStatuses = this.fileUploadService.getAllUploadStatuses();
+
+
+
+      this.fileUploadService.uploadStatus$.subscribe((statuses) => {
+      this.uploadStatuses = statuses;
+      this.updateCounts(); 
+
+      if (this.uploadStatuses.length > 0 && this.uploadStatuses.some(status => status.status === 'completed' || status.status === 'failed')) {
+      
+        this.successCount = this.uploadStatuses.filter(status => status.status === 'completed').length;
+        this.failureCount = this.uploadStatuses.filter(status => status.status === 'failed').length;
+        this.totalCount = this.uploadStatuses.length;
+      
+        this.cdr.markForCheck(); 
+       
+        let message = '';
+        if (this.successCount > 0 && this.failureCount > 0) {
+          message = `File upload completed: ${this.successCount} successful, ${this.failureCount} failed.`;
+        } else if (this.successCount > 0) {
+          message = `File upload completed: ${this.successCount} successful.`;
+        } else if (this.failureCount > 0) {
+          message = `File upload completed: ${this.failureCount} failed.`;
+        }
+        this.toastr.clear(); 
+
+
+        this.toastr.success(message);
+        setTimeout(() => {
+          this.showFileList = false;
+        }, 60000);
+      }
+
+
+
+
+    });
+
+  }
+
+    updateCounts() {
+    this.successCount = this.uploadStatuses.filter(status => status.status === 'completed').length;
+    this.failureCount = this.uploadStatuses.filter(status => status.status === 'failed').length;
+    this.totalCount = this.uploadStatuses.length;
+  }
   showLoader: boolean = false; 
   loaderSubscription: Subscription = new Subscription();
   ngOnInit(): void {
+
+
     const urlParams = new URLSearchParams(window.location.search);
     // console.log('URL Params:', urlParams);
 
@@ -66,7 +123,83 @@ export class AppComponent  implements OnInit, OnDestroy {
       this.showLoader = status;
       this.cdr.detectChanges();
     });
+
+         const lang = this.translationService.getSelectedLanguage() || 'en';
+    this.translationService.setLanguage(lang).subscribe();
   }
+  private langSubscription: Subscription | null = null;
+  setLanguage() {
+    const currentLang = this.translationService.getSelectedLanguage();
+    if (this.langSubscription) {
+      this.langSubscription.unsubscribe();
+    }
+    if (currentLang) {
+      this.isRtl = currentLang === 'ar';
+      this.langSubscription = this.translationService.setLanguage(currentLang)
+        .subscribe(() => { });
+    } else {
+      const browserLang: any = this.translate.getBrowserLang();
+      const lang = /en|es|ar|ru|cn|ja|ko|fr/.test(browserLang) ? browserLang : 'en';
+      this.isRtl = lang === 'ar';
+      this.langSubscription = this.translationService.setLanguage(lang).subscribe(() => { });
+    }
+  }
+
+
+
+
+uploadStatuses: FileUploadStatus[] = [];
+
+  showFileList = true; 
+  successCount: number = 0;
+  failureCount: number = 0;
+  totalCount: number = 0;
+
+
+  closeUpload(): void {
+    this.fileUploadService.resetStatuses();
+    this.showFileList = false; 
+    this.uploadStatuses = [];
+    this.closeTooltip(); 
+  }
+
+  tooltipVisible: boolean = false;
+  tooltipContent: string = '';
+  tooltipPosition: { top: number; left: number } | null = null;
+
+
+  toggleFileList(): void {
+    this.showFileList = !this.showFileList;
+  }
+
+
+
+ showTooltip(message: any, event: MouseEvent): void {
+    this.tooltipContent = message;
+    this.tooltipVisible = true;
+    const target = event.target as HTMLElement;
+    const rect = target.getBoundingClientRect();
+    this.tooltipPosition = {
+      top: rect.top + window.scrollY + rect.height + 5, // Position below the element
+      left: rect.left + window.scrollX // Align with the left edge of the element
+    };
+    setTimeout(() => {
+      this.closeTooltip();
+    }, 1000 * 60);
+  }
+
+  get overallProgress(): number {
+    if (this.uploadStatuses.length === 0) return 0;
+    const totalProgress = this.uploadStatuses.reduce((sum, status) => sum + status.progress, 0);
+    return Math.round(totalProgress / this.uploadStatuses.length);
+  }
+
+  closeTooltip(): void {
+    this.tooltipVisible = false;
+    this.tooltipContent = '';
+    this.tooltipPosition = null;
+  }
+
 
   private fetchDocumentMetadata(): void {
     if (!this.shortCode) {
@@ -305,6 +438,14 @@ export class AppComponent  implements OnInit, OnDestroy {
     if (this.loaderSubscription) {
       this.loaderSubscription.unsubscribe();
     }
+    if (this.langSubscription) {
+      this.langSubscription.unsubscribe();
+    }
   }
 
+  sidebarCollapsed = false;
+
+  toggleSidebar() {
+    this.sidebarCollapsed = !this.sidebarCollapsed;
+  }
 }

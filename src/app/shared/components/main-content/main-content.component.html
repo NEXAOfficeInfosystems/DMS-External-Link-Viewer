@@ -23,12 +23,17 @@
 </div> -->
 
 
-<main class="app-content">
+<main class="app-content" >
 
   <div class="mat-elevation-z8">
     <!-- Top Heading with Border Bottom -->
     <div class="section-header">
-      <h2>{{ selectedTabIndex === 0 ? 'Active Data Rooms' : 'Expired Data Rooms' }}</h2>
+      <!-- <h2>{{ selectedTabIndex === 0 ? 'Active Data Rooms' : 'Expired Data Rooms' }}</h2> -->
+   
+   <h2>
+  {{ selectedTabIndex === 0 ? ('MAIN_CONTENT.ACTIVE_DATA_ROOMS' | translate) : ('MAIN_CONTENT.EXPIRED_DATA_ROOMS' | translate) }}
+</h2>
+   
     </div>
 
     <!-- White Card with Border -->

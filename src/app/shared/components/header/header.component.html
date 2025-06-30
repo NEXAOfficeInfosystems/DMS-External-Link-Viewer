@@ -14,14 +14,19 @@
 <span class="search-icon">🔍</span>
 </div>
 </div> -->
- 
-  <!-- Profile -->
-<div class="right-section">
-<img class="profile-img" src="assets/images/logo/img.webp" alt="Profile" />
-<div class="profile-info">
-<div class="name">John Doe</div>
-<div class="role">Admin</div>
-</div>
+  <!-- <select (change)="changeLang($event)">
+  <option value="en">{{ 'HEADER.LANGUAGE.ENGLISH' | translate }}</option>
+  <option value="ar">{{ 'HEADER.LANGUAGE.ARABIC' | translate }}</option>
+</select> -->
+<!-- Profile -->
+<div class="right-section" *ngIf="userDetails$ | async as userDetails">
+  <img class="profile-img" src="assets/images/logo/img.webp" alt="Profile" />
+  <div class="profile-info">
+    <div class="name" [matTooltip]="userDetails.user.name">
+      {{ 'HEADER.WELCOME' | translate }}, {{ userDetails.user.name | slice:0:6 }}<span *ngIf="userDetails.user.name.length > 6">...</span>
+    </div>
+    <div class="role">{{ 'HEADER.ROLE.USER' | translate }}</div>
+  </div>
 </div>
 </header>
 

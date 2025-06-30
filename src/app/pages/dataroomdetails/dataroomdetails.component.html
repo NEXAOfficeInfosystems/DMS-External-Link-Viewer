@@ -101,19 +101,28 @@
     
         <div class="expires-info d-flex align-center gap-1">
           <mat-icon class="calendar-icon small">calendar_today</mat-icon>
-          <span class="expire-label">Expires:</span>
+          <span class="expire-label">{{ 'DATA_ROOM_DETAILS.EXPIRES' | translate }}</span>
           <span class="expire-date">{{ dataRoom?.expirationDate | date: 'MMMM d, y' }}</span>
         </div>
       </div>
     
       <!-- Right: Add Document button (tabIndex check) -->
-      <div class="data-room-actions" *ngIf="selectedTabIndex === 0">
+      <!-- <div class="data-room-actions" *ngIf="selectedTabIndex === 0">
         <button class="btn btn-success btn-sm" (click)="openUploadModal()" 
        
        
-        >
+        > -->
          <!-- [disabled]="!canAddDocuments" -->
-          <i class="las la-plus"></i> Add Document
+          <!-- <i class="las la-plus"></i> Add Document
+        </button> -->
+
+
+
+      <!-- </div> -->
+
+            <div class="data-room-actions" *ngIf="selectedTabIndex === 0">
+        <button class="btn btn-success btn-sm" (click)="openUploadModal()">
+          <i class="las la-plus"></i> {{ 'DATA_ROOM_DETAILS.ADD_DOCUMENT' | translate }}
         </button>
       </div>
     </div>
@@ -123,16 +132,16 @@
     
      
 
-      <ul class="nav nav-tabs custom-nav-tabs heads mt-3" id="myTab" role="tablist">
+    <ul class="nav nav-tabs custom-nav-tabs heads mt-3" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
           <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button"
             role="tab">
-            {{ 'Files in this Data Room' | translate }}
+            {{ 'DATA_ROOM_DETAILS.FILES_IN_THIS_DATA_ROOM' | translate }}
           </button>
         </li>
         <li class="nav-item" role="presentation">
           <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
-            {{ 'Audit Log' | translate }}
+            {{ 'DATA_ROOM_DETAILS.AUDIT_LOG' | translate }}
           </button>
         </li>
       </ul>
@@ -146,70 +155,49 @@
     
     
         <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef> Name </th>
+      <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.NAME' | translate }}</th>`
           <td mat-cell *matCellDef="let file"> {{ file.document.name }} </td>
         </ng-container>
     
     
-        <ng-container matColumnDef="size">
-          <th mat-header-cell *matHeaderCellDef> Size </th>
-          <td mat-cell *matCellDef="let file"> {{ formatFileSize(file.document.documentSize) }} </td>
-        </ng-container>
-    
-        <ng-container matColumnDef="docType">
-          <th mat-header-cell *matHeaderCellDef> Type </th>
-          <td mat-cell *matCellDef="let file"> {{ file.document.docType }} </td>
-        </ng-container>
-    
-    
-        <ng-container matColumnDef="permission">
-          <th mat-header-cell *matHeaderCellDef> Permission </th>
-          <td mat-cell *matCellDef="let file"> {{ file.documentPermission }} </td>
-        </ng-container>
-    
-        <ng-container matColumnDef="actions">
-          <th mat-header-cell *matHeaderCellDef> Actions </th>
-          <td mat-cell *matCellDef="let file">
-            <ng-container *ngIf="file.permissionFlags as perms">
-            
-              <!-- Download -->
-              <button mat-icon-button matTooltip="Download" 
-              (click)="downloadDocument(file.document)"
-               
-                >
-                 <!-- [disabled]="!perms.canDownload" -->
-                <mat-icon class="download-icon">download</mat-icon>
-              </button>
-            
-              <!-- Edit -->
-              <button mat-icon-button matTooltip="Edit" (click)="editFile(file)"
-              
-              
-              >
+      <ng-container matColumnDef="size">
+  <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.SIZE' | translate }}</th>
+  <td mat-cell *matCellDef="let file"> {{ formatFileSize(file.document.documentSize) }} </td>
+</ng-container>
 
-               <!-- [disabled]="!perms.canEdit" -->
-                <mat-icon class="edit-icon">edit</mat-icon>
-              </button>
-            
-              <!-- Delete -->
-              <button mat-icon-button matTooltip="Delete" (click)="deleteFile(file)"
-            >
+<ng-container matColumnDef="docType">
+  <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.TYPE' | translate }}</th>
+  <td mat-cell *matCellDef="let file"> {{ file.document.docType }} </td>
+</ng-container>
 
-               <!-- [disabled]="!perms.canDelete" -->
-                <mat-icon class="delete-icon">delete</mat-icon>
-              </button>
-            
-              <!-- View -->
-              <button mat-icon-button matTooltip="View" (click)="viewFile(file)" 
-              >
+<ng-container matColumnDef="permission">
+  <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.PERMISSION' | translate }}</th>
+  <td mat-cell *matCellDef="let file"> {{ file.documentPermission }} </td>
+</ng-container>
 
-               <!-- [disabled]="!perms.canView" -->
-                <mat-icon class="view-icon">visibility</mat-icon>
-              </button>
+<ng-container matColumnDef="actions">
+  <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.ACTIONS' | translate }}</th>
+  <td mat-cell *matCellDef="let file">
+    <ng-container *ngIf="file.permissionFlags as perms">
+      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DOWNLOAD' | translate }}" 
+      
     
-            </ng-container>
-          </td>
-        </ng-container>
+      (click)="downloadDocument(file.document)">
+        <!-- [disabled]="!perms.canDownload" -->
+        <mat-icon class="download-icon">download</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.EDIT' | translate }}" (click)="editFile(file)">
+        <mat-icon class="edit-icon">edit</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DELETE' | translate }}" (click)="deleteFile(file)">
+        <mat-icon class="delete-icon">delete</mat-icon>
+      </button>
+      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.VIEW' | translate }}" (click)="viewFile(file)">
+        <mat-icon class="view-icon">visibility</mat-icon>
+      </button>
+    </ng-container>
+  </td>
+</ng-container>
     
     
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -375,6 +363,6 @@
           <a>helo</a>
         </mat-tab>
       </mat-tab-group> -->
-      
+
 
 

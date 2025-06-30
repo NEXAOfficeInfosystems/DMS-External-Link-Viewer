@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./main-content.component.scss']
 })
 export class MainContentComponent {
+  
   selectedTabIndex = 0;
 
   onTabChange(index: number) {

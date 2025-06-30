@@ -1,14 +1,12 @@
-
-
-
-<div class="layout-container" [class.collapsed]="isSidebarCollapsed">
+<div class="layout-container" [class.collapsed]="isSidebarCollapsed" [class.rtl]="isRtl">
 <app-header (toggleSidebar)="toggleSidebar()"></app-header>
  
   <div class="body-container">
 <app-sidebar [collapsed]="isSidebarCollapsed"></app-sidebar>
-<!-- <app-main-content></app-main-content> -->
+<div class="main-content" [class.collapsed]="isSidebarCollapsed" [class.rtl]="isRtl">
   <router-outlet></router-outlet>
 </div>
+  </div>
 </div>
 
 <!-- 

@@ -14,6 +14,8 @@ import { CommonDialogComponent } from './components/common-dialog/common-dialog.
 import { ImagePreviewComponent } from './components/image-preview/image-preview.component';
 import { OfficeViewerComponent } from './components/office-viewer/office-viewer.component';
 import { FormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -34,7 +36,9 @@ import { FormsModule } from '@angular/forms';
     ActiveModule,
     ExpiredModule,
     AuditLogModule,
-    FormsModule
+    FormsModule,
+    MatTooltipModule,
+    TranslateModule
   ],
   exports: [
     HeaderComponent,

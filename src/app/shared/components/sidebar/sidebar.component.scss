@@ -100,3 +100,27 @@
   background-color: #e1e1e1;
   font-weight: bold;
 }
+
+/* RTL Support */
+:host-context([dir="rtl"]) .app-sidebar {
+  left: auto;
+  right: 0;
+  border-left: none;
+  border-right: 1px solid #e1e1e1;
+}
+
+:host-context([dir="rtl"]) .app-sidebar {
+  /* Flip sidebar for RTL */
+  direction: rtl;
+}
+
+:host-context([dir="rtl"]) .sidebar-header,
+:host-context([dir="rtl"]) .sidebar-menu {
+  direction: rtl;
+  text-align: right;
+}
+
+:host-context([dir="rtl"]) .menu-item i {
+  margin-right: 0;
+  margin-left: 15px;
+}

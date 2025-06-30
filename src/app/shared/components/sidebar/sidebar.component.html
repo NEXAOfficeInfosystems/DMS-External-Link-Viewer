@@ -4,28 +4,28 @@
        [class.active]="activeMenu === 'dashboard'" 
        (click)="navigateTo('dashboard', '/layout/dashboard')">
       <i class="fas fa-dashboard"></i>
-      <span *ngIf="!collapsed">Dashboard</span>
+     <span *ngIf="!collapsed">{{ 'SIDEBAR.DASHBOARD' | translate }}</span>
     </a>
 
     <a class="menu-item" 
        [class.active]="activeMenu === 'dataRooms'" 
        (click)="navigateTo('dataRooms', '/layout')">
       <i class="fas fa-folder-open"></i>
-      <span *ngIf="!collapsed">Active Data Rooms</span>
+<span *ngIf="!collapsed">{{ 'SIDEBAR.ACTIVE_DATA_ROOMS' | translate }}</span>
     </a>
 
     <a class="menu-item" 
        [class.active]="activeMenu === 'profile'" 
        (click)="navigateTo('profile', '/layout/profile')">
       <i class="fas fa-cog"></i>
-      <span *ngIf="!collapsed">Profile</span>
+<span *ngIf="!collapsed">{{ 'SIDEBAR.PROFILE' | translate }}</span>
     </a>
 
     <a class="menu-item" 
        [class.active]="activeMenu === 'logout'" 
        (click)="setActiveMenu('logout'); onLogout()">
       <i class="fas fa-sign-out-alt"></i>
-      <span *ngIf="!collapsed">Logout</span>
+<span *ngIf="!collapsed">{{ 'SIDEBAR.LOGOUT' | translate }}</span>
     </a>
   </div>
 </aside>

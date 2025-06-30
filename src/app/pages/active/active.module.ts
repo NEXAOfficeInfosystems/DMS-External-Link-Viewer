@@ -6,7 +6,9 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ToastrModule } from 'ngx-toastr';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [ActiveComponent],
@@ -17,6 +19,8 @@ import { ToastrModule } from 'ngx-toastr';
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
+    MatTooltipModule,
+    TranslateModule,
     ToastrModule.forRoot(),
   ],
   exports: [ActiveComponent],

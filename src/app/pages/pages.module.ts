@@ -16,6 +16,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { UploadDocDataRoomComponent } from './upload-doc-data-room/upload-doc-data-room.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip'; // Import MatTooltipModule
 
 
 @NgModule({
@@ -38,7 +39,8 @@ import { FormsModule } from '@angular/forms';
     MatIconModule // Add MatIconModule here
     ,
     FormsModule,
-    TranslateModule
+    TranslateModule,
+    MatTooltipModule
   ],
   exports : [
 
