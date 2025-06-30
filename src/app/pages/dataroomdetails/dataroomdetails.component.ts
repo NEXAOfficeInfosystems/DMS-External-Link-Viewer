@@ -122,26 +122,26 @@ export class DataroomdetailsComponent implements OnInit {
     this.setCardView();
   }
 
-  // ngOnInit() {
+  ngOnInit() {
 
-  //   console.log(this.route.snapshot.paramMap.get('id') )
-  //   this.dataRoomId =this.route.snapshot.paramMap.get('id') ;
-  //   console.log('Decrypted Data Room ID:', this.dataRoomId);
-  //   // this.getAllRoomInfo();
-  //   this.getMockRoomInfo();
+    console.log(this.route.snapshot.paramMap.get('id') )
+    this.dataRoomId =this.route.snapshot.paramMap.get('id') ;
+    console.log('Decrypted Data Room ID:', this.dataRoomId);
+    this.getAllRoomInfo();
+    // this.getMockRoomInfo();
 
-  //   // Set canAddDocument based on permissions
+    // Set canAddDocument based on permissions
  
-  // }
+  }
   
 
 
-ngOnInit(): void {
-  this.route.paramMap.subscribe(params => {
-    this.dataRoomId = params.get('id');
-    this.getMockRoomInfo();
-  });
-}
+// ngOnInit(): void {
+//   this.route.paramMap.subscribe(params => {
+//     this.dataRoomId = params.get('id');
+//     this.getMockRoomInfo();
+//   });
+// }
 
 
   ngAfterViewInit() {
@@ -316,43 +316,43 @@ console.log(this.dataRoom)
   console.log('Mock Files with permissions:', this.files);
 }
 
-//   getAllRoomInfo() {
-//     const MasterUserId = this.getCookie('MasterUserId') || '';
-//     this.manageDataRoomService.getDataRoomDetailsById(MasterUserId, this.dataRoomId)
-//       .subscribe((res: any) => {
-//         console.log('Data Room Details:', res);
+  getAllRoomInfo() {
+    const MasterUserId = this.getCookie('MasterUserId') || '';
+    this.manageDataRoomService.getDataRoomDetailsById(MasterUserId, this.dataRoomId)
+      .subscribe((res: any) => {
+        console.log('Data Room Details:', res);
 
-//         this.dataRoom = res.dataRoom;
+        this.dataRoom = res.dataRoom;
 
 
-//          if (this.commonHeader) {
-//           this.commonHeader.dataRoom = this.dataRoom;
-//         }
-//         this.files = res.files || [];
+         if (this.commonHeader) {
+          this.commonHeader.dataRoom = this.dataRoom;
+        }
+        this.files = res.files || [];
 
-//         this.userPermission = res.permission?.userPermission || '';
-//         this.dataRoomPermission = res.permission?.dataRoomPermission || '';
+        this.userPermission = res.permission?.userPermission || '';
+        this.dataRoomPermission = res.permission?.dataRoomPermission || '';
 
-//         this.documentPermissions = this.files.map(f => ({
-//           documentId: f.documentId,
-//           permission: f.documentPermission,
-//           documentName: f.document?.name
-//         }));
-//      this.files = this.files.map(file => ({
-//         ...file,
-//         permissionFlags: {
-//           canView: this.hasPermission(file, 'view'),
-//           canDownload: this.hasPermission(file, 'download'),
-//           canEdit: this.hasPermission(file, 'edit'),
-//           canDelete: this.hasPermission(file, 'delete')
-//         }
-//       }));
+        this.documentPermissions = this.files.map(f => ({
+          documentId: f.documentId,
+          permission: f.documentPermission,
+          documentName: f.document?.name
+        }));
+     this.files = this.files.map(file => ({
+        ...file,
+        permissionFlags: {
+          canView: this.hasPermission(file, 'view'),
+          canDownload: this.hasPermission(file, 'download'),
+          canEdit: this.hasPermission(file, 'edit'),
+          canDelete: this.hasPermission(file, 'delete')
+        }
+      }));
 
-// console.log('Files with permissions:', this.files);
-//       this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
-//         this.dataSource.data = this.files;
-//       });
-//   }
+console.log('Files with permissions:', this.files);
+      this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
+        this.dataSource.data = this.files;
+      });
+  }
 
   openUploadModal(): void {
      const dialogRef = this.dialog.open(UploadDocDataRoomComponent, {
@@ -364,7 +364,7 @@ console.log(this.dataRoom)
 
       dialogRef.componentInstance.dataChanged.subscribe(() => {
       console.log('Data changed in UploadDocDataRoomComponent');
-      // this.getAllRoomInfo();
+      this.getAllRoomInfo();
   });
   }
 
@@ -413,21 +413,50 @@ hasPermission(fileOrRoom: any, action: 'view' | 'download' | 'edit' | 'delete' |
       })
     );
   }
- private downloadFile(data: HttpResponse<Blob>, documentInfo: any) {
-    if (!data.body) {
-      this.toastrService.error('Download failed: file data is empty.');
-      return;
-    }
-    const downloadedFile = new Blob([data.body], { type: data.body.type });
-    const a = document.createElement('a');
-    a.setAttribute('style', 'display:none;');
-    document.body.appendChild(a);
-    a.download = documentInfo.name;
-    a.href = URL.createObjectURL(downloadedFile);
-    a.target = '_blank';
-    a.click();
-    document.body.removeChild(a);
-  } 
+
+
+  private downloadFile(data: HttpResponse<Blob>, documentInfo: any) {
+  const blobData = data.body;
+
+  if (!blobData || blobData.size === 0) {
+    this.toastrService.error('Download failed: file is empty.');
+    return;
+  }
+
+  const mimeType = data.headers.get('Content-Type') || 'application/octet-stream';
+  const blob = new Blob([blobData], { type: mimeType });
+
+  // Extract extension from URL (e.g. .pdf)
+  const extensionFromUrl = this.getFileExtensionFromUrl(documentInfo.url);
+  const safeName = documentInfo.name?.trim().replace(/\s+/g, '_') || 'downloaded_file';
+
+  // Ensure extension is appended if not already
+  const fileName = safeName.endsWith(extensionFromUrl) ? safeName : `${safeName}${extensionFromUrl}`;
+
+  console.log('Content-Type:', mimeType);
+  console.log('Blob size:', blobData.size);
+  console.log('Download filename:', fileName);
+
+  const a = document.createElement('a');
+  a.style.display = 'none';
+  a.href = URL.createObjectURL(blob);
+  a.download = fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+
+
+
+private getFileExtensionFromUrl(url: string): string {
+  if (!url) return '';
+  const parts = url.split('.');
+  return parts.length > 1 ? `.${parts.pop()}` : '';
+}
+
+
 
   formatFileSize(sizeInBytes: number): string {
     if (sizeInBytes >= 1024 * 1024) {

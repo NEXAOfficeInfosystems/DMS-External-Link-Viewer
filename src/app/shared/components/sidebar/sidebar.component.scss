@@ -94,3 +94,9 @@
     transform: translateX(-100%);
   }
 }
+
+.menu-item.active,
+.menu-item:hover {
+  background-color: #e1e1e1;
+  font-weight: bold;
+}

@@ -43,3 +43,20 @@ span.breadcrumb-current{
 }
 
 
+
+
+
+button[mat-icon-button][disabled] .edit-icon,
+button[mat-icon-button][disabled] .delete-icon,
+button[mat-icon-button][disabled] .view-icon,
+button[mat-icon-button][disabled] .download-icon {
+  color: #9e9e9e !important;
+}
+
+button.btn[disabled] {
+  background-color: #9e9e9e !important;
+  border-color: #9e9e9e !important;
+  color: #7a7a7a !important;
+  cursor: not-allowed;
+  pointer-events: none;
+}

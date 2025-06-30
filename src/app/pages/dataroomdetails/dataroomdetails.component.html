@@ -110,7 +110,7 @@
       <div class="data-room-actions" *ngIf="selectedTabIndex === 0">
         <button class="btn btn-success btn-sm" (click)="openUploadModal()" 
        
-        
+       
         >
          <!-- [disabled]="!canAddDocuments" -->
           <i class="las la-plus"></i> Add Document
@@ -173,23 +173,37 @@
             <ng-container *ngIf="file.permissionFlags as perms">
             
               <!-- Download -->
-              <button mat-icon-button matTooltip="Download" (click)="downloadDocument(file.document)"
-                [disabled]="!perms.canDownload">
+              <button mat-icon-button matTooltip="Download" 
+              (click)="downloadDocument(file.document)"
+               
+                >
+                 <!-- [disabled]="!perms.canDownload" -->
                 <mat-icon class="download-icon">download</mat-icon>
               </button>
             
               <!-- Edit -->
-              <button mat-icon-button matTooltip="Edit" (click)="editFile(file)">
+              <button mat-icon-button matTooltip="Edit" (click)="editFile(file)"
+              
+              
+              >
+
+               <!-- [disabled]="!perms.canEdit" -->
                 <mat-icon class="edit-icon">edit</mat-icon>
               </button>
             
               <!-- Delete -->
-              <button mat-icon-button matTooltip="Delete" (click)="deleteFile(file)">
+              <button mat-icon-button matTooltip="Delete" (click)="deleteFile(file)"
+            >
+
+               <!-- [disabled]="!perms.canDelete" -->
                 <mat-icon class="delete-icon">delete</mat-icon>
               </button>
             
               <!-- View -->
-              <button mat-icon-button matTooltip="View" (click)="viewFile(file)">
+              <button mat-icon-button matTooltip="View" (click)="viewFile(file)" 
+              >
+
+               <!-- [disabled]="!perms.canView" -->
                 <mat-icon class="view-icon">visibility</mat-icon>
               </button>
     

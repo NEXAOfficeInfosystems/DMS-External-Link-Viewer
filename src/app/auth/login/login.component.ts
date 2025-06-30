@@ -20,6 +20,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
   captchaText: string = '';
   loading: any;
   users: any[] = []; 
+  rememberMe: boolean = false;
+  encryptionKey: string = 'loginKey';
+  showPassword: boolean = false;
   constructor(private fb: FormBuilder, private router: Router,
 private toastr: ToastrService,
     private dataRoomApiService: DataRoomApiService,
@@ -34,10 +37,26 @@ private toastr: ToastrService,
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(3)]],
       captchaInput: ['', Validators.required],
-    
     });
 
+    // Check for remembered credentials
+    const encryptedStr = localStorage.getItem('rememberedLogin');
 
+    console.log('Encrypted remembered login:', encryptedStr);
+    if (encryptedStr) {
+      try {
+        const encryptedObj = JSON.parse(encryptedStr);
+        const decrypted = this.encryptionService.decrypt(encryptedObj.encryptedData, encryptedObj.key);
+        const creds = JSON.parse(decrypted);
+        this.loginForm.patchValue({
+          email: creds.email,
+          password: creds.password
+        });
+        this.rememberMe = true;
+      } catch (e) {
+        localStorage.removeItem('rememberedLogin');
+      }
+    }
  
     
     this.forgotPasswordForm = this.fb.group({
@@ -74,101 +93,82 @@ private toastr: ToastrService,
     this.generateCaptcha();
   }
 
-  generateCaptcha(): void {
-    const canvas = document.getElementById('captchaCanvas') as HTMLCanvasElement;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+captchaChars: { char: string, style: any }[] = [];
 
+generateCaptcha(): void {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const length = 6;
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  this.captchaText = '';
+  this.captchaChars = [];
 
-  
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    this.captchaText = Array(6)
-      .fill(0)
-      .map(() => chars.charAt(Math.floor(Math.random() * chars.length)))
-      .join('');
+  for (let i = 0; i < length; i++) {
+    const char = chars.charAt(Math.floor(Math.random() * chars.length));
+    this.captchaText += char;
 
-  
-    ctx.fillStyle = '#f2f2f2';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const style = {
+      color: this.getRandomColor(),
+      display: 'inline-block',
+      transform: `rotate(${(Math.random() - 0.5) * 30}deg) scale(${1 + Math.random() * 0.3})`,
+      fontWeight: 'bold',
+      fontSize: '30px',
+      margin: '0 5px',
+    };
 
-
-    for (let i = 0; i < 100; i++) {
-      ctx.fillStyle = this.getRandomColor();
-      ctx.beginPath();
-      ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-   
-    for (let i = 0; i < 5; i++) {
-      ctx.strokeStyle = this.getRandomColor(); 
-      ctx.lineWidth = Math.random() * 2;
-      ctx.beginPath();
-      ctx.moveTo(Math.random() * canvas.width, Math.random() * canvas.height);
-      ctx.lineTo(Math.random() * canvas.width, Math.random() * canvas.height);
-      ctx.stroke();
-    }
-
-
-    ctx.font = 'bold 40px Arial';
-    ctx.textBaseline = 'middle';
-    for (let i = 0; i < this.captchaText.length; i++) {
-      const char = this.captchaText[i];
-      ctx.fillStyle = this.getRandomColor();
-      const x = 30 + i * 35;
-      const y = 40 + Math.random() * 10 - 5; 
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate((Math.random() - 0.5) * 0.4); 
-      ctx.scale(1 + Math.random() * 0.2, 1 + Math.random() * 0.2); 
-      ctx.fillText(char, 0, 0);
-      ctx.restore();
-    }
+    this.captchaChars.push({ char, style });
   }
+}
 
-  getRandomColor(): string {
-    const hue = Math.floor(Math.random() * 360);
-    const saturation = 60 + Math.floor(Math.random() * 30); 
-    const lightness = 40 + Math.floor(Math.random() * 20);
-    return `hsl(${hue},${saturation}%,${lightness}%)`;
-  }
+getRandomColor(): string {
+  const hue = Math.floor(Math.random() * 360);
+  const saturation = 60 + Math.floor(Math.random() * 30);
+  const lightness = 40 + Math.floor(Math.random() * 20);
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+}
 
   onLoginSubmit(): void {
     this.submitted = true;
 const encryptedToken = EncryptionService.encryptToToken('/layout');
-this.router.navigate(['/p', encryptedToken]);
-//     if (this.loginForm.invalid) {
-//       return;
-//     }
-
-//     if (this.loginForm.value.captchaInput !== this.captchaText) {
-//       this.toastr.error('Invalid CAPTCHA', 'Error');
-//       this.loginForm.patchValue({ captchaInput: '' });
-//       this.loginForm.controls['captchaInput'].setErrors({ invalid: true });
-//       this.generateCaptcha();
-//       return;
-//     }
-
-//     this.dataRoomApiService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
-//       next: (response) => {
-//         if (response?.success) {
-//          this.toastr.success('Login successful');
-//       document.cookie = `UserToken=${response.token}; path=/; max-age=3600; SameSite=Strict`;
-
-// const encryptedToken = EncryptionService.encryptToToken('/layout');
 // this.router.navigate(['/p', encryptedToken]);
-
-//         } else {
-//           this.toastr.error(response?.message || 'Login failed');
-//         }
-//       },
-//       error: (err) => {
-//         const errorMessage = err?.error?.message || 'An error occurred during login';
-//         this.toastr.error(errorMessage);
-//       }
-//     });
+    if (this.loginForm.invalid) {
+      return;
+    }
+    if (this.loginForm.value.captchaInput !== this.captchaText) {
+      this.toastr.error('Invalid CAPTCHA', 'Error');
+      this.loginForm.patchValue({ captchaInput: '' });
+      this.loginForm.controls['captchaInput'].setErrors({ invalid: true });
+      this.generateCaptcha();
+      return;
+    }
+    this.dataRoomApiService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
+      next: (response) => {
+        if (response?.success) {
+          this.toastr.success('Login successful');
+          document.cookie = `UserToken=${response.token}; path=/; max-age=3600; SameSite=Strict`;
+          // Remember Me logic
+          if (this.rememberMe) {
+            const creds = JSON.stringify({
+              email: this.loginForm.value.email,
+              password: this.loginForm.value.password
+            });
+            const encrypted = this.encryptionService.encrypt(creds);
+            localStorage.setItem('rememberedLogin', JSON.stringify(encrypted));
+          } else {
+            localStorage.removeItem('rememberedLogin');
+          }
+          const encryptedToken = EncryptionService.encryptToToken('/layout');
+          this.router.navigate(['/p', encryptedToken]);
+        } else {
+          this.toastr.error(response?.message || 'Login failed');
+          localStorage.removeItem('rememberedLogin');
+        }
+      },
+      error: (err) => {
+        const errorMessage = err?.error?.message || 'An error occurred during login';
+        this.toastr.error(errorMessage);
+        localStorage.removeItem('rememberedLogin');
+      }
+    });
   }
 
 
