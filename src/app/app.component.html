@@ -1,4 +1,4 @@
-<router-outlet></router-outlet>
+<!-- <router-outlet></router-outlet>
 <div class="loading" *ngIf="isLoading">
   <app-loader [isLoading]="isLoading"></app-loader>
  
@@ -13,10 +13,12 @@
   <iframe *ngIf="!(downloadHref?.endsWith('.mp4') || downloadHref?.endsWith('.mp3'))"
           [src]="iframeSrc" width="100%" height="600px" title="Document Preview"></iframe>
 
-  <!-- Optional: Use HTML5 <video>/<audio> tags -->
+
   <video *ngIf="downloadHref?.endsWith('.mp4')" [src]="iframeSrc" controls width="100%"></video>
   <audio *ngIf="downloadHref?.endsWith('.mp3')" [src]="iframeSrc" controls></audio>
-</div>
+</div> -->
 
+<!-- <app-layout></app-layout> -->
 
+<router-outlet></router-outlet>
 

@@ -7,7 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
-    LoginComponent
+    LoginComponent,
+    
   ],
   imports: [
     CommonModule,

@@ -14,7 +14,7 @@ const routes: Routes = [
   {
     path: 'layout',
     component: LayoutComponent,
-    canActivate: [AuthGuard],
+    // canActivate: [AuthGuard],
     children: [
       { path: '', component: MainContentComponent },
       { path: 'data-room-detail/:id', component: DataroomdetailsComponent }

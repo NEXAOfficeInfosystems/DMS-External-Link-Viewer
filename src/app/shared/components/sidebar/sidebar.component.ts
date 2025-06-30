@@ -12,7 +12,8 @@ import { ConfirmationDialogComponent } from '../../components/confirmation-dialo
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent {
-  @Input() collapsed = false;
+    @Input() collapsed = false;
+
   @Output() toggle = new EventEmitter<void>();
   AllEncryptedPaths: any;
 
@@ -24,14 +25,12 @@ export class SidebarComponent {
 
 
 
-    // this.AllEncryptedPaths = ENCRYPTED_PATHS
+  
 
   }
 
 
-  onToggle() {
-    this.toggle.emit();
-  }
+
 
   logoutUser(): void {
     this.securityService.logout();
@@ -59,4 +58,6 @@ export class SidebarComponent {
     });
   }
 
+
+  
 }

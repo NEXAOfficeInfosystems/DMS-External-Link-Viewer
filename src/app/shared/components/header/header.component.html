@@ -1,6 +1,33 @@
+<header class="app-header">
+<!-- Logo and Toggle -->
+<div class="left-section">
+<img class="logo-img" src="assets/images/logo/logo-new.svg" alt="Nexa" />
+<button class="menu-toggle" (click)="onToggle()" aria-label="Toggle Sidebar">
+      ☰
+</button>
+</div>
+ 
+ 
+<!-- <div class="center-section">
+<div class="search-box">
+<input type="text" placeholder="Search..." />
+<span class="search-icon">🔍</span>
+</div>
+</div> -->
+ 
+  <!-- Profile -->
+<div class="right-section">
+<img class="profile-img" src="assets/images/logo/img.webp" alt="Profile" />
+<div class="profile-info">
+<div class="name">John Doe</div>
+<div class="role">Admin</div>
+</div>
+</div>
+</header>
 
-<div class="header-container fixed-top px-4 py-2 shadow-sm" style="display: flex;
-    align-items: center;justify-content: space-between;    padding: 0 10px 0 10px;">
+ 
+            
+<!-- <div class="header">
   <div>
 
     <h1 class="m-0">My Data Rooms</h1>
@@ -9,7 +36,7 @@
 
 
   <div *ngIf="userDetails$ | async as userDetails" class="text-end" style="float:end">
-    <span style="margin-right: 15px;">
+    <span >
       Welcome, <strong>{{ userDetails.user.name }}</strong>
       <span *ngIf="userDetails.user.isExternal">(External)</span>
     </span>
@@ -19,4 +46,6 @@
       {{ userDetails.user.isExternal ? 'External User' : 'Internal User' }}
     </span>
   </div>
-</div>
+</div> -->
+
+

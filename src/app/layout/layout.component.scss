@@ -1,19 +1,6 @@
-/* Set a background color for the layout component */
-:host {
-  background-color: #F4F9FF; /* Light blue background */
-}
-
-.layout-container {
+.app-container {
   display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
 
-.main-content {
-  flex: 1;
-  margin-left: 250px;
-  padding: 20px;
-  transition: margin-left 0.3s ease;
-}
-
-.main-content.collapsed {
-  margin-left: 70px;
-}

@@ -1,4 +1,4 @@
-<div class="mat-elevation-z8">
+<!-- <div class="mat-elevation-z8">
 <mat-tab-group
   class="custom-tab-group"
   [(selectedIndex)]="selectedTabIndex"
@@ -6,7 +6,6 @@
 >
   <mat-tab label="Active Data Rooms"></mat-tab>
   <mat-tab label="Expired Data Rooms"></mat-tab>
-  <!-- <mat-tab label="Audit Log"></mat-tab> -->
 </mat-tab-group>
 
 
@@ -19,8 +18,28 @@
       <app-expired></app-expired>
     </ng-container>
 
-    <!-- <ng-container *ngIf="selectedTabIndex === 2">
-      <app-audit-log></app-audit-log>
-    </ng-container> -->
+  
   </div>
-</div>
+</div> -->
+
+
+<main class="app-content">
+
+  <div class="mat-elevation-z8">
+    <!-- Top Heading with Border Bottom -->
+    <div class="section-header">
+      <h2>{{ selectedTabIndex === 0 ? 'Active Data Rooms' : 'Expired Data Rooms' }}</h2>
+    </div>
+
+    <!-- White Card with Border -->
+    <div class="section-box">
+      <ng-container *ngIf="selectedTabIndex === 0">
+        <app-active></app-active>
+      </ng-container>
+
+      <ng-container *ngIf="selectedTabIndex === 1">
+        <app-expired></app-expired>
+      </ng-container>
+    </div>
+  </div>
+</main>

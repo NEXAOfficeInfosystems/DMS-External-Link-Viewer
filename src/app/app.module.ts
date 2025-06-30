@@ -24,6 +24,7 @@ import {
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { createTranslateLoader } from '../app/core/helpers/translater-loader';
  import {  Routes } from '@angular/router';
+import { CommonDialogService } from './shared/components/common-dialog/common-dialog.service';
 // const routes: Routes = [
 //   // Other routes
 //   { path: 'error-500', component: Error500Component },
@@ -77,6 +78,7 @@ BrowserAnimationsModule,
       
     ],
     providers: [
+      CommonDialogService
           // { provide: DOCUMENT, useValue: document }
     ],
     bootstrap: [AppComponent],

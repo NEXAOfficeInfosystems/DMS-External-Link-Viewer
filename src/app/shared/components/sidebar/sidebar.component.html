@@ -1,32 +1,36 @@
-<div class="sidebar" [class.collapsed]="collapsed">
-  <!-- <div class="sidebar-header">
-    <h2 *ngIf="!collapsed">Data Room </h2>
-  </div> -->
 
-  <button class="hamburger" (click)="onToggle()">
-    <i class="fas fa-bars"></i>
-  </button>
+<aside class="app-sidebar" [class.collapsed]="collapsed">
 
-  <ul class="sidebar-menu">
-    <li class="active">
-      <i class="fas fa-tachometer-alt"></i>
-      <span *ngIf="!collapsed">Dashboard</span>
-    </li>
-    <li>
-      <i class="fas fa-bell"></i>
-      <span *ngIf="!collapsed">Notifications</span>
-    </li>
-    <li>
-      <i class="fas fa-user"></i>
-      <span *ngIf="!collapsed">Profile</span>
-    </li>
-    <li>
-      <i class="fas fa-question-circle"></i>
-      <span *ngIf="!collapsed">Help</span>
-    </li>
-    <li (click)="onLogout()">
+
+            <div class="sidebar-menu">
+                <a href="#" class="menu-item active">
+                    <i class="fas fa-dashboard"></i>
+                    <span *ngIf="!collapsed">Dashboard</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-folder-open"></i>
+                    <span *ngIf="!collapsed">  Active Data Rooms</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-file-alt"></i>
+                    <span *ngIf="!collapsed">Reports</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span *ngIf="!collapsed">Configuration</span>
+                </a>
+                <a class="menu-item"  (click)="onLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span *ngIf="!collapsed">Logout</span>
+                </a>
+
+
+                   <!-- <li (click)="onLogout()">
       <i class="fas fa-sign-out-alt" ></i>
       <span *ngIf="!collapsed" >Logout</span>
-    </li>
-  </ul>
-</div>
+    </li> -->
+
+            </div>
+
+</aside>
+

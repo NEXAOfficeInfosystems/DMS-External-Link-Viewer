@@ -139,8 +139,6 @@ input[type="file"] {
 .upload-panel {
   padding: 10px;
   border: 1px solid #ddd;
-  margin-left: 10px;
-  margin-right: 10px;
   box-sizing: border-box;
   background: #fafafa;
   flex: 1;
@@ -1407,6 +1405,7 @@ input.mat-chip-input {
   display: flex;
   gap: 8px;
 }
+
 
 .icon-btn {
   background: none;

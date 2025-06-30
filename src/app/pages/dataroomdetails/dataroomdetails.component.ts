@@ -40,10 +40,11 @@ interface AuditLog {
 @Component({
   selector: 'app-dataroomdetails',
   templateUrl: './dataroomdetails.component.html',
-  styleUrls: ['./dataroomdetails.component.scss']
+  styleUrls: ['./dataroomdetails.component.scss'],
+  providers: [CommonDialogService]
 })
 export class DataroomdetailsComponent implements OnInit {
-  dataRoom: DataRoom | null = null;
+  dataRoom: any | null = null;
   showDataRoomDetail: boolean = false;
   dataRoomTitle: string = '';
   isListView = true;
@@ -121,16 +122,27 @@ export class DataroomdetailsComponent implements OnInit {
     this.setCardView();
   }
 
-  ngOnInit() {
+  // ngOnInit() {
 
-    console.log(this.route.snapshot.paramMap.get('id') )
-    this.dataRoomId =this.route.snapshot.paramMap.get('id') ;
-    console.log('Decrypted Data Room ID:', this.dataRoomId);
-    this.getAllRoomInfo();
+  //   console.log(this.route.snapshot.paramMap.get('id') )
+  //   this.dataRoomId =this.route.snapshot.paramMap.get('id') ;
+  //   console.log('Decrypted Data Room ID:', this.dataRoomId);
+  //   // this.getAllRoomInfo();
+  //   this.getMockRoomInfo();
 
-    // Set canAddDocument based on permissions
+  //   // Set canAddDocument based on permissions
  
-  }
+  // }
+  
+
+
+ngOnInit(): void {
+  this.route.paramMap.subscribe(params => {
+    this.dataRoomId = params.get('id');
+    this.getMockRoomInfo();
+  });
+}
+
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginatorActive;
@@ -232,44 +244,115 @@ export class DataroomdetailsComponent implements OnInit {
     return match ? match[2] : null;
   }
 canAddDocuments: boolean = false;
+getMockRoomInfo(): void {
+  const randomId = Math.floor(Math.random() * 1000);
 
-  getAllRoomInfo() {
-    const MasterUserId = this.getCookie('MasterUserId') || '';
-    this.manageDataRoomService.getDataRoomDetailsById(MasterUserId, this.dataRoomId)
-      .subscribe((res: any) => {
-        console.log('Data Room Details:', res);
+  const res = {
+    dataRoom: {
+      id: randomId,
+      name: `Demo Data Room #${randomId}`,
+      expirationDate: '2025-12-31',
+      owner: 'owner@example.com',
+      createdBy: 'System Admin'
+    },
+    files: [
+      {
+        documentId: 'doc001',
+        document: { name: 'Company Financials.pdf' },
+        documentPermission: 'view,download'
+      },
+      {
+        documentId: 'doc002',
+        document: { name: 'HR Policies.docx' },
+        documentPermission: 'view,edit'
+      },
+      {
+        documentId: 'doc003',
+        document: { name: 'Audit Report.xlsx' },
+        documentPermission: 'view,download,edit'
+      },
+      {
+        documentId: 'doc004',
+        document: { name: 'NDA Agreement.pdf' },
+        documentPermission: 'view'
+      }
+    ],
+    permission: {
+      userPermission: 'view,download,edit',
+      dataRoomPermission: 'add,delete'
+    }
+  };
 
-        this.dataRoom = res.dataRoom;
-
-
-         if (this.commonHeader) {
-          this.commonHeader.dataRoom = this.dataRoom;
-        }
-        this.files = res.files || [];
-
-        this.userPermission = res.permission?.userPermission || '';
-        this.dataRoomPermission = res.permission?.dataRoomPermission || '';
-
-        this.documentPermissions = this.files.map(f => ({
-          documentId: f.documentId,
-          permission: f.documentPermission,
-          documentName: f.document?.name
-        }));
-     this.files = this.files.map(file => ({
-        ...file,
-        permissionFlags: {
-          canView: this.hasPermission(file, 'view'),
-          canDownload: this.hasPermission(file, 'download'),
-          canEdit: this.hasPermission(file, 'edit'),
-          canDelete: this.hasPermission(file, 'delete')
-        }
-      }));
-
-console.log('Files with permissions:', this.files);
-      this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
-        this.dataSource.data = this.files;
-      });
+  this.dataRoom = res.dataRoom;
+console.log(this.dataRoom)
+  if (this.commonHeader) {
+    this.commonHeader.dataRoom = this.dataRoom;
   }
+
+  this.files = res.files;
+
+  this.userPermission = res.permission?.userPermission || '';
+  this.dataRoomPermission = res.permission?.dataRoomPermission || '';
+
+  this.documentPermissions = this.files.map(f => ({
+    documentId: f.documentId,
+    permission: f.documentPermission,
+    documentName: f.document?.name
+  }));
+
+  this.files = this.files.map(file => ({
+    ...file,
+    permissionFlags: {
+      canView: this.hasPermission(file, 'view'),
+      canDownload: this.hasPermission(file, 'download'),
+      canEdit: this.hasPermission(file, 'edit'),
+      canDelete: this.hasPermission(file, 'delete')
+    }
+  }));
+
+  this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
+  this.dataSource.data = this.files;
+
+  console.log('Mock Files with permissions:', this.files);
+}
+
+//   getAllRoomInfo() {
+//     const MasterUserId = this.getCookie('MasterUserId') || '';
+//     this.manageDataRoomService.getDataRoomDetailsById(MasterUserId, this.dataRoomId)
+//       .subscribe((res: any) => {
+//         console.log('Data Room Details:', res);
+
+//         this.dataRoom = res.dataRoom;
+
+
+//          if (this.commonHeader) {
+//           this.commonHeader.dataRoom = this.dataRoom;
+//         }
+//         this.files = res.files || [];
+
+//         this.userPermission = res.permission?.userPermission || '';
+//         this.dataRoomPermission = res.permission?.dataRoomPermission || '';
+
+//         this.documentPermissions = this.files.map(f => ({
+//           documentId: f.documentId,
+//           permission: f.documentPermission,
+//           documentName: f.document?.name
+//         }));
+//      this.files = this.files.map(file => ({
+//         ...file,
+//         permissionFlags: {
+//           canView: this.hasPermission(file, 'view'),
+//           canDownload: this.hasPermission(file, 'download'),
+//           canEdit: this.hasPermission(file, 'edit'),
+//           canDelete: this.hasPermission(file, 'delete')
+//         }
+//       }));
+
+// console.log('Files with permissions:', this.files);
+//       this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
+//         this.dataSource.data = this.files;
+//       });
+//   }
 
   openUploadModal(): void {
      const dialogRef = this.dialog.open(UploadDocDataRoomComponent, {
@@ -281,7 +364,7 @@ console.log('Files with permissions:', this.files);
 
       dialogRef.componentInstance.dataChanged.subscribe(() => {
       console.log('Data changed in UploadDocDataRoomComponent');
-      this.getAllRoomInfo();
+      // this.getAllRoomInfo();
   });
   }
 

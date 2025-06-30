@@ -1,6 +1,104 @@
 /* based on angular-toastr css https://github.com/Foxandxss/angular-toastr/blob/cb508fe6801d6b288d3afc525bb40fee1b101650/dist/angular-toastr.css */
 
 /* position */
+body{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+   font-family: 'Poppins', sans-serif; // ✅ change here
+}
+
+
+.mat-elevation-z8 {
+    box-shadow: none !important;
+    background: #fff;
+    border-radius: 6px;
+    height: 83vh;
+    border: 1px solid #e8e8e8;
+    margin: 15px;
+    padding: 15px;
+}
+
+span.breadcrumb-current {
+    font-size: 14px;
+    color: #515151;
+    padding-left: 5px;
+}
+
+span.breadcrumb-separator
+{
+  padding: 0;
+    display: block;
+    margin: -3px 5px;
+    color: #000;
+}
+
+.expires-info .mat-icon
+{
+      height: 14px;
+    width: 15px;
+    align-items: baseline;
+}
+
+.calendar-icon.small
+{
+  font-size: 14px !important;
+}
+
+.d-flex
+{
+  display: flex;
+}
+
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+}
+ 
+@media (min-width: 768px) {
+  .app-content {
+    margin-left: 240px;
+  }
+ 
+  :host-context(.collapsed) .app-content {
+    margin-left: 65px;
+  }
+}
+
+.data-room-container {
+  padding: 20px;
+}
+
+.section-header {
+ 
+  position: relative;
+
+  h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #0d5cb9;
+    margin: 0;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 6px;
+
+    &::after {
+      content: '';
+      display: block;
+      width: 100px; /* length of underline */
+      height: 1px;
+      background-color: #0d5cb9;
+      border-radius: 2px;
+      margin-top: 4px;
+    }
+  }
+}
+
+button.icon-btn {
+    background: #fff;
+    border: none;
+}
+
 .toast-center-center {
   top: 50%;
   left: 50%;
@@ -111,22 +209,7 @@ button.toast-close-button {
   opacity: 1;
   cursor: pointer;
 }
-/* https://github.com/FortAwesome/Font-Awesome-Pro/blob/master/advanced-options/raw-svg/regular/info-circle.svg */
-.toast-info {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJyB3aWR0aD0nNTEyJyBoZWlnaHQ9JzUxMic+PHBhdGggZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgZD0nTTI1NiA4QzExOS4wNDMgOCA4IDExOS4wODMgOCAyNTZjMCAxMzYuOTk3IDExMS4wNDMgMjQ4IDI0OCAyNDhzMjQ4LTExMS4wMDMgMjQ4LTI0OEM1MDQgMTE5LjA4MyAzOTIuOTU3IDggMjU2IDh6bTAgMTEwYzIzLjE5NiAwIDQyIDE4LjgwNCA0MiA8MnMtMTguODA0IDQyLTQyIDQyLTQyLTE4LjgwNC00Mi00MiAxOC44MDQtNDIgNDItNDJ6bTU2IDI1NGMwIDYuNjI3LTUuMzczIDEyLTEyIDEyaC04OGMtNi42MjcgMC0xMi01LjM3My0xMi0xMnYtMjRjMC02LjYyNyA1LjM3My0xMiAxMi0xMmgxMnYtNjRoLTEyYy02LjYyNyAwLTEyLTUuMzczLTEyLTEydi0yNGMwLTYuNjI3IDUuMzczLTEyIDEyLTEyaDY0YzYuNjI3IDAgMTIgNS4zNzMgMTIgMTJ2MTAwaDEyYzYuNjI3IDAgMTIgNS4zNzMgMTIgMTJ2MjR6Jy8+PC9zdmc+");
-}
-/* https://github.com/FortAwesome/Font-Awesome-Pro/blob/master/advanced-options/raw-svg/regular/times-circle.svg */
-.toast-error {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJyB3aWR0aD0nNTEyJyBoZWlnaHQ9JzUxMic+PHBhdGggZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgZD0nTTI1NiA4QzExOSA4IDggMTE5IDggMjU2czExMSAyNDggMjQ4IDI0OCAyNDgtMTExIDI0OC0yNDhTMzkzIDggMjU2IDh6bTEyMS42IDMxMy4xYzQuNyA0LjcgNC43IDEyLjMgMCAxN0wzMzggMzc3LjZjLTQuNyA0LjctMTIuMyA0LjctMTcgMEwyNTYgMzEybC02NS4xIDY1LjZjLTQuNyA0LjctMTIuMyA0LjctMTcgMEwxMzQuNCAzMzhjLTQuNy00LjctNC43LTEyLjMgMC0xN2w2NS42LTY1LTY1LjYtNjUuMWMtNC43LTQuNy00LjctMTIuMyAwLTE3bDM5LjYtMzkuNmM0LjctNC43IDEyLjMtNC43IDE3IDBsNjUgNjUuNyA2NS4xLTY1LjZjNC43LTQuNyAxMi4zLTQuNyAxNyAwbDM5LjYgMzkuNmM0LjcgNC43IDQuNyAxMi4zIDAgMTdMMzEyIDI1Nmw2NS42IDY1LjF6Jy8+PC9zdmc+");
-}
-/* https://github.com/FortAwesome/Font-Awesome-Pro/blob/master/advanced-options/raw-svg/regular/check.svg */
-.toast-success {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJyB3aWR0aD0nNTEyJyBoZWlnaHQ9JzUxMic+PHBhdGggZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgZD0nTTE3My44OTggNDM5LjQwNGwtMTY2LjQtMTY2LjRjLTkuOTk3LTkuOTk3LTkuOTk3LTI2LjIwNiAwLTM2LjIwNGwzNi4yMDMtMzYuMjA0YzkuOTk3LTkuOTk4IDI2LjIwNy05Ljk5OCAzNi4yMDQgMEwxOTIgMzEyLjY5IDQzMi4wOTUgNzIuNTk2YzkuOTk3LTkuOTk3IDI2LjIwNy05Ljk5NyAzNi4yMDQgMGwzNi4yMDMgMzYuMjA0YzkuOTk3IDkuOTk3IDkuOTk3IDI2LjIwNiAwIDM2LjIwNGwtMjk0LjQgMjk0LjQwMWMtOS45OTggOS45OTctMjYuMjA3IDkuOTk3LTM2LjIwNC0uMDAxeicvPjwvc3ZnPg==");
-}
-/* https://github.com/FortAwesome/Font-Awesome-Pro/blob/master/advanced-options/raw-svg/regular/exclamation-triangle.svg */
-.toast-warning {
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1NzYgNTEyJyB3aWR0aD0nNTc2JyBoZWlnaHQ9JzUxMic+PHBhdGggZmlsbD0ncmdiKDI1NSwyNTUsMjU1KScgZD0nTTU2OS41MTcgNDQwLjAxM0M1ODcuOTc1IDQ3Mi4wMDcgNTY0LjgwNiA1MTIgNTI3Ljk0IDUxMkg0OC4wNTRjLTM2LjkzNyAwLTU5Ljk5OS00MC4wNTUtNDEuNTc3LTcxLjk4N0wyNDYuNDIzIDIzLjk4NWMxOC40NjctMzIuMDA5IDY0LjcyLTMxLjk1MSA4My4xNTQgMGwyMzkuOTQgNDE2LjAyOHpNMjg4IDM1NGMtMjUuNDA1IDAtNDYgMjAuNTk1LTQ2IDQ2czIwLjU5NSA0NiA0NiA0NiA0Ni0yMC41OTUgNDYtNDYtMjAuNTk1LTQ2LTQ2LTQ2em0tNDMuNjczLTE2NS4zNDZsNy40MTggMTM2Yy4zNDcgNi4zNjQgNS42MDkgMTEuMzQ2IDExLjk4MiAxMS4zNDZoNDguNTQ2YzYuMzczIDAgMTEuNjM1LTQuOTgyIDExLjk4Mi0xMS4zNDZsNy40MTgtMTM2Yy4zNzUtNi44NzQtNS4wOTgtMTIuNjU0LTExLjk4Mi0xMi42NTRoLTYzLjM4M2MtNi44ODQgMC0xMi4zNTYgNS43OC0xMS45ODEgMTIuNjU0eicvPjwvc3ZnPg==");
-}
+
 .toast-container.toast-top-center .ngx-toastr,
 .toast-container.toast-bottom-center .ngx-toastr {
   width: 300px;
@@ -242,15 +325,6 @@ button.toast-close-button {
   border-radius: 4px 4px 0 0;
 }
 
-.fixed-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  background-color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
 
 .fixed-sidebar {
   position: fixed;
@@ -262,12 +336,6 @@ button.toast-close-button {
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
 }
 
-.main-content {
-  margin-left: 250px; /* Adjust based on sidebar width */
-  margin-top: 60px; /* Adjust based on header height */
-  overflow-y: auto;
-  height: calc(100% - 60px); /* Adjust based on header height */
-}
 
 
 
@@ -285,7 +353,7 @@ button.toast-close-button {
 }
 
 .fixed-header {
-  position: sticky;
+    position: sticky;
     top: 0;
     z-index: 10;
     background-color: #fff;
@@ -392,4 +460,256 @@ button.toast-close-button {
 
   .cursor-pointer {
   cursor: pointer;
+}
+
+.nav-tabs .nav-link
+{
+   letter-spacing: .6px;
+    font-size: 13px;
+    color: #000 !important;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    letter-spacing: .6px;
+    font-size: 13px;
+    color: #fff !important;
+    background-color: #0e5bb7;
+    border-color: #dee2e6 #dee2e6 #dee2e6;
+}
+
+
+.download-icon {
+  color: #3f87f5; /* Purple */
+}
+
+.edit-icon {
+  color: #ff9800; /* Orange */
+}
+
+.delete-icon {
+  color: #de4436; /* Bright Red */
+}
+
+.view-icon {
+  color: #00c9a7; /* Cyan */
+}
+
+.pad_0
+{
+  padding: 0;
+}
+
+.btn-success {
+    background-color: #84b936 !important;
+    border-color: #84b936 !important;
+    opacity: unset !important;
+    color: #fff !important;
+    white-space: nowrap !important;
+}
+
+.custom-button.btn-danger {
+    background-color: #ee636d;
+    color: #fff;
+}
+
+.btn-danger {
+    background-color: #ee636d;
+    color: #fff;
+}
+
+.table-container .table > tbody > tr  button
+{
+   border: none;
+   background: none;
+   font-size: 14px;
+}
+
+.table-container .table > tbody > tr  button .mat-icon
+{
+  height: 23px;
+    width: 20px;
+    font-size: 16px;
+}
+
+.mat-icon
+.table-container {
+  padding: 0 20px !important;
+ 
+  .table>thead,
+  .table>thead>tr,
+  .table>tbody>tr {
+    font-family: poppins;
+    font-size: 12px;
+    color: #404040;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+ 
+  }
+ 
+ 
+  @media (min-width: 1410px)and (max-width: 1585px) {
+ 
+    .table>thead,
+    .table>thead>tr,
+    .table>tbody>tr {
+      font-family: poppins;
+      font-size: 13px !important;
+      color: #404040;
+      display: table;
+      width: 100%;
+      height: 45px;
+      table-layout: fixed;
+ 
+    }
+ 
+    .truncate-data {
+      font-size: 13px !important;
+    }
+  }
+ 
+  @media (min-width: 1586px)and (max-width: 1691px) {
+ 
+    .table>thead,
+    .table>thead>tr,
+    .table>tbody>tr {
+      font-family: poppins;
+      font-size: 15px !important;
+      color: #404040;
+      display: table;
+      // border-bottom: none;
+      width: 100%;
+      height: 51px;
+      table-layout: fixed;
+ 
+    }
+ 
+    .truncate-data {
+      font-size: 14px !important;
+    }
+ 
+  }
+ 
+ 
+  @media (min-width: 1692px)and (max-width: 1901px) {
+ 
+    .table>thead,
+    .table>thead>tr,
+    .table>tbody>tr {
+      font-family: poppins;
+      font-size: 15.5px !important;
+      color: #404040;
+      display: table;
+      // border-bottom: none;
+      width: 100%;
+      height: 56px;
+      table-layout: fixed;
+ 
+    }
+ 
+    .truncate-data {
+      font-size: 15.5px !important;
+    }
+ 
+ 
+ 
+  }
+ 
+ 
+ 
+  @media (min-width: 1902px)and (max-width: 2536px) {
+ 
+    .table>thead,
+    .table>thead>tr,
+    .table>tbody>tr {
+      font-family: poppins;
+      font-size: 17.5px !important;
+      color: #404040;
+      display: table;
+      // border-bottom: none;
+      width: 100%;
+      height: 60px;
+      table-layout: fixed;
+ 
+    }
+ 
+    .truncate-data {
+      font-size: 17px !important;
+    }
+ 
+ 
+  }
+ 
+ 
+  .table>tbody>{
+    display: block;
+    overflow: auto;
+    // height: 315px !important;
+    /* Adjust based on your requirement */
+    width: 100%;
+    height: 43vh !important;
+ 
+  }
+ 
+  @media (min-width: 992px)and (max-width: 1409px) {
+    .table>tbody {
+      display: block;
+      overflow: auto;
+            height: 38vh;
+      width: 100%;
+      // background: red;
+ 
+    }
+ 
+  }
+ 
+  @media (min-width: 1410px)and (max-width: 1585px) {
+    .table>tbody {
+      display: block;
+      overflow: auto;
+      height: 47vh;
+      width: 100%;
+      // background: red;
+ 
+    }
+ 
+ 
+  }
+ 
+  @media (min-width: 1586px)and (max-width: 1691px) {
+    .table>tbody {
+      display: block;
+      overflow: auto;
+      // height: 450px !important;
+      /* Adjust based on your requirement */
+      height: 51vh;
+      width: 100%;
+      // background-color: #1976d2;
+ 
+    }
+  }
+ 
+  @media (min-width: 1692px)and (max-width: 1901px) {
+    .table>tbody {
+      display: block;
+      overflow: auto;
+      // height: 500px !important;
+      /* Adjust based on your requirement */
+      height: 52.5vh;
+      width: 100%;
+ 
+    }
+  }
+ 
+  @media (min-width: 1902px)and (max-width: 2536px) {
+    .table>tbody {
+      display: block;
+      overflow: auto;
+      // height: 580px !important;
+      /* Adjust based on your requirement */
+      height: 55vh;
+      width: 100%;
+ 
+    }
+  }
 }

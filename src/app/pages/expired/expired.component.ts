@@ -50,7 +50,7 @@ export class ExpiredComponent implements AfterViewInit, OnInit, OnDestroy {
   listViewHeight = '70px';
 
   dataRooms: DataRoom[] = [];
-  expiredRooms: DataRoom[] = [];
+  expiredRooms: any[] = [];
   auditLogs: AuditLog[] = [];
 
   dataSource = new MatTableDataSource<DataRoom>(this.dataRooms);
@@ -90,7 +90,7 @@ export class ExpiredComponent implements AfterViewInit, OnInit, OnDestroy {
   searchTerm: string = '';
 
   filteredDataRooms: DataRoom[] = [];
-  filteredExpiredRooms: DataRoom[] = [];
+  filteredExpiredRooms: any[] = [];
   filteredAuditLogs: AuditLog[] = [];
 
 
@@ -213,51 +213,132 @@ getCookie(name: string): string | null {
   return match ? match[2] : null;
 }
   getAllRoomInfo() {
-  const MasterUserId = this.getCookie('MasterUserId') || '';
-   this.manageDataRoomService.getAllActiveExpiredDataRooms(MasterUserId).subscribe((res: any) => {
-  console.log('Active and Expired Data Rooms:', res);
-   const dataRoomPermissions = res.permissions?.dataRoomPermissions || [];
-    const userPermissions = res.permissions?.userPermissions || [];
-    const documentPermissions = res.permissions?.documentPermissions || [];
-
-
-    this.dataRoomPermissions = dataRoomPermissions;
-    this.userPermissions = userPermissions;
-    this.documentPermissions = documentPermissions;
+  const dummyExpiredRoomsResponse = {
+  expiredRooms: [
+    {
+      room: {
+        id: 201,
+        name: 'Finance Reports Q1',
+        expirationDate: '2024-03-31T00:00:00Z',
+        defaultPermission: 'Viewer'
+      },
+      files: [
+        {
+          document: {
+            id: 301,
+            name: 'IncomeStatement.pdf',
+            url: '/assets/docs/IncomeStatement.pdf',
+            documentSize: '2.3MB',
+            docType: 'pdf'
+          }
+        },
+        {
+          document: {
+            id: 302,
+            name: 'BalanceSheet.xlsx',
+            url: '/assets/docs/BalanceSheet.xlsx',
+            documentSize: '1.1MB',
+            docType: 'xlsx'
+          }
+        }
+      ]
+    },
+    {
+      room: {
+        id: 202,
+        name: 'HR Compliance',
+        expirationDate: '2024-05-15T00:00:00Z',
+        defaultPermission: 'Editor'
+      },
+      files: [
+        {
+          document: {
+            id: 303,
+            name: 'Policy_Update.docx',
+            url: '/assets/docs/Policy_Update.docx',
+            documentSize: '650KB',
+            docType: 'docx'
+          }
+        }
+      ]
+    }
+  ]
+};
 
   
-    console.log('DataRoom Permissions:', this.dataRoomPermissions);
-    console.log('User Permissions:', this.userPermissions);
-    console.log('Document Permissions:', this.documentPermissions);
-  if (res && res.expiredRooms) {
-    const expiredRooms = res.expiredRooms.map((roomWrapper: any) => {
-      const room = roomWrapper.room;
-      const files = roomWrapper.files || [];
+  const expiredRooms = dummyExpiredRoomsResponse.expiredRooms.map((roomWrapper: any) => {
+  const room = roomWrapper.room;
+  const files = roomWrapper.files || [];
 
+  return {
+    id: room.id,
+    name: room.name,
+    expires: room.expirationDate ? new Date(room.expirationDate).toLocaleDateString() : 'No Expiry',
+    permission: room.defaultPermission,
+    files: files.length,
+    documents: files.map((fileWrapper: any) => {
+      const doc = fileWrapper.document;
       return {
-        id: room.id,
-        name: room.name,
-        expires: room.expirationDate ? new Date(room.expirationDate).toLocaleDateString() : 'No Expiry',
-        permission: room.defaultPermission,
-        files: files.length,
-        documents: files.map((fileWrapper: any) => {
-          const doc = fileWrapper.document;
-          return {
-            id: doc.id,
-            name: doc.name,
-            url: doc.url,
-            size: doc.documentSize,
-            type: doc.docType
-          };
-        })
+        id: doc.id,
+        name: doc.name,
+        url: doc.url,
+        size: doc.documentSize,
+        type: doc.docType
       };
-    });
-
-    this.dataRooms = expiredRooms;
-    this.filteredDataRooms = expiredRooms;
-    this.updatePagedData();
-  }
+    })
+  };
 });
+
+this.expiredRooms = expiredRooms;
+this.filteredExpiredRooms = expiredRooms;
+this.updatePagedExpiredData?.();
+  
+  
+//     const MasterUserId = this.getCookie('MasterUserId') || '';
+//    this.manageDataRoomService.getAllActiveExpiredDataRooms(MasterUserId).subscribe((res: any) => {
+//   console.log('Active and Expired Data Rooms:', res);
+//    const dataRoomPermissions = res.permissions?.dataRoomPermissions || [];
+//     const userPermissions = res.permissions?.userPermissions || [];
+//     const documentPermissions = res.permissions?.documentPermissions || [];
+
+
+//     this.dataRoomPermissions = dataRoomPermissions;
+//     this.userPermissions = userPermissions;
+//     this.documentPermissions = documentPermissions;
+
+  
+//     console.log('DataRoom Permissions:', this.dataRoomPermissions);
+//     console.log('User Permissions:', this.userPermissions);
+//     console.log('Document Permissions:', this.documentPermissions);
+//   if (res && res.expiredRooms) {
+//     const expiredRooms = res.expiredRooms.map((roomWrapper: any) => {
+//       const room = roomWrapper.room;
+//       const files = roomWrapper.files || [];
+
+//       return {
+//         id: room.id,
+//         name: room.name,
+//         expires: room.expirationDate ? new Date(room.expirationDate).toLocaleDateString() : 'No Expiry',
+//         permission: room.defaultPermission,
+//         files: files.length,
+//         documents: files.map((fileWrapper: any) => {
+//           const doc = fileWrapper.document;
+//           return {
+//             id: doc.id,
+//             name: doc.name,
+//             url: doc.url,
+//             size: doc.documentSize,
+//             type: doc.docType
+//           };
+//         })
+//       };
+//     });
+
+//     this.dataRooms = expiredRooms;
+//     this.filteredDataRooms = expiredRooms;
+//     this.updatePagedData();
+//   }
+// });
 
 
   

@@ -39,6 +39,10 @@ import { FormsModule } from '@angular/forms';
     ,
     FormsModule,
     TranslateModule
+  ],
+  exports : [
+
+    DataroomdetailsComponent
   ]
 })
 export class PagesModule { }

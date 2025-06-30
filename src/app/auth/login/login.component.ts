@@ -137,37 +137,38 @@ private toastr: ToastrService,
 
   onLoginSubmit(): void {
     this.submitted = true;
-
-    if (this.loginForm.invalid) {
-      return;
-    }
-
-    if (this.loginForm.value.captchaInput !== this.captchaText) {
-      this.toastr.error('Invalid CAPTCHA', 'Error');
-      this.loginForm.patchValue({ captchaInput: '' });
-      this.loginForm.controls['captchaInput'].setErrors({ invalid: true });
-      this.generateCaptcha();
-      return;
-    }
-
-    this.dataRoomApiService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
-      next: (response) => {
-        if (response?.success) {
-         this.toastr.success('Login successful');
-      document.cookie = `UserToken=${response.token}; path=/; max-age=3600; SameSite=Strict`;
-
 const encryptedToken = EncryptionService.encryptToToken('/layout');
 this.router.navigate(['/p', encryptedToken]);
+//     if (this.loginForm.invalid) {
+//       return;
+//     }
 
-        } else {
-          this.toastr.error(response?.message || 'Login failed');
-        }
-      },
-      error: (err) => {
-        const errorMessage = err?.error?.message || 'An error occurred during login';
-        this.toastr.error(errorMessage);
-      }
-    });
+//     if (this.loginForm.value.captchaInput !== this.captchaText) {
+//       this.toastr.error('Invalid CAPTCHA', 'Error');
+//       this.loginForm.patchValue({ captchaInput: '' });
+//       this.loginForm.controls['captchaInput'].setErrors({ invalid: true });
+//       this.generateCaptcha();
+//       return;
+//     }
+
+//     this.dataRoomApiService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
+//       next: (response) => {
+//         if (response?.success) {
+//          this.toastr.success('Login successful');
+//       document.cookie = `UserToken=${response.token}; path=/; max-age=3600; SameSite=Strict`;
+
+// const encryptedToken = EncryptionService.encryptToToken('/layout');
+// this.router.navigate(['/p', encryptedToken]);
+
+//         } else {
+//           this.toastr.error(response?.message || 'Login failed');
+//         }
+//       },
+//       error: (err) => {
+//         const errorMessage = err?.error?.message || 'An error occurred during login';
+//         this.toastr.error(errorMessage);
+//       }
+//     });
   }
 
 

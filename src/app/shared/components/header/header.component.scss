@@ -1,12 +1,137 @@
-.header-container {
-  height: 70px;
-  background-color: #ffffff;
-  z-index: 1050;
-  border-bottom: 1px solid #e0e0e0;
+.app-header {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  height: 64px;
+
+  background-color: white;
+
+  padding: 0 1rem;
+
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+
+  position: relative;
+
+  z-index: 1000;
+
+}
+ 
+/* Left Section */
+
+.left-section {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 1rem;
+
+}
+ 
+.logo-img {
+
+  height: 40px;
+
+}
+ 
+.menu-toggle {
+
+  background: none;
+
+  border: none;
+
+  font-size: 1.5rem;
+
+  cursor: pointer;
+
+  color: #333;
+
+}
+ 
+/* Center Section */
+
+.center-section {
+
+  flex: 1;
+
+  display: flex;
+
+  justify-content: center;
+
+}
+ 
+.search-box {
+
+  position: relative;
+
+}
+ 
+.search-box input {
+
+  padding: 0.4rem 2rem 0.4rem 0.75rem;
+
+  border-radius: 20px;
+
+  border: 1px solid #ccc;
+
+  min-width: 250px;
+
+}
+ 
+.search-icon {
+
+  position: absolute;
+
+  right: 10px;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  color: #888;
+
+}
+ 
+/* Right Section */
+
+.right-section {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+}
+ 
+.profile-img {
+
+  width: 40px;
+
+  height: 40px;
+
+  border-radius: 50%;
+
+}
+ 
+.profile-info .name {
+
+  font-weight: 600;
+
+  color: #333;
+
+}
+ 
+.profile-info .role {
+
+  font-size: 0.8rem;
+
+  color: #888;
+
 }
 
-.badge {
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-}
+ 

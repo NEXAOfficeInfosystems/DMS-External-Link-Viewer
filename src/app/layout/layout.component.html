@@ -1,12 +1,24 @@
-<div class="fixed-header">
-  <app-header></app-header>
+
+
+
+<div class="layout-container" [class.collapsed]="isSidebarCollapsed">
+<app-header (toggleSidebar)="toggleSidebar()"></app-header>
+ 
+  <div class="body-container">
+<app-sidebar [collapsed]="isSidebarCollapsed"></app-sidebar>
+<!-- <app-main-content></app-main-content> -->
+  <router-outlet></router-outlet>
+</div>
 </div>
 
-<div class="layout-container">
-  <app-sidebar [collapsed]="isSidebarCollapsed" (toggle)="onToggleSidebar()"></app-sidebar>
+<!-- 
+<div class="layout" [class.collapsed]="isSidebarCollapsed">
+  <app-sidebar (toggleSidebar)="toggleSidebar()"></app-sidebar>
 
-  <div class="main-content" [class.collapsed]="isSidebarCollapsed">
-
-    <router-outlet></router-outlet>
+  <div class="main-content">
+    <app-header></app-header>
+    <div class="page-body">
+      <router-outlet></router-outlet>
+    </div>
   </div>
-</div>
+</div> -->

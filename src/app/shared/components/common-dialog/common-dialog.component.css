@@ -1,12 +1,28 @@
-.delete_popup
-{
+.delete_popup {
     padding: 20px !important;
 }
 
 .dialog-actions {
     display: flex;
     justify-content: center;
-    gap: 10px; /* Space between buttons */
+    gap: 10px;
+}
+
+.custom-button.btn-success {
+    background-color: #449d44;
+    color: #fff;
+    display: flex;
+    width: 94px;
+    justify-content: center;
+}
+
+.custom-button.btn-danger {
+    background-color: #ee636d;
+    color: #fff;
+}
+
+.custom-button i{
+    margin-right: 5px;
 }
 
 .custom-button {
@@ -21,21 +37,4 @@
     text-decoration: none;
     white-space: nowrap;
     border-radius: 4px;
-}
-
-.custom-button.btn-success {
-    background-color: #449D44;
-    color: #fff;
-    display: flex;
-    width: 94px;
-    justify-content: center;
-}
-
-.custom-button.btn-danger {
-    background-color: #EE636D;
-    color: #fff;
-}
-
-.custom-button i {
-    margin-right: 5px;
 }

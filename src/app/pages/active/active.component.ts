@@ -46,9 +46,9 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
   gutterSize = '10';
   listViewHeight = '70px';
 
-  dataRooms: DataRoom[] = [];
-  expiredRooms: DataRoom[] = [];
-  auditLogs: AuditLog[] = [];
+  dataRooms: any[] = [];
+  expiredRooms: any[] = [];
+  auditLogs: any[] = [];
 
   dataSource = new MatTableDataSource<DataRoom>(this.dataRooms);
   expiredDataSource = new MatTableDataSource<DataRoom>(this.expiredRooms);
@@ -86,7 +86,7 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
   searchExpanded: boolean = false;
   searchTerm: string = '';
 
-  filteredDataRooms: DataRoom[] = [];
+  filteredDataRooms: any[] = [];
   filteredExpiredRooms: DataRoom[] = [];
   filteredAuditLogs: AuditLog[] = [];
 
@@ -106,9 +106,92 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
     this.setCardView();
   }
 
+  // ngOnInit() {
+  //   this.getAllRoomInfo();
+  // }
+
   ngOnInit() {
-    this.getAllRoomInfo();
-  }
+  // this.getAllRoomInfo();
+
+  // --- Dummy Active Rooms ---
+  const dummyActiveRooms = [
+    {
+      id: 1,
+      name: 'Project Alpha',
+      expires: '12/12/2025',
+      permission: 'Editor',
+      files: 2,
+      documents: [
+        { id: 101, name: 'Design Spec.pdf', url: '/files/spec.pdf', size: '1.2MB', type: 'pdf' },
+        { id: 102, name: 'Overview.docx', url: '/files/overview.docx', size: '850KB', type: 'docx' }
+      ]
+    },
+    {
+      id: 2,
+      name: 'HR Policies',
+      expires: 'No Expiry',
+      permission: 'Viewer',
+      files: 1,
+      documents: [
+        { id: 103, name: 'HR_Guidelines.pdf', url: '/files/hr.pdf', size: '500KB', type: 'pdf' }
+      ]
+    }
+  ];
+
+  // --- Dummy Expired Rooms ---
+  const dummyExpiredRooms = [
+    {
+      id: 3,
+      name: 'Q1 Reports',
+      expires: '03/31/2024',
+      permission: 'Admin',
+      files: 3,
+      documents: [
+        { id: 104, name: 'Summary.xlsx', url: '/files/summary.xlsx', size: '2MB', type: 'xlsx' },
+        { id: 105, name: 'Budget.pdf', url: '/files/budget.pdf', size: '750KB', type: 'pdf' },
+        { id: 106, name: 'Forecast.ppt', url: '/files/forecast.ppt', size: '1.5MB', type: 'ppt' }
+      ]
+    }
+  ];
+
+  // --- Dummy Audit Logs ---
+  const dummyAuditLogs = [
+    {
+      dataRoomName: 'Project Alpha',
+      documentName: 'Design Spec.pdf',
+      UserName: 'John Doe',
+      actionName: 'Viewed',
+      actionBy: 'John Doe',
+      actionDate: '06/24/2025'
+    },
+    {
+      dataRoomName: 'HR Policies',
+      documentName: 'HR_Guidelines.pdf',
+      UserName: 'Jane Smith',
+      actionName: 'Downloaded',
+      actionBy: 'Jane Smith',
+      actionDate: '06/22/2025'
+    },
+    {
+      dataRoomName: 'Q1 Reports',
+      documentName: 'Budget.pdf',
+      UserName: 'Admin User',
+      actionName: 'Deleted',
+      actionBy: 'Admin User',
+      actionDate: '03/30/2024'
+    }
+  ];
+
+  this.dataRooms = dummyActiveRooms;
+  this.filteredDataRooms = dummyActiveRooms;
+  this.expiredRooms = dummyExpiredRooms;
+  this.auditLogs = dummyAuditLogs;
+  this.filteredAuditLogs = dummyAuditLogs;
+
+  this.updatePagedData?.();
+  this.updatePagedAuditLogs?.();
+}
+
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginatorActive;
@@ -152,6 +235,8 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
 
 
 navigateToDetail(dataRoom: DataRoom): void {
+
+  
   if (dataRoom?.id) {
     const path = `/layout/data-room-detail/${dataRoom.id}`;
     const token = EncryptionService.encryptToToken(path);
@@ -160,6 +245,18 @@ navigateToDetail(dataRoom: DataRoom): void {
     console.error('Invalid DataRoom:', dataRoom);
   }
 }
+
+
+// navigateToDetail(dataRoom: DataRoom): void {
+//   if (dataRoom?.id) {
+//     // this.router.navigate([`/layout/data-room-detail`]);
+//      const path = `/layout/data-room-detail`;
+//     const token = EncryptionService.encryptToToken(path);
+//     this.router.navigate(['/p', token]);
+//   } else {
+//     console.error('Invalid DataRoom:', dataRoom);
+//   }
+// }
 
 
   toggleSearch() {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { DataRoomApiService } from 'src/app/core/services/DataRoomApiService.service';
 import { Observable } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
@@ -19,6 +19,13 @@ ngOnInit(): void {
   this.dataRoomApiService.getUserDetailsById(userId);
   this.userDetails$ = this.dataRoomApiService.getUserDetailsObservable();
 }
+
+
+@Output() toggleSidebar = new EventEmitter<void>();
+ 
+  onToggle() {
+    this.toggleSidebar.emit();
+  }
 
 }
 
