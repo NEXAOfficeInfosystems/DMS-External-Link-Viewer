@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    this.http.get(`${environment.apiBaseUrl}/${this.shortCode}`).subscribe({
+    this.http.get(`${environment.apiBaseUrl}/ExternalLinkDMSService/${this.shortCode}`).subscribe({
       next: (res: any) => this.handleMetadataResponse(res, this.shortCode),
       error: (error) => this.handleApiError(error)
     });
@@ -117,7 +117,7 @@ export class AppComponent implements OnInit {
 
   private promptPasswordAndVerify(url: string | null, onSuccess: () => void): void {
     // Use the password from the input field
-    this.http.get(`${environment.apiBaseUrl}/verify/${this.shortCode}/${this.password}`).subscribe({
+    this.http.get(`${environment.apiBaseUrl}/ExternalLinkDMSService/verify/${this.shortCode}/${this.password}`).subscribe({
       next: (res: any) => {
         if (res?.status) {
           this.showPasswordPrompt = false;
