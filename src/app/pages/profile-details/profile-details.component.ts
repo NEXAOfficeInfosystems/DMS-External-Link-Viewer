@@ -63,8 +63,11 @@ userId :any;
           console.log('User details updated successfully:', response);
 
           this.toasterservice.success('Password updated successfully');
-          this.router.navigate(['/auth']);
-            //  this.userDetails$ = this.dataRoomApiService.getUserDetailsObservable();
+          const urlParams = new URLSearchParams(window.location.search);
+          if (!urlParams.has('s')) {
+            this.router.navigate(['/auth']);
+          }
+          //  this.userDetails$ = this.dataRoomApiService.getUserDetailsObservable();
 
     
         },

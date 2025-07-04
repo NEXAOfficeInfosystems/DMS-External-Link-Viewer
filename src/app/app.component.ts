@@ -104,21 +104,26 @@ export class AppComponent implements OnInit, OnDestroy {
     const token = document.cookie.split('; ').find(row => row.startsWith('UserToken='))?.split('=')[1];
     // console.log('UserToken:', token);
 
-    if (!token) {
+    if (!token && !this.shortCode) {
       console.log('UserToken is missing. Navigating to /auth.');
-      // const encryptedPath = this.encryptionService.encrypt('/auth');
-      const encryptedPath = EncryptionService.encryptToToken('/auth');
-      const decryptedPath = EncryptionService.decryptFromToken(encryptedPath);
+      const urlParams = new URLSearchParams(window.location.search);
+      if (!urlParams.has('s')) {
+        // const encryptedPath = this.encryptionService.encrypt('/auth');
+        const encryptedPath = EncryptionService.encryptToToken('/auth');
+        const decryptedPath = EncryptionService.decryptFromToken(encryptedPath);
 
-      this.router.navigate([decryptedPath]).then(() => {
+        this.router.navigate([decryptedPath]).then(() => {
+          this.isLoading = false;
+        });
+      } else {
         this.isLoading = false;
-      });
+      }
       return;
     }
 
     // console.log('Short code and UserToken are valid. Fetching document metadata.');
 
-    if (!token) {
+    if (!token && this.shortCode) {
       this.fetchDocumentMetadata();
     }
 

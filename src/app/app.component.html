@@ -1,102 +1,104 @@
 <!-- <router-outlet></router-outlet> -->
- <router-outlet></router-outlet>
+<div *ngIf="!shortCode">
+  <router-outlet></router-outlet>
+
+</div>
 
 <div class="upload-progress" *ngIf="uploadStatuses.length > 0">
-    <div class="upload-header">
-        <a (click)="closeUpload()" class="close-button" *ngIf="overallProgress == 100">
-            <i class="material-icons">close</i>
-        </a>
-        <a (click)="toggleFileList()" class="show-more-link">
-            <i *ngIf="!showFileList" class="fa fa-angle-right"></i>
-            <i *ngIf="showFileList" class="fa fa-angle-down"></i>
-        </a>
-        <div class="progress-container">
-            <mat-progress-bar *ngIf="overallProgress < 100" mode="determinate"
-                [value]="overallProgress"></mat-progress-bar>
-            <p *ngIf="overallProgress < 100">{{ overallProgress }}%</p>
-            <p *ngIf="overallProgress == 100" class="completed-text"><i class="fa fa-check-circle"></i>
-                {{ uploadStatuses && uploadStatuses[0].isFromServer === 'DRAG_AND_DROP' ? 'Moved Completed' : 'Upload
-                Completed' }}
-                <span>
-                    <span *ngIf="successCount > 0" class="success-count"> Success: {{ successCount }} </span>
-                    <span *ngIf="failureCount > 0" class="failure-count"> Failure: {{ failureCount }} </span>
-                    <span *ngIf="totalCount > 0" class="total-count"> / {{ totalCount }} </span>
-                </span>
-            </p>
-        </div>
-    </div>
-    <div *ngIf="showFileList" class="file-list">
-        <table class="file-status-table">
-            <thead>
-                <tr>
-                    <th>File Name</th>
-                    <th>Status</th>
-                    <th>Reason</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let status of uploadStatuses">
-                    <td class="text-truncate-start">
-                        <span (mouseenter)="showTooltip(status.fileName, $event)" (mouseleave)="closeTooltip()">
-                            {{ status.fileName }}
-                        </span>
-                    </td>
-                    <td class="status-text"
-                        [ngClass]="{'error': status.status === 'failed', 'success': status.status === 'completed', 'in-progress': status.status === 'uploading'}">
-                        <i *ngIf="status.status === 'failed'" class="fa fa-times-circle status-icon"></i>
-                        <i *ngIf="status.status === 'completed'" class="fa fa-check-circle status-icon"></i>
-                        <i *ngIf="status.status === 'uploading'" class="fa fa-spinner fa-spin status-icon"></i>
-                        {{ status.status === 'failed' ? 'Failed' : (status.status === 'completed' ? 'Completed' :
-                        'Uploading')
-                        }}
-                    </td>
-                    <td>
-                        <a *ngIf="status.status === 'failed'" (mouseenter)="showTooltip(status.ErrorMessage, $event)"
-                            (mouseleave)="closeTooltip()" class="tooltip-trigger">View</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-
- <div *ngIf="shortCode">
-
-
-<div class="loading" *ngIf="isLoading">
-  <app-loader [isLoading]="isLoading"></app-loader>
-
-</div>
-<div class="error-message" *ngIf="errorMessage">
-  <div>
-    <img src="assets/warning.svg" alt="Warning" />
-  </div>
-  <div [innerHTML]="errorMessage"></div>
-</div>
-<div *ngIf="iframeSrc && !errorMessage">
-  <iframe *ngIf="!(downloadHref?.endsWith('.mp4') || downloadHref?.endsWith('.mp3'))" [src]="iframeSrc" class="i-frame"
-    title="Document Preview"></iframe>
-
-
-  <video *ngIf="downloadHref?.endsWith('.mp4')" [src]="iframeSrc" controls width="100%"></video>
-  <audio *ngIf="downloadHref?.endsWith('.mp3')" [src]="iframeSrc" controls></audio>
-</div>
-<div class="password-prompt" *ngIf="showPasswordPrompt">
-  <div class="password-modal">
-    <label for="password">Enter Password:</label>
-    <div class="password-input-container">
-      <input [type]="showPassword ? 'text' : 'password'" id="password" [(ngModel)]="password"
-        (keydown.space)="$event.preventDefault()" />
-      <button class="btnShowPassword" type="button" (click)="showPassword = !showPassword"
-        aria-label="Toggle password visibility" tabindex="-1">
-        <img *ngIf="!showPassword" src="assets/eye.svg" alt="Show password" class="eye-icon" />
-        <img *ngIf="showPassword" src="assets/eyeOff.svg" alt="Hide password" class="eye-icon" />
-      </button>
-    </div>
-    <button class="btnSubmit" (click)="submitPassword()">Submit</button>
-    <div *ngIf="showPasswordError" class="error-message">
-      Incorrect password. Please try again.
+  <div class="upload-header">
+    <a (click)="closeUpload()" class="close-button" *ngIf="overallProgress == 100">
+      <i class="material-icons">close</i>
+    </a>
+    <a (click)="toggleFileList()" class="show-more-link">
+      <i *ngIf="!showFileList" class="fa fa-angle-right"></i>
+      <i *ngIf="showFileList" class="fa fa-angle-down"></i>
+    </a>
+    <div class="progress-container">
+      <mat-progress-bar *ngIf="overallProgress < 100" mode="determinate" [value]="overallProgress"></mat-progress-bar>
+      <p *ngIf="overallProgress < 100">{{ overallProgress }}%</p>
+      <p *ngIf="overallProgress == 100" class="completed-text"><i class="fa fa-check-circle"></i>
+        {{ uploadStatuses && uploadStatuses[0].isFromServer === 'DRAG_AND_DROP' ? 'Moved Completed' : 'Upload
+        Completed' }}
+        <span>
+          <span *ngIf="successCount > 0" class="success-count"> Success: {{ successCount }} </span>
+          <span *ngIf="failureCount > 0" class="failure-count"> Failure: {{ failureCount }} </span>
+          <span *ngIf="totalCount > 0" class="total-count"> / {{ totalCount }} </span>
+        </span>
+      </p>
     </div>
   </div>
+  <div *ngIf="showFileList" class="file-list">
+    <table class="file-status-table">
+      <thead>
+        <tr>
+          <th>File Name</th>
+          <th>Status</th>
+          <th>Reason</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let status of uploadStatuses">
+          <td class="text-truncate-start">
+            <span (mouseenter)="showTooltip(status.fileName, $event)" (mouseleave)="closeTooltip()">
+              {{ status.fileName }}
+            </span>
+          </td>
+          <td class="status-text"
+            [ngClass]="{'error': status.status === 'failed', 'success': status.status === 'completed', 'in-progress': status.status === 'uploading'}">
+            <i *ngIf="status.status === 'failed'" class="fa fa-times-circle status-icon"></i>
+            <i *ngIf="status.status === 'completed'" class="fa fa-check-circle status-icon"></i>
+            <i *ngIf="status.status === 'uploading'" class="fa fa-spinner fa-spin status-icon"></i>
+            {{ status.status === 'failed' ? 'Failed' : (status.status === 'completed' ? 'Completed' :
+            'Uploading')
+            }}
+          </td>
+          <td>
+            <a *ngIf="status.status === 'failed'" (mouseenter)="showTooltip(status.ErrorMessage, $event)"
+              (mouseleave)="closeTooltip()" class="tooltip-trigger">View</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
+
+
+<div *ngIf="shortCode">
+
+
+  <div class="loading" *ngIf="isLoading">
+    <app-loader [isLoading]="isLoading"></app-loader>
+
+  </div>
+  <div class="error-message" *ngIf="errorMessage">
+    <div>
+      <img src="assets/warning.svg" alt="Warning" />
+    </div>
+    <div [innerHTML]="errorMessage"></div>
+  </div>
+  <div *ngIf="iframeSrc && !errorMessage">
+    <iframe *ngIf="!(downloadHref?.endsWith('.mp4') || downloadHref?.endsWith('.mp3'))" [src]="iframeSrc"
+      class="i-frame" title="Document Preview"></iframe>
+
+
+    <video *ngIf="downloadHref?.endsWith('.mp4')" [src]="iframeSrc" controls width="100%"></video>
+    <audio *ngIf="downloadHref?.endsWith('.mp3')" [src]="iframeSrc" controls></audio>
+  </div>
+  <div class="password-prompt" *ngIf="showPasswordPrompt">
+    <div class="password-modal">
+      <label for="password">Enter Password:</label>
+      <div class="password-input-container">
+        <input [type]="showPassword ? 'text' : 'password'" id="password" [(ngModel)]="password"
+          (keydown.space)="$event.preventDefault()" />
+        <button class="btnShowPassword" type="button" (click)="showPassword = !showPassword"
+          aria-label="Toggle password visibility" tabindex="-1">
+          <img *ngIf="!showPassword" src="assets/eye.svg" alt="Show password" class="eye-icon" />
+          <img *ngIf="showPassword" src="assets/eyeOff.svg" alt="Hide password" class="eye-icon" />
+        </button>
+      </div>
+      <button class="btnSubmit" (click)="submitPassword()">Submit</button>
+      <div *ngIf="showPasswordError" class="error-message">
+        Incorrect password. Please try again.
+      </div>
+    </div>
+  </div>

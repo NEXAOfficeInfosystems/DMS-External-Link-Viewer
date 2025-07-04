@@ -18,7 +18,12 @@ export class ConfirmationDialogComponent {
 
   onConfirm(): void {
     this.dialogRef.close(true);
-  this.router.navigate(['/auth']);
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('s')) {
+      // Do not redirect if 's' query param exists
+      return;
+    }
+    this.router.navigate(['/auth']);
   }
 
   onCancel(): void {

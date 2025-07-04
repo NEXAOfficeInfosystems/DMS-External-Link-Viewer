@@ -28,11 +28,11 @@ const routes: Routes = [
     path: 'p/:token',
     component: PublicRedirectComponent
   },
-  {
-    path: '',
-    redirectTo: 'auth',
-    pathMatch: 'full'
-  }
+  // {
+  //   path: '',
+  //   redirectTo: 'auth',
+  //   pathMatch: 'full'
+  // }
 ];
 
 @NgModule({

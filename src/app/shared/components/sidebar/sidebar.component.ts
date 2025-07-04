@@ -67,6 +67,11 @@ export class SidebarComponent implements OnInit {
   }
 
   redirectToAuth(): void {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('s')) {
+      // Do not redirect if 's' query param exists
+      return;
+    }
     this.router.navigate(['/auth']);
   }
 
