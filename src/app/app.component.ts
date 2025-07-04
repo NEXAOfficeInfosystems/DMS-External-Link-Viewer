@@ -16,48 +16,52 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent  implements OnInit, OnDestroy {
+export class AppComponent implements OnInit, OnDestroy {
   errorMessage = '';
   download = false;
   downloadHref: string | null = null;
   shortCode = '';
   isLoading = true;
+  fileName = '';
   iframeSrc: SafeResourceUrl = '';
   isProtected = false;
-  isRtl = false;
-
+  showPasswordPrompt: boolean = false;
+  password: string = '';
+  showPassword: boolean = false;
+  showPasswordError: boolean = false;
+  url: any = null;
+  isRtl: boolean = false;
   constructor(
-        public translate: TranslateService,
+    public translate: TranslateService,
     private fileUploadService: FileUploadService,
     private readonly http: HttpClient,
     private readonly sanitizer: DomSanitizer,
     private readonly router: Router,
     private toastr: ToastrService,
     private cdr: ChangeDetectorRef,
-    private commonService: CommonService, 
+    private commonService: CommonService,
     private translationService: TranslationService, // Assuming you have a TranslationService for language management
-
-    private encryptionService: EncryptionService 
+    private encryptionService: EncryptionService
   ) {
- translate.addLangs(['en']);
+    translate.addLangs(['en']);
     translate.setDefaultLang('en');
     this.setLanguage();
-  this.uploadStatuses = this.fileUploadService.getAllUploadStatuses();
+    this.uploadStatuses = this.fileUploadService.getAllUploadStatuses();
 
 
 
-      this.fileUploadService.uploadStatus$.subscribe((statuses) => {
+    this.fileUploadService.uploadStatus$.subscribe((statuses) => {
       this.uploadStatuses = statuses;
-      this.updateCounts(); 
+      this.updateCounts();
 
       if (this.uploadStatuses.length > 0 && this.uploadStatuses.some(status => status.status === 'completed' || status.status === 'failed')) {
-      
+
         this.successCount = this.uploadStatuses.filter(status => status.status === 'completed').length;
         this.failureCount = this.uploadStatuses.filter(status => status.status === 'failed').length;
         this.totalCount = this.uploadStatuses.length;
-      
-        this.cdr.markForCheck(); 
-       
+
+        this.cdr.markForCheck();
+
         let message = '';
         if (this.successCount > 0 && this.failureCount > 0) {
           message = `File upload completed: ${this.successCount} successful, ${this.failureCount} failed.`;
@@ -66,7 +70,7 @@ export class AppComponent  implements OnInit, OnDestroy {
         } else if (this.failureCount > 0) {
           message = `File upload completed: ${this.failureCount} failed.`;
         }
-        this.toastr.clear(); 
+        this.toastr.clear();
 
 
         this.toastr.success(message);
@@ -78,16 +82,15 @@ export class AppComponent  implements OnInit, OnDestroy {
 
 
 
+
     });
-
   }
-
-    updateCounts() {
+  updateCounts() {
     this.successCount = this.uploadStatuses.filter(status => status.status === 'completed').length;
     this.failureCount = this.uploadStatuses.filter(status => status.status === 'failed').length;
     this.totalCount = this.uploadStatuses.length;
   }
-  showLoader: boolean = false; 
+  showLoader: boolean = false;
   loaderSubscription: Subscription = new Subscription();
   ngOnInit(): void {
 
@@ -104,11 +107,11 @@ export class AppComponent  implements OnInit, OnDestroy {
     if (!token) {
       console.log('UserToken is missing. Navigating to /auth.');
       // const encryptedPath = this.encryptionService.encrypt('/auth');
-  const encryptedPath = EncryptionService.encryptToToken('/auth');
-  const decryptedPath = EncryptionService.decryptFromToken(encryptedPath);
+      const encryptedPath = EncryptionService.encryptToToken('/auth');
+      const decryptedPath = EncryptionService.decryptFromToken(encryptedPath);
 
       this.router.navigate([decryptedPath]).then(() => {
-        this.isLoading = false; 
+        this.isLoading = false;
       });
       return;
     }
@@ -119,12 +122,12 @@ export class AppComponent  implements OnInit, OnDestroy {
       this.fetchDocumentMetadata();
     }
 
-       this.loaderSubscription = this.commonService.loader$.subscribe((status: any) => {
+    this.loaderSubscription = this.commonService.loader$.subscribe((status: any) => {
       this.showLoader = status;
       this.cdr.detectChanges();
     });
 
-         const lang = this.translationService.getSelectedLanguage() || 'en';
+    const lang = this.translationService.getSelectedLanguage() || 'en';
     this.translationService.setLanguage(lang).subscribe();
   }
   private langSubscription: Subscription | null = null;
@@ -148,9 +151,9 @@ export class AppComponent  implements OnInit, OnDestroy {
 
 
 
-uploadStatuses: FileUploadStatus[] = [];
+  uploadStatuses: FileUploadStatus[] = [];
 
-  showFileList = true; 
+  showFileList = true;
   successCount: number = 0;
   failureCount: number = 0;
   totalCount: number = 0;
@@ -158,9 +161,9 @@ uploadStatuses: FileUploadStatus[] = [];
 
   closeUpload(): void {
     this.fileUploadService.resetStatuses();
-    this.showFileList = false; 
+    this.showFileList = false;
     this.uploadStatuses = [];
-    this.closeTooltip(); 
+    this.closeTooltip();
   }
 
   tooltipVisible: boolean = false;
@@ -174,7 +177,7 @@ uploadStatuses: FileUploadStatus[] = [];
 
 
 
- showTooltip(message: any, event: MouseEvent): void {
+  showTooltip(message: any, event: MouseEvent): void {
     this.tooltipContent = message;
     this.tooltipVisible = true;
     const target = event.target as HTMLElement;
@@ -216,6 +219,7 @@ uploadStatuses: FileUploadStatus[] = [];
   private handleMetadataResponse(res: any, shortCode: string): void {
     this.download = !!res.isAllowDownload;
     this.isProtected = !!res.isProtected;
+    this.fileName = res.documentName;
     this.downloadHref = environment.apiBaseUrl + res.documentUrl;
     this.fetchDocumentBlob();
   }
@@ -247,48 +251,57 @@ uploadStatuses: FileUploadStatus[] = [];
     }
 
     const blob = new Blob([response.body!], { type: contentType });
-    const url = URL.createObjectURL(blob);
+    this.url = URL.createObjectURL(blob);
 
     const isProtected = this.isProtected || response.headers.get('X-Document-Protected') === 'true';
     if (isProtected) {
-      this.promptPasswordAndVerify(url, () => {
-        this.displayFile(url, contentType);
-      });
+      this.showPasswordPrompt = true;
+      this.password = '';
+      this.isLoading = false;
       return;
     }
 
-    this.displayFile(url, contentType);
+    this.displayFile(this.url, contentType);
   }
-
+  submitPassword(): void {
+    if (!this.password) {
+      this.showPasswordError = true;
+      return;
+    } else {
+      this.showPasswordError = false;
+    }
+    this.isLoading = true;
+    this.promptPasswordAndVerify(this.url, () => {
+      this.showPasswordPrompt = false;
+      this.displayFile(this.url, 'application/pdf'); // You may want to detect contentType
+    });
+  }
   private handleJsonDocument(json: any): void {
     if (json.isProtected) {
-      this.promptPasswordAndVerify(null, () => {
-        this.processApiResponse(json);
-      });
+      this.showPasswordPrompt = true;
+      this.password = '';
+      this.isLoading = false;
     } else {
       this.processApiResponse(json);
     }
   }
 
   private promptPasswordAndVerify(url: string | null, onSuccess: () => void): void {
-    const password = prompt('This document is protected. Please enter the password:');
-    if (!password) {
-      this.setErrorState('Password is required to view this document.');
-      return;
-    }
-
-    this.http.get(`${environment.apiBaseUrl}verify/${this.shortCode}/${password}`).subscribe({
+    // Use the password from the input field
+    this.http.get(`${environment.apiBaseUrl}/verify/${this.shortCode}/${this.password}`).subscribe({
       next: (res: any) => {
         if (res?.status) {
+          this.showPasswordPrompt = false;
+          this.showPasswordError = false;
           onSuccess();
         } else {
-          this.setErrorState('Incorrect password. Please try again.');
+          this.showPasswordError = true;
         }
         this.isLoading = false;
       },
       error: (err) => {
         console.error('Error verifying password:', err);
-        this.setErrorState('An error occurred while verifying the password.');
+        this.showPasswordError = true;
         this.isLoading = false;
       }
     });
@@ -304,7 +317,7 @@ uploadStatuses: FileUploadStatus[] = [];
     } else {
       this.downloadHref = url;
       this.download = true;
-      this.errorMessage = `Preview not supported. <a href="${url}" download>Download the file to view.</a>`;
+      this.errorMessage = `Preview not supported. <a href="${url}" download="${this.fileName}">Download the file to view.</a>`;
     }
     this.isLoading = false;
   }
@@ -408,7 +421,7 @@ uploadStatuses: FileUploadStatus[] = [];
 
   private handleApiError(error: any): void {
     console.error('API Error:', error);
-    this.setErrorState(error?.error || 'An error occurred while fetching the document.');
+    this.setErrorState(error?.error?.error || 'An error occurred while fetching the document.');
     this.isLoading = false;
     this.download = false;
     this.downloadHref = null;
@@ -434,7 +447,7 @@ uploadStatuses: FileUploadStatus[] = [];
     this.toastr.success('This is a test toast!', 'Success');
   }
 
-    ngOnDestroy() {
+  ngOnDestroy() {
     if (this.loaderSubscription) {
       this.loaderSubscription.unsubscribe();
     }
@@ -449,3 +462,4 @@ uploadStatuses: FileUploadStatus[] = [];
     this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }
+

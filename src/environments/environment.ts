@@ -1,16 +1,16 @@
 export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:23734',
-   apiUrl1:  'https://officeinfosystems.com/PythonAPI',
+  apiUrl1: 'https://officeinfosystems.com/PythonAPI',
 
 
   //  
 
-  
+
   allowExtesions: [
     {
       type: 'office',
-      extentions: ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx','csv'],
+      extentions: ['doc', 'docx', 'ppt', 'pptx', 'xls', 'xlsx', 'csv'],
     },
     {
       type: 'pdf',
