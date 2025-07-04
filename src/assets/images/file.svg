@@ -1,0 +1,14 @@
+c:\Users\admin\Downloads\file 1.svg<svg width="385" height="319" viewBox="0 0 385 319" fill="none" xmlns="http://www.w3.org/2000/svg">
+<mask id="mask0_52_150" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="385" height="92">
+<path d="M0 0H385V91.8438H0V0Z" fill="white"/>
+</mask>
+<g mask="url(#mask0_52_150)">
+<path d="M0 90.6979V34.6094C0 15.4948 15.4948 0 34.6042 0H108.953C116.276 0 123.411 2.32813 129.333 6.64063L161.703 30.2344H349.969C369.083 30.2344 384.578 45.7292 384.578 64.8385V90.6979H0Z" fill="#57AADF"/>
+</g>
+<mask id="mask1_52_150" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="53" width="385" height="266">
+<path d="M0 53.3594H384.578V319H0V53.3594Z" fill="white"/>
+</mask>
+<g mask="url(#mask1_52_150)">
+<path d="M349.969 53.4321H34.6042C15.4948 53.4321 0 68.9269 0 88.0415V284.588C0 303.703 15.4948 319.193 34.6042 319.193H349.969C369.083 319.193 384.578 303.703 384.578 284.588V88.0415C384.578 68.9269 369.083 53.4321 349.969 53.4321Z" fill="#0D5CB9"/>
+</g>
+</svg>

@@ -713,3 +713,39 @@ button.toast-close-button {
     }
   }
 }
+
+
+
+
+// error-component
+.error-container {
+  text-align: center;
+  background-color: white;
+  font-family: poppins, sans-serif;
+  height: 100%;
+}
+
+.error-image {
+  margin-bottom: 20px;
+}
+
+.error-message {
+  font-size: 1.5em;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.redirect-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.redirect-button:hover {
+  background-color: #0056b3;
+}

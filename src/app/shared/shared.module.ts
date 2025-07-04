@@ -16,6 +16,11 @@ import { OfficeViewerComponent } from './components/office-viewer/office-viewer.
 import { FormsModule } from '@angular/forms';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
+import { Error404Component } from './components/error-404/error-404.component';
+import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
+
+
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -25,11 +30,14 @@ import { TranslateModule } from '@ngx-translate/core';
     ConfirmationDialogComponent,
     CommonDialogComponent,
     ImagePreviewComponent,
-    OfficeViewerComponent
+    OfficeViewerComponent,
+    PdfViewerComponent,
+    Error404Component
     
   ],
   imports: [
-    
+        NgxExtendedPdfViewerModule,
+
     CommonModule,
     RouterModule,
     MatTabsModule,
@@ -48,7 +56,9 @@ import { TranslateModule } from '@ngx-translate/core';
     ConfirmationDialogComponent,
     CommonDialogComponent,
     ImagePreviewComponent,
-    OfficeViewerComponent
+    OfficeViewerComponent,
+    Error404Component,
+    PdfViewerComponent // <-- Export PdfViewerComponent
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

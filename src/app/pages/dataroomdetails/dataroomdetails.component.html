@@ -104,6 +104,24 @@
           <span class="expire-label">{{ 'DATA_ROOM_DETAILS.EXPIRES' | translate }}</span>
           <span class="expire-date">{{ dataRoom?.expirationDate | date: 'MMMM d, y' }}</span>
         </div>
+   <div class="search-container" [class.expanded]="searchExpanded">
+        <button mat-icon-button class="search-toggle" (click)="toggleSearch()" title="Search">
+          <mat-icon style="color: #3949ab;">search</mat-icon>
+        </button>
+
+        <div class="search-wrapper" *ngIf="searchExpanded">
+          <input
+            [(ngModel)]="searchTerm"
+            (input)="applySearchToAllTabs()"
+            placeholder="Search..."
+            class="search-input"
+            type="text"
+          />
+          <button mat-icon-button class="close-iconn" (click)="clearSearch(); toggleSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
       </div>
     
       <!-- Right: Add Document button (tabIndex check) -->
@@ -151,13 +169,43 @@
   <!-- My Pending Approvals Tab -->
   <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
     <div class="table-container table-container-approval-transaction">
-      <table mat-table [dataSource]="dataSource" class="table" *ngIf="files?.length">
+      <table mat-table [dataSource]="filteredDataRooms" class="table" *ngIf="files?.length">
     
     
         <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.NAME' | translate }}</th>`
-          <td mat-cell *matCellDef="let file"> {{ file.document.name }} </td>
+      <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.NAME' | translate }}</th>
+      <td mat-cell *matCellDef="let file">
+        <ng-container *ngIf="getFileExtension(file.document.url) as extension">
+          <span *ngIf="extension === 'pdf'">
+            <img src="assets/images/login_banner/pdf.png" alt="PDF" width="20px" [title]="'DATA_ROOM_DETAILS.PDF' | translate" />
+          </span>
+          <span *ngIf="extension === 'doc' || extension === 'docx'">
+            <img src="assets/images/svg/word.svg" alt="Word" width="20px" [title]="'DATA_ROOM_DETAILS.DOC' | translate" />
+          </span>
+          <span *ngIf="extension === 'xls' || extension === 'xlsx'">
+            <img src="assets/images/svg/excel.svg" alt="Excel" width="20px" [title]="'DATA_ROOM_DETAILS.EXCEL' | translate" />
+          </span>
+          <span *ngIf="extension === 'ppt' || extension === 'pptx'">
+            <img src="assets/images/svg/ppt.svg" alt="PPT" width="20px" [title]="'DATA_ROOM_DETAILS.PPT' | translate" />
+          </span>
+          <span *ngIf="extension === 'csv' || extension === 'txt'">
+            <img src="assets/images/svg/text-2.svg" alt="Text" width="20px" [title]="'DATA_ROOM_DETAILS.TEXT' | translate" />
+          </span>
         </ng-container>
+        <span *ngIf="isAudioFile(file.document.url)">
+          <img src="assets/images/svg/mp3.svg" alt="Audio" width="20px" [title]="'DATA_ROOM_DETAILS.AUDIO' | translate" />
+        </span>
+        <span *ngIf="isVideoFile(file.document.url)">
+          <img src="assets/images/svg/mp4.svg" alt="Video" width="20px" [title]="'DATA_ROOM_DETAILS.VIDEO' | translate" />
+        </span>
+        <span *ngIf="isImageFile(file.document.url)">
+          <img src="assets/images/login_banner/img.png" alt="Image" width="20px" [title]="'DATA_ROOM_DETAILS.IMAGE' | translate" />
+        </span>
+        <span class="truncate-data p-2 pointer-hover" [title]="file.document.name">
+          {{ file.document.name | slice:0:15 }}{{ file.document.name.length > 8 ? '...' : '' }}
+        </span>
+      </td>
+    </ng-container>
     
     
       <ng-container matColumnDef="size">
@@ -175,24 +223,29 @@
   <td mat-cell *matCellDef="let file"> {{ file.documentPermission }} </td>
 </ng-container>
 
+<ng-container matColumnDef="createdDate">
+  <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.CREATED_DATE' | translate }}</th>
+  <td mat-cell *matCellDef="let file"> {{ file.document.createdDate |  date:'MMMM dd, y' }} </td>
+</ng-container>
+
 <ng-container matColumnDef="actions">
   <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.ACTIONS' | translate }}</th>
   <td mat-cell *matCellDef="let file">
     <ng-container *ngIf="file.permissionFlags as perms">
       <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DOWNLOAD' | translate }}" 
-      
+      [disabled]="!perms.canDownload"
     
       (click)="downloadDocument(file.document)">
-        <!-- [disabled]="!perms.canDownload" -->
+        
         <mat-icon class="download-icon">download</mat-icon>
       </button>
-      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.EDIT' | translate }}" (click)="editFile(file)">
+      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.EDIT' | translate }}" [disabled]="!perms.canEdit" (click)="editFile(file)">
         <mat-icon class="edit-icon">edit</mat-icon>
       </button>
-      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DELETE' | translate }}" (click)="deleteFile(file)">
+      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DELETE' | translate }}" [disabled]="!perms.canDelete" (click)="deleteFile(file)">
         <mat-icon class="delete-icon">delete</mat-icon>
       </button>
-      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.VIEW' | translate }}" (click)="viewFile(file)">
+      <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.VIEW' | translate }}" [disabled]="!perms.canView" (click)="viewFile(file)">
         <mat-icon class="view-icon">visibility</mat-icon>
       </button>
     </ng-container>
@@ -209,74 +262,72 @@
      
     </div>
 
-    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+  <mat-paginator
+    [length]="filteredDataRooms.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[10, 20, 30]"
+    showFirstLastButtons
+    (page)="currentPage = $event.pageIndex; pageSize = $event.pageSize; updatePagedData()"
+  >
+  </mat-paginator>
   </div>
 
   <!-- My Approval History Tab -->
   <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
-      <div class="table-container">
-      <table mat-table class="table">
-
-        <!-- Document Name -->
-        <ng-container matColumnDef="DocumentName">
-          <th mat-header-cell *matHeaderCellDef> DOCUMENT_NAME </th>
-          <td mat-cell *matCellDef="let document">
-            <span class="truncate-data" title="ArchivedFile.docx">ArchivedFile.docx</span>
-          </td>
-        </ng-container>
-
-        <!-- Approval Name -->
-        <ng-container matColumnDef="approverName">
-          <th mat-header-cell *matHeaderCellDef> APPROVAL_NAME </th>
-          <td mat-cell *matCellDef="let document"> Jane Smith </td>
-        </ng-container>
-
-        <!-- Approval Status -->
-        <ng-container matColumnDef="approvalstatus">
-          <th mat-header-cell *matHeaderCellDef> APPROVAL_STATUS </th>
-          <td mat-cell *matCellDef="let document"> Approved </td>
-        </ng-container>
-
-        <!-- Comments -->
-        <ng-container matColumnDef="comments">
-          <th mat-header-cell *matHeaderCellDef> Comments </th>
-          <td mat-cell *matCellDef="let document"> Looks good </td>
-        </ng-container>
-
-        <!-- Workflow -->
-        <ng-container matColumnDef="flowname">
-          <th mat-header-cell *matHeaderCellDef> WorkFlow Name </th>
-          <td mat-cell *matCellDef="let document"> Legal Review </td>
-        </ng-container>
-
-        <!-- Comment -->
-        <ng-container matColumnDef="comment">
-          <th mat-header-cell *matHeaderCellDef> Comment </th>
-          <td mat-cell *matCellDef="let document"> Approved without changes </td>
-        </ng-container>
-
-        <!-- Approval Step -->
-        <ng-container matColumnDef="approvalStep">
-          <th mat-header-cell *matHeaderCellDef> APPROVAL_SETP </th>
-          <td mat-cell *matCellDef="let document"> Step 2 </td>
-        </ng-container>
-
-        <!-- Action Date -->
-        <ng-container matColumnDef="transactionDate">
-          <th mat-header-cell *matHeaderCellDef> Action Date </th>
-          <td mat-cell *matCellDef="let document"> 30/06/2025 05:42:00 </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="['DocumentName', 'approverName', 'approvalstatus', 'comments', 'flowname', 'comment', 'approvalStep', 'transactionDate']; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['DocumentName', 'approverName', 'approvalstatus', 'comments', 'flowname', 'comment', 'approvalStep', 'transactionDate']"></tr>
-      </table>
+  <div class="table-container">
+       <table mat-table [dataSource]="pagedAuditLogs" matSort class="table">
+            <!-- Data Room Name Column -->
+            <ng-container matColumnDef="dataRoomName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Data Room</th>
+              <td mat-cell *matCellDef="let log">{{ log.dataRoomName }}</td>
+            </ng-container>
     
-
-   
-    </div>
-
-    <mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons></mat-paginator>
+            <!-- Document Name Column -->
+            <ng-container matColumnDef="documentName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>File Info</th>
+              <td mat-cell *matCellDef="let log">{{ log.documentName }}</td>
+            </ng-container>
+    
+            <!-- User Name Column -->
+            <ng-container matColumnDef="UserName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>User Name</th>
+              <td mat-cell *matCellDef="let log">{{ log.UserName }}</td>
+            </ng-container>
+    
+            <!-- Action Name Column -->
+            <ng-container matColumnDef="actionName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+              <td mat-cell *matCellDef="let log">{{ log.actionName }}</td>
+            </ng-container>
+    
+            <!-- Created By Column -->
+            <ng-container matColumnDef="actionBy">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Action By</th>
+              <td mat-cell *matCellDef="let log">{{ log.actionBy }}</td>
+            </ng-container>
+    
+            <!-- Created Date Column -->
+            <ng-container matColumnDef="actionDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Created Date</th>
+              <td mat-cell *matCellDef="let log">{{ log.actionDate | date:'MMMM dd, y' }}</td>
+            </ng-container>
+    
+            <!-- Header and Row Definitions -->
+            <tr mat-header-row *matHeaderRowDef="auditDisplayedColumns; sticky: true"></tr>
+            <tr mat-row *matRowDef="let row; columns: auditDisplayedColumns;"></tr>
+          </table>
+    
   </div>
+
+  <mat-paginator
+    [length]="filteredAuditLogs.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[10, 20, 30]"
+    showFirstLastButtons
+    (page)="currentPage = $event.pageIndex; pageSize = $event.pageSize; updatePagedAuditLogs()"
+  >
+  </mat-paginator>
+</div>
 </div>
     
     
@@ -290,79 +341,6 @@
     </div>
   </div>
 </main>
-
-
-
-  <!-- <mat-tab-group [(selectedIndex)]="selectedTabIndex">
-        <mat-tab label="Files in this Data Room" class="custom-tab">
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" *ngIf="files?.length">
-      
-      
-            <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef> Name </th>
-              <td mat-cell *matCellDef="let file"> {{ file.document.name }} </td>
-            </ng-container>
-      
-      
-            <ng-container matColumnDef="size">
-              <th mat-header-cell *matHeaderCellDef> Size </th>
-              <td mat-cell *matCellDef="let file"> {{ formatFileSize(file.document.documentSize) }} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="docType">
-              <th mat-header-cell *matHeaderCellDef> Type </th>
-              <td mat-cell *matCellDef="let file"> {{ file.document.docType }} </td>
-            </ng-container>
-      
-      
-            <ng-container matColumnDef="permission">
-              <th mat-header-cell *matHeaderCellDef> Permission </th>
-              <td mat-cell *matCellDef="let file"> {{ file.documentPermission }} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef> Actions </th>
-              <td mat-cell *matCellDef="let file">
-                <ng-container *ngIf="file.permissionFlags as perms">
-      
-                  <button mat-icon-button matTooltip="Download" (click)="downloadDocument(file.document)"
-                    [disabled]="!perms.canDownload">
-                    <mat-icon>download</mat-icon>
-                  </button>
-      
-                  <button mat-icon-button matTooltip="Edit" (click)="editFile(file)">
-      
-                    [disabled]="!perms.canEdit"
-                    <mat-icon>edit</mat-icon>
-                  </button>
-      
-                  <button mat-icon-button color="warn" matTooltip="Delete" (click)="deleteFile(file)">
-      
-                 [disabled]="!perms.canDelete"
-                    <mat-icon>delete</mat-icon>
-                  </button>
-      
-                  <button mat-icon-button matTooltip="View" (click)="viewFile(file)">
-      
-                   [disabled]="!perms.canView" 
-                    <mat-icon>visibility</mat-icon>
-                  </button>
-      
-                </ng-container>
-              </td>
-            </ng-container>
-      
-      
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      
-          </table>
-        </mat-tab>
-      
-        <mat-tab label="Audit Log" class="custom-tab">
-          <a>helo</a>
-        </mat-tab>
-      </mat-tab-group> -->
 
 
 

@@ -261,6 +261,14 @@
    "ADD_DOCUMENT": "إضافة مستند",
    "EXPIRES": "تاريخ الانتهاء:",
    "FILES_IN_THIS_DATA_ROOM": "الملفات في غرفة البيانات هذه",
-  "AUDIT_LOG": "سجل التدقيق"
+  "AUDIT_LOG": "سجل التدقيق",
+   "DOCUMENT_NAME": "اسم المستند",
+  "APPROVAL_NAME": "اسم الموافقة",
+  "APPROVAL_STATUS": "حالة الموافقة",
+  "COMMENTS": "تعليقات",
+  "WORKFLOW_NAME": "اسم سير العمل",
+  "COMMENT": "تعليق",
+  "APPROVAL_STEP": "خطوة الموافقة",
+  "ACTION_DATE": "تاريخ الإجراء"
 }
 }

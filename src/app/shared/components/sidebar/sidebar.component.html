@@ -1,31 +1,31 @@
 <aside class="app-sidebar" [class.collapsed]="collapsed">
   <div class="sidebar-menu">
-    <a href="#" class="menu-item" 
+    <!-- <a href="#" class="menu-item" 
        [class.active]="activeMenu === 'dashboard'" 
-       (click)="navigateTo('dashboard', '/layout/dashboard')">
+       (click)="navigateTo('dashboard', '/layout')">
       <i class="fas fa-dashboard"></i>
-     <span *ngIf="!collapsed">{{ 'SIDEBAR.DASHBOARD' | translate }}</span>
-    </a>
+      <span *ngIf="!collapsed">{{ 'SIDEBAR.DASHBOARD' | translate }}</span>
+    </a> -->
 
     <a class="menu-item" 
        [class.active]="activeMenu === 'dataRooms'" 
        (click)="navigateTo('dataRooms', '/layout')">
       <i class="fas fa-folder-open"></i>
-<span *ngIf="!collapsed">{{ 'SIDEBAR.ACTIVE_DATA_ROOMS' | translate }}</span>
+      <span *ngIf="!collapsed">{{ 'SIDEBAR.ACTIVE_DATA_ROOMS' | translate }}</span>
     </a>
 
     <a class="menu-item" 
        [class.active]="activeMenu === 'profile'" 
        (click)="navigateTo('profile', '/layout/profile')">
       <i class="fas fa-cog"></i>
-<span *ngIf="!collapsed">{{ 'SIDEBAR.PROFILE' | translate }}</span>
+      <span *ngIf="!collapsed">{{ 'SIDEBAR.PROFILE' | translate }}</span>
     </a>
 
     <a class="menu-item" 
        [class.active]="activeMenu === 'logout'" 
        (click)="setActiveMenu('logout'); onLogout()">
       <i class="fas fa-sign-out-alt"></i>
-<span *ngIf="!collapsed">{{ 'SIDEBAR.LOGOUT' | translate }}</span>
+      <span *ngIf="!collapsed">{{ 'SIDEBAR.LOGOUT' | translate }}</span>
     </a>
   </div>
 </aside>

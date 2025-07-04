@@ -4,7 +4,7 @@ import { EncryptionService } from '../services/encryption.service';
 
 @Component({
   selector: 'app-public-redirect',
-  template: '<p>Redirecting...</p>'
+  templateUrl: './public-redirect.component.html',
 })
 export class PublicRedirectComponent implements OnInit {
   constructor(
@@ -26,5 +26,9 @@ ngOnInit(): void {
     this.router.navigate(['/auth']);
   }
 }
+
+  navigateToHome() {
+    this.router.navigate(['/']);
+  }
 
 }

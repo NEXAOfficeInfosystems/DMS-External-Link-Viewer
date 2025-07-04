@@ -1,0 +1,25 @@
+/* Add this to file-viewer-dialog.component.scss for proper close button placement and appearance */
+
+:host ::ng-deep .mat-dialog-title {
+  position: relative;
+  padding-right: 48px; /* space for close button */
+}
+
+:host ::ng-deep .mat-dialog-title button[mat-icon-button] {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  background: transparent;
+  color: #666;
+  transition: color 0.2s;
+}
+
+:host ::ng-deep .mat-dialog-title button[mat-icon-button]:hover {
+  color: #d32f2f;
+  background: rgba(0,0,0,0.04);
+}
+
+:host ::ng-deep .mat-dialog-title mat-icon {
+  font-size: 24px;
+}

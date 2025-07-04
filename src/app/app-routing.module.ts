@@ -5,6 +5,7 @@ import { DataroomdetailsComponent } from './pages/dataroomdetails/dataroomdetail
 import { MainContentComponent } from './shared/components/main-content/main-content.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { PublicRedirectComponent } from './core/helpers/PublicRedirectComponent';
+import { ProfileDetailsComponent } from './pages/profile-details/profile-details.component';
 
 const routes: Routes = [
   {
@@ -17,9 +18,12 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     children: [
       { path: '', component: MainContentComponent },
-      { path: 'data-room-detail/:id', component: DataroomdetailsComponent }
+      { path: 'data-room-detail/:id', component: DataroomdetailsComponent },
+      { path: 'profile', component: ProfileDetailsComponent }
+
     ]
   },
+
   {
     path: 'p/:token',
     component: PublicRedirectComponent

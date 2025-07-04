@@ -14,6 +14,7 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { CommonService } from 'src/app/core/services/CommonService';
 import { CommonDialogService } from 'src/app/shared/components/common-dialog/common-dialog.service';
 import { TranslationService } from 'src/app/core/services/TranslationService';
+import { FileViewerDialogComponent } from '../file-viewer-dialog-component/file-viewer-dialog.component';
 
 interface DataRoom {
   id: string;
@@ -21,7 +22,7 @@ interface DataRoom {
   expires: string;
   users: number;
   files: number;
-  expirationDate:any;
+  expirationDate: any;
   userDetails?: any[];
   fileDetails?: any[];
   defaultPermissions?: any;
@@ -64,7 +65,7 @@ export class DataroomdetailsComponent implements OnInit {
   expiredDataSource = new MatTableDataSource<DataRoom>(this.expiredRooms);
   auditDataSource = new MatTableDataSource<AuditLog>(this.auditLogs);
 
-  displayedColumns: string[] = ['name', 'size', 'docType', 'permission', 'actions'];
+  displayedColumns: string[] = ['name', 'size', 'docType', 'permission', 'createdDate', 'actions'];
   auditDisplayedColumns: string[] = [
     'dataRoomName',
     'documentName',
@@ -77,6 +78,7 @@ export class DataroomdetailsComponent implements OnInit {
   @ViewChild('paginatorActive') paginatorActive!: MatPaginator;
   @ViewChild('paginatorExpired') paginatorExpired!: MatPaginator;
   @ViewChild('paginatorAudit') paginatorAudit!: MatPaginator;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   selectedTabIndex = 0;
 
@@ -109,14 +111,14 @@ export class DataroomdetailsComponent implements OnInit {
   canAddDocument: boolean = false;
 
   constructor(
-    private translationService :TranslationService,
+    private translationService: TranslationService,
     private dialog: MatDialog,
     private router: Router,
     private manageDataRoomService: DataRoomApiService,
     private toastrService: ToastrService,
     private route: ActivatedRoute
     ,
-    private commonDialogService : CommonDialogService,
+    private commonDialogService: CommonDialogService,
     private commonService: CommonService,
   ) {
     this.setCardView();
@@ -124,30 +126,38 @@ export class DataroomdetailsComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(this.route.snapshot.paramMap.get('id') )
-    this.dataRoomId =this.route.snapshot.paramMap.get('id') ;
+    console.log(this.route.snapshot.paramMap.get('id'))
+    this.dataRoomId = this.route.snapshot.paramMap.get('id');
     console.log('Decrypted Data Room ID:', this.dataRoomId);
     this.getAllRoomInfo();
     // this.getMockRoomInfo();
 
     // Set canAddDocument based on permissions
- 
+
   }
-  
 
 
-// ngOnInit(): void {
-//   this.route.paramMap.subscribe(params => {
-//     this.dataRoomId = params.get('id');
-//     this.getMockRoomInfo();
-//   });
-// }
+
+  // ngOnInit(): void {
+  //   this.route.paramMap.subscribe(params => {
+  //     this.dataRoomId = params.get('id');
+  //     this.getMockRoomInfo();
+  //   });
+  // }
 
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginatorActive;
     this.expiredDataSource.paginator = this.paginatorExpired;
     this.auditDataSource.paginator = this.paginatorAudit;
+
+    if (this.paginator) {
+      this.paginator.page.subscribe((event) => {
+        this.currentPage = event.pageIndex;
+        this.pageSize = event.pageSize;
+        this.updatePagedData();
+      });
+    }
   }
 
   @HostListener('window:resize', ['$event'])
@@ -205,23 +215,15 @@ export class DataroomdetailsComponent implements OnInit {
   applySearchToAllTabs() {
     const term = this.searchTerm.trim().toLowerCase();
 
-    if (term === '') {
-      this.filteredDataRooms = this.dataRooms;
+    if (term.length < 3) {
+      this.filteredDataRooms = this.files;
       this.filteredExpiredRooms = this.expiredRooms;
       this.filteredAuditLogs = this.auditLogs;
     } else {
-      this.filteredDataRooms = this.dataRooms.filter((room) =>
-        room.name.toLowerCase().includes(term) ||
-        room.expires.toLowerCase().includes(term) ||
-        room.users.toString().includes(term) ||
-        room.files.toString().includes(term)
-      );
-
-      this.filteredExpiredRooms = this.expiredRooms.filter((room) =>
-        room.name.toLowerCase().includes(term) ||
-        room.expires.toLowerCase().includes(term) ||
-        room.users.toString().includes(term) ||
-        room.files.toString().includes(term)
+      this.filteredDataRooms = this.files.filter((file) =>
+        (file.document?.name?.toLowerCase() || '').includes(term) ||
+        (file.documentId?.toLowerCase() || '').includes(term) ||
+        (file.documentPermission?.toLowerCase() || '').includes(term)
       );
 
       this.filteredAuditLogs = this.auditLogs.filter((log) =>
@@ -235,7 +237,6 @@ export class DataroomdetailsComponent implements OnInit {
     }
 
     this.updatePagedData();
-    this.updatePagedExpiredData();
     this.updatePagedAuditLogs();
   }
 
@@ -243,89 +244,86 @@ export class DataroomdetailsComponent implements OnInit {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
     return match ? match[2] : null;
   }
-canAddDocuments: boolean = false;
-getMockRoomInfo(): void {
-  const randomId = Math.floor(Math.random() * 1000);
+  canAddDocuments: boolean = false;
+  getMockRoomInfo(): void {
+    const randomId = Math.floor(Math.random() * 1000);
 
-  const res = {
-    dataRoom: {
-      id: randomId,
-      name: `Demo Data Room #${randomId}`,
-      expirationDate: '2025-12-31',
-      owner: 'owner@example.com',
-      createdBy: 'System Admin'
-    },
-    files: [
-      {
-        documentId: 'doc001',
-        document: { name: 'Company Financials.pdf' },
-        documentPermission: 'view,download'
+    const res = {
+      dataRoom: {
+        id: randomId,
+        name: `Demo Data Room #${randomId}`,
+        expirationDate: '2025-12-31',
+        owner: 'owner@example.com',
+        createdBy: 'System Admin'
       },
-      {
-        documentId: 'doc002',
-        document: { name: 'HR Policies.docx' },
-        documentPermission: 'view,edit'
-      },
-      {
-        documentId: 'doc003',
-        document: { name: 'Audit Report.xlsx' },
-        documentPermission: 'view,download,edit'
-      },
-      {
-        documentId: 'doc004',
-        document: { name: 'NDA Agreement.pdf' },
-        documentPermission: 'view'
+      files: [
+        {
+          documentId: 'doc001',
+          document: { name: 'Company Financials.pdf' },
+          documentPermission: 'view,download'
+        },
+        {
+          documentId: 'doc002',
+          document: { name: 'HR Policies.docx' },
+          documentPermission: 'view,edit'
+        },
+        {
+          documentId: 'doc003',
+          document: { name: 'Audit Report.xlsx' },
+          documentPermission: 'view,download,edit'
+        },
+        {
+          documentId: 'doc004',
+          document: { name: 'NDA Agreement.pdf' },
+          documentPermission: 'view'
+        }
+      ],
+      permission: {
+        userPermission: 'view,download,edit',
+        dataRoomPermission: 'add,delete'
       }
-    ],
-    permission: {
-      userPermission: 'view,download,edit',
-      dataRoomPermission: 'add,delete'
-    }
-  };
+    };
 
-  this.dataRoom = res.dataRoom;
-console.log(this.dataRoom)
-  if (this.commonHeader) {
-    this.commonHeader.dataRoom = this.dataRoom;
+    this.dataRoom = res.dataRoom;
+    console.log(this.dataRoom)
+    if (this.commonHeader) {
+      this.commonHeader.dataRoom = this.dataRoom;
+    }
+
+    this.files = res.files;
+
+    this.userPermission = res.permission?.userPermission || '';
+    this.dataRoomPermission = res.permission?.dataRoomPermission || '';
+
+    this.documentPermissions = this.files.map(f => ({
+      documentId: f.documentId,
+      permission: f.documentPermission,
+      documentName: f.document?.name
+    }));
+
+    this.files = this.files.map(file => ({
+      ...file,
+      permissionFlags: {
+        canView: this.hasPermission(file, 'view'),
+        canDownload: this.hasPermission(file, 'download'),
+        canEdit: this.hasPermission(file, 'edit'),
+        canDelete: this.hasPermission(file, 'delete')
+      }
+    }));
+
+    this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
+    this.dataSource.data = this.files;
+
+    console.log('Mock Files with permissions:', this.files);
   }
-
-  this.files = res.files;
-
-  this.userPermission = res.permission?.userPermission || '';
-  this.dataRoomPermission = res.permission?.dataRoomPermission || '';
-
-  this.documentPermissions = this.files.map(f => ({
-    documentId: f.documentId,
-    permission: f.documentPermission,
-    documentName: f.document?.name
-  }));
-
-  this.files = this.files.map(file => ({
-    ...file,
-    permissionFlags: {
-      canView: this.hasPermission(file, 'view'),
-      canDownload: this.hasPermission(file, 'download'),
-      canEdit: this.hasPermission(file, 'edit'),
-      canDelete: this.hasPermission(file, 'delete')
-    }
-  }));
-
-  this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
-  this.dataSource.data = this.files;
-
-  console.log('Mock Files with permissions:', this.files);
-}
 
   getAllRoomInfo() {
     const MasterUserId = this.getCookie('MasterUserId') || '';
     this.manageDataRoomService.getDataRoomDetailsById(MasterUserId, this.dataRoomId)
       .subscribe((res: any) => {
         console.log('Data Room Details:', res);
-
         this.dataRoom = res.dataRoom;
-
-
-         if (this.commonHeader) {
+        if (this.commonHeader) {
           this.commonHeader.dataRoom = this.dataRoom;
         }
         this.files = res.files || [];
@@ -338,61 +336,74 @@ console.log(this.dataRoom)
           permission: f.documentPermission,
           documentName: f.document?.name
         }));
-     this.files = this.files.map(file => ({
-        ...file,
-        permissionFlags: {
-          canView: this.hasPermission(file, 'view'),
-          canDownload: this.hasPermission(file, 'download'),
-          canEdit: this.hasPermission(file, 'edit'),
-          canDelete: this.hasPermission(file, 'delete')
-        }
-      }));
-
-console.log('Files with permissions:', this.files);
-      this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
+        this.files = this.files.map(file => ({
+          ...file,
+          permissionFlags: {
+            canView: this.hasPermission(file, 'view'),
+            canDownload: this.hasPermission(file, 'download'),
+            canEdit: this.hasPermission(file, 'edit'),
+            canDelete: this.hasPermission(file, 'delete')
+          }
+        }));
+        this.filteredDataRooms = this.files;
+        console.log('Files with permissions:', this.files);
+        this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
         this.dataSource.data = this.files;
+        this.updatePagedData();
+
+        // --- AUDIT LOGS MAPPING ---
+        this.auditLogs = (res.auditLogs || []).map((log: any) => ({
+          dataRoomName: log.dataRoomName,
+          documentName: log.documentName,
+          UserName: log.createdByName || log.UserName || '',
+          actionName: log.actionName,
+          actionBy: log.createdByName || log.actionBy || '',
+          actionDate: log.createdDate || log.actionDate || ''
+        }));
+        this.filteredAuditLogs = this.auditLogs;
+        this.updatePagedAuditLogs();
       });
   }
 
   openUploadModal(): void {
-     const dialogRef = this.dialog.open(UploadDocDataRoomComponent, {
+    const dialogRef = this.dialog.open(UploadDocDataRoomComponent, {
       width: '50vw',
-      height:'60vh',
+      height: '60vh',
       disableClose: true,
-      data: {dataRoomId: this.dataRoomId ,DataRoom:this.dataRoom}
+      data: { dataRoomId: this.dataRoomId, DataRoom: this.dataRoom }
     });
 
-      dialogRef.componentInstance.dataChanged.subscribe(() => {
+    dialogRef.componentInstance.dataChanged.subscribe(() => {
       console.log('Data changed in UploadDocDataRoomComponent');
       this.getAllRoomInfo();
-  });
+    });
   }
 
-hasPermission(fileOrRoom: any, action: 'view' | 'download' | 'edit' | 'delete' | 'add'): boolean {
-  const documentPermission = fileOrRoom?.documentPermission?.toLowerCase?.();
-  const dataRoomPermission = this.dataRoomPermission?.toLowerCase();
-  const userPermission = this.userPermission?.toLowerCase();
-  const masterUserId = this.getCookie('MasterUserId');
+  hasPermission(fileOrRoom: any, action: 'view' | 'download' | 'edit' | 'delete' | 'add'): boolean {
+    const documentPermission = fileOrRoom?.documentPermission?.toLowerCase?.();
+    const dataRoomPermission = this.dataRoomPermission?.toLowerCase();
+    const userPermission = this.userPermission?.toLowerCase();
+    const masterUserId = this.getCookie('MasterUserId');
 
-  const effectivePermission = documentPermission || dataRoomPermission || userPermission;
+    const effectivePermission = documentPermission || dataRoomPermission || userPermission;
 
-  switch (action) {
-    case 'view':
-      return ['view', 'view_download', 'contributor', 'editor'].includes(effectivePermission);
-    case 'download':
-      return ['view_download', 'contributor', 'editor'].includes(effectivePermission);
-    case 'edit':
-      return ['contributor', 'editor'].includes(effectivePermission);
-    case 'delete':
-      return effectivePermission === 'editor' ||
-             fileOrRoom?.document?.createdBy?.toLowerCase() === masterUserId?.toLowerCase();
-    case 'add':
-   
-      return ['contributor', 'editor'].includes(dataRoomPermission || userPermission);
-    default:
-      return false;
+    switch (action) {
+      case 'view':
+        return ['view', 'view_download', 'contributor', 'editor'].includes(effectivePermission);
+      case 'download':
+        return ['view_download', 'contributor', 'editor'].includes(effectivePermission);
+      case 'edit':
+        return ['contributor', 'editor'].includes(effectivePermission);
+      case 'delete':
+        return effectivePermission === 'editor' ||
+          fileOrRoom?.document?.createdBy?.toLowerCase() === masterUserId?.toLowerCase();
+      case 'add':
+
+        return ['contributor', 'editor'].includes(dataRoomPermission || userPermission);
+      default:
+        return false;
+    }
   }
-}
 
 
   downloadDocument(documentInfo: any) {
@@ -404,7 +415,7 @@ hasPermission(fileOrRoom: any, action: 'view' | 'download' | 'edit' | 'delete' |
 
           console.log('Download event:', event);
           if (event.type === HttpEventType.Response) {
-         this.downloadFile(event, documentInfo);
+            this.downloadFile(event, documentInfo);
           }
         },
         error: (error: any) => {
@@ -416,45 +427,45 @@ hasPermission(fileOrRoom: any, action: 'view' | 'download' | 'edit' | 'delete' |
 
 
   private downloadFile(data: HttpResponse<Blob>, documentInfo: any) {
-  const blobData = data.body;
+    const blobData = data.body;
 
-  if (!blobData || blobData.size === 0) {
-    this.toastrService.error('Download failed: file is empty.');
-    return;
+    if (!blobData || blobData.size === 0) {
+      this.toastrService.error('Download failed: file is empty.');
+      return;
+    }
+
+    const mimeType = data.headers.get('Content-Type') || 'application/octet-stream';
+    const blob = new Blob([blobData], { type: mimeType });
+
+    // Extract extension from URL (e.g. .pdf)
+    const extensionFromUrl = this.getFileExtensionFromUrl(documentInfo.url);
+    const safeName = documentInfo.name?.trim().replace(/\s+/g, '_') || 'downloaded_file';
+
+    // Ensure extension is appended if not already
+    const fileName = safeName.endsWith(extensionFromUrl) ? safeName : `${safeName}${extensionFromUrl}`;
+
+    console.log('Content-Type:', mimeType);
+    console.log('Blob size:', blobData.size);
+    console.log('Download filename:', fileName);
+
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = URL.createObjectURL(blob);
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
   }
 
-  const mimeType = data.headers.get('Content-Type') || 'application/octet-stream';
-  const blob = new Blob([blobData], { type: mimeType });
-
-  // Extract extension from URL (e.g. .pdf)
-  const extensionFromUrl = this.getFileExtensionFromUrl(documentInfo.url);
-  const safeName = documentInfo.name?.trim().replace(/\s+/g, '_') || 'downloaded_file';
-
-  // Ensure extension is appended if not already
-  const fileName = safeName.endsWith(extensionFromUrl) ? safeName : `${safeName}${extensionFromUrl}`;
-
-  console.log('Content-Type:', mimeType);
-  console.log('Blob size:', blobData.size);
-  console.log('Download filename:', fileName);
-
-  const a = document.createElement('a');
-  a.style.display = 'none';
-  a.href = URL.createObjectURL(blob);
-  a.download = fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(a.href);
-}
 
 
 
-
-private getFileExtensionFromUrl(url: string): string {
-  if (!url) return '';
-  const parts = url.split('.');
-  return parts.length > 1 ? `.${parts.pop()}` : '';
-}
+  private getFileExtensionFromUrl(url: string): string {
+    if (!url) return '';
+    const parts = url.split('.');
+    return parts.length > 1 ? `.${parts.pop()}` : '';
+  }
 
 
 
@@ -485,7 +496,7 @@ private getFileExtensionFromUrl(url: string): string {
 
   updatePagedData() {
     const startIndex = this.currentPage * this.pageSize;
-    this.pagedDataRooms = this.filteredDataRooms.slice(startIndex, startIndex + this.pageSize);
+    this.pagedDataRooms = this.files.slice(startIndex, startIndex + this.pageSize);
   }
 
   updatePagedExpiredData() {
@@ -506,43 +517,133 @@ private getFileExtensionFromUrl(url: string): string {
 
 
 
-  
-deleteFile(data: any) {
 
-  console.log('Deleting file:', data);
-  this.sub$.add(
-    this.commonDialogService
-      .deleteConformationDialog(`${this.translationService.getValue('ARE_YOU_SURE_YOU_WANT_TO_DELETE')}?`)
-      .subscribe((isTrue: boolean) => {
-        if (isTrue) {
-          data.dataRoomId = this.dataRoomId;
+  deleteFile(data: any) {
 
-          console.log(data, 'data in deleteDataRoomFile');
+    console.log('Deleting file:', data);
+    this.sub$.add(
+      this.commonDialogService
+        .deleteConformationDialog(`${this.translationService.getValue('ARE_YOU_SURE_YOU_WANT_TO_DELETE')}?`)
+        .subscribe((isTrue: boolean) => {
+          if (isTrue) {
+            data.dataRoomId = this.dataRoomId;
+            data.UserId = this.getCookie('MasterUserId') || '';
 
-          // this.manageDataRoomService.deleteDocumentFromDataRoom().subscribe(
-          //   (response: any) => {
-          //     this.toastrService.success('Document deleted successfully.');
-          //     this.getAllRoomInfo();
-          //   },
-          //   (error: any) => {
-          //     this.toastrService.error('Failed to delete document.',);
-          //     console.error('Error deleting data room file:', error);
-          //   }
-          // );
-        }
-      })
-  );
-}
+            console.log(data, 'data in deleteDataRoomFile');
 
+            this.manageDataRoomService.deleteDocumentFromDataRoom(data.documentId, data.dataRoomId, data.UserId).subscribe(
+              (response: any) => {
+                this.toastrService.success('Document deleted successfully.');
+                this.getAllRoomInfo();
+              },
+              (error: any) => {
+                this.toastrService.error('Failed to delete document.',);
+                console.error('Error deleting data room file:', error);
+              }
+            );
+          }
+        })
+    );
+  }
+
+
+
+  isAudioFile(url: string): boolean {
+    const imageExtensions = ["3gp", "aa", "aac", "aax", "act", "aiff", "alac", "amr", "ape", "au", "awb", "dss", "dvf", "flac", "gsm", "iklx", "ivs", "m4a", "m4b", "m4p", "mmf", "mp3", "mpc", "msv", "nmf", "ogg", "oga", "mogg", "opus", "org", "ra", "rm", "raw", "rf64", "sln", "tta", "voc", "vox", "wav", "wma", "wv"];
+    return imageExtensions.includes(this.getFileExtension(url));
+  }
+
+  isVideoFile(url: string): boolean {
+    const imageExtensions = ["webm", "flv", "vob", "ogv", "ogg", "drc", "avi", "mts", "m2ts", "wmv", "yuv", "viv", "mp4", "m4p", "3pg", "flv", "f4v", "f4a"];
+    return imageExtensions.includes(this.getFileExtension(url));
+  }
+
+  isImageFile(url: string): boolean {
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "tiff", "psd", "bmp", "webp", "raw", "heif", "indd", "svg", "ai", "eps"];
+    return imageExtensions.includes(this.getFileExtension(url));
+  }
+
+  getFileExtension(url: string): string {
+    return url.split('.').pop()?.toLowerCase() || '';
+  }
   editFile(file: any): void {
     console.log('Editing file:', file);
     // Add logic for editing the file
   }
-
   viewFile(file: any): void {
-    console.log('Viewing file:', file);
-    // Add logic for viewing the file
+
+    console.log(file)
+    const documentId = file?.documentId;
+    if (!documentId) {
+      this.toastrService.error('Invalid document ID.');
+      return;
+    }
+
+  this.commonService.downloadDocument(documentId, false).subscribe({
+  next: (event: any) => {
+    if (event.type === HttpEventType.Response) {
+      const response = event as HttpResponse<Blob>;
+      const blobB = response.body;
+
+      if (!blobB || blobB.size === 0) {
+        this.toastrService.error(this.translationService.getValue('ERROR_WHILE_DOWNLOADING_DOCUMENT'));
+        return;
+      }
+
+      // Get extension from URL
+      const extension = file.document.url?.split('.')?.pop()?.toLowerCase() || '';
+      const contentType = this.getMimeTypeFromExtension(extension) || 'application/octet-stream'; // fallback
+
+      // Create blob with correct content type
+      const blob = new Blob([response.body!], { type: contentType });
+
+      const safeName = (file?.document?.name || 'document').replace(/\s+/g, '_');
+      const finalName = safeName.endsWith(extension) ? safeName : `${safeName}.${extension}`;
+
+      const dialogRef = this.dialog.open(FileViewerDialogComponent, {
+        width: '80vw',
+        height: '80vh',
+        data: {
+          id: file?.documentId,
+          url: file.document.url,
+          fileUrl: "",
+          fileName: file.document.name,
+          fileExtension: extension,
+          Documents: file?.document
+        },
+        disableClose: true
+      });
+
+      dialogRef.afterOpened().subscribe(() => {
+        dialogRef.componentInstance.showFileFromBlob(blob, finalName, extension);
+      });
+
+      dialogRef.afterClosed().subscribe(() => {
+        // Optional: URL cleanup if using createObjectURL
+      });
+    }
+  },
+  error: () => {
+    this.toastrService.error(this.translationService.getValue('ERROR_WHILE_DOWNLOADING_DOCUMENT'));
   }
+});
+
+  }
+
+getMimeTypeFromExtension(extension: string): string {
+  const map: { [key: string]: string } = {
+    'pdf': 'application/pdf',
+    'png': 'image/png',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'txt': 'text/plain',
+    'doc': 'application/msword',
+    'docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'xls': 'application/vnd.ms-excel',
+    'xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  };
+  return map[extension.toLowerCase()] || '';
+}
 
   onTabChange(event: MatTabChangeEvent): void {
     this.selectedTabIndex = event.index;

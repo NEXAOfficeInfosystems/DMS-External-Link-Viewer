@@ -50,9 +50,11 @@ export class SidebarComponent implements OnInit {
   navigateTo(menu: string, route: string) {
     this.setActiveMenu(menu);
 
-    // Special handling if using encrypted route
     if (menu === 'dataRooms') {
       const token = EncryptionService.encryptToToken(route);
+      this.router.navigate(['/p', token]);
+    } else if (menu === 'profile') {
+         const token = EncryptionService.encryptToToken(route);
       this.router.navigate(['/p', token]);
     } else {
       this.router.navigate([route]);

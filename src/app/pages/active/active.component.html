@@ -47,4 +47,13 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+
+  <mat-paginator
+    [length]="filteredDataRooms.length"
+    [pageSize]="pageSize"
+    [pageSizeOptions]="[10, 20, 30]"
+    showFirstLastButtons
+    (page)="currentPage = $event.pageIndex; pageSize = $event.pageSize; updatePagedData()"
+  >
+  </mat-paginator>
 </div>

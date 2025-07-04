@@ -178,7 +178,7 @@
           <label class="remember">
             <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" [ngModelOptions]="{standalone: true}" /> Remember me
           </label>
-          <a (click)="openForgotPasswordSection($event)">Forgot password?</a>
+          <!-- <a (click)="openForgotPasswordSection($event)">Forgot password?</a> -->
         </div>
 
         <button type="submit" class="submit-btn" [disabled]="loading" (click)="onLoginSubmit()">

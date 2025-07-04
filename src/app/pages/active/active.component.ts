@@ -68,6 +68,7 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
   @ViewChild('paginatorActive') paginatorActive!: MatPaginator;
   @ViewChild('paginatorExpired') paginatorExpired!: MatPaginator;
   @ViewChild('paginatorAudit') paginatorAudit!: MatPaginator;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   selectedTabIndex = 0;
 
@@ -197,6 +198,14 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
     this.dataSource.paginator = this.paginatorActive;
     this.expiredDataSource.paginator = this.paginatorExpired;
     this.auditDataSource.paginator = this.paginatorAudit;
+
+    if (this.paginator) {
+      this.paginator.page.subscribe((event: PageEvent) => {
+        this.currentPage = event.pageIndex;
+        this.pageSize = event.pageSize;
+        this.updatePagedData();
+      });
+    }
   }
 
   @HostListener('window:resize', ['$event'])

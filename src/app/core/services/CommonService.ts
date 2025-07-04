@@ -25,6 +25,20 @@ export class CommonService {
     return crypto.randomUUID();
   }
 
+   getDocumentToken(documentId: string): Observable<{ [key: string]: string }> {
+    const url = `${this.BaseapiUrl}/api/documentToken/${documentId}/token`;
+
+    return this.httpClient.get<{ [key: string]: string }>(url);
+  }
+
+
+
+  getDocumenturl(documentId: string): Observable<{ [key: string]: string }> {
+    const url = `${this.BaseapiUrl}/api/documentToken/${documentId}/url`;
+
+    return this.httpClient.get<{ [key: string]: string }>(url);
+  }
+
 downloadDocument(documentId: string, isVersion: boolean): Observable<HttpEvent<Blob>> {
   const url = `${this.BaseapiUrl}/api/DocumentUpload/Download/${documentId}?isVersion=${isVersion}`;
   return this.httpClient.get(url, {
@@ -33,6 +47,8 @@ downloadDocument(documentId: string, isVersion: boolean): Observable<HttpEvent<B
     responseType: 'blob',
   });
 }
+
+
 
 
 }

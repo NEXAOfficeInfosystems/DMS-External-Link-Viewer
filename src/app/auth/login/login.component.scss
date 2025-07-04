@@ -131,7 +131,7 @@ label, .submit-btn {
   h2 {
     margin-bottom: 10px;
     color: #111827;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .form-group {
@@ -140,11 +140,12 @@ label, .submit-btn {
     label {
       display: block;
       font-weight: 600;
+      font-size: 12px;
       margin-bottom: 6px;
     }
 
     input {
-      width: 90%;
+      width: 100%;
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #ccc;
@@ -171,10 +172,10 @@ label, .submit-btn {
     border-radius: 6px;
     padding: 12px 16px;
     margin-bottom: 10px;
-      width: 90%;
+      width:100%;
 
     .captcha-code {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       letter-spacing: 3px;
       color: #111827;

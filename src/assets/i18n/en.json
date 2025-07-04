@@ -734,7 +734,15 @@
    "ADD_DOCUMENT": "Add Document",
    "EXPIRES": "Expires:",
    "FILES_IN_THIS_DATA_ROOM": "Files in this Data Room",
-  "AUDIT_LOG": "Audit Log"
+  "AUDIT_LOG": "Audit Log",
+  "DOCUMENT_NAME": "Document Name",
+  "APPROVAL_NAME": "Approval Name",
+  "APPROVAL_STATUS": "Approval Status",
+  "COMMENTS": "Comments",
+  "WORKFLOW_NAME": "Workflow Name",
+  "COMMENT": "Comment",
+  "APPROVAL_STEP": "Approval Step",
+  "ACTION_DATE": "Action Date"
 }
 }
 

@@ -56,6 +56,16 @@ this.getUserDetailsById(response.user.id)
 
   // ...
 // for user
+
+updateUserDetails(userDetails: any): Observable<any | CommonError> {
+  const apiUrl = `${this.BaseapiUrl}/api/UserInformation/UpdateUserDetails`;
+  return this.httpClient.put<any>(apiUrl, userDetails).pipe(
+    map(response => response),
+    catchError((error: HttpErrorResponse) => {
+      return throwError(() => error.error as CommonError);
+    })
+  );}
+
  getAllActiveExpiredDataRooms(masterUserId: string): Observable<any> {
 
    const apiUrl = `${this.BaseapiUrl}/api/ActiveExpiredAuditRoom`;
@@ -77,6 +87,9 @@ getDataRoomDetailsById(userId: any, dataroomid: any): Observable<any | CommonErr
 
 
 deleteDocumentFromDataRoom(documentId: any, dataRoomId: any, deletedBy: any): Observable<any> {
+
+  
+
   const url = `${this.BaseapiUrl}/api/DocumentUpload/DeleteFromDataRoom?documentId=${documentId}&dataRoomId=${dataRoomId}&deletedBy=${deletedBy}`;
   return this.httpClient.delete(url);
 }
