@@ -749,3 +749,119 @@ button.toast-close-button {
 .redirect-button:hover {
   background-color: #0056b3;
 }
+
+
+.no-data-message {
+  height: 55vh;
+  width: 95%;
+  margin: auto;
+  align-content: center;
+  align-items: center;
+  background-color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  color: #333;
+  font-size: 16px;
+}
+
+
+
+@media (min-width: 992px)and (max-width: 1410px) {
+
+  .no-data-message {
+    height: 59.5vh;
+    width: 99.5%;
+    margin: auto;
+    align-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    color: #333;
+    font-size: 16px;
+  }
+}
+
+@media (min-width: 1411px) and (max-width: 1585px) {
+
+  .no-data-message {
+    height: 63.5vh;
+    width: 99.5%;
+    margin: auto;
+    align-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    color: #333;
+    font-size: 16px;
+  }
+
+}
+
+@media (min-width: 1586px)and (max-width: 1691px) {
+  .no-data-message {
+    height: 59vh;
+    width: 100%;
+    margin: auto;
+    align-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    color: #333;
+    font-size: 16px;
+  }
+}
+
+
+@media (min-width: 1692px)and (max-width: 1902px) {
+  .no-data-message {
+    height: 67vh;
+    width: 99.5%;
+    margin: auto;
+    align-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    color: #333;
+    font-size: 16px;
+  }
+}
+
+
+@media (min-width: 1903px)and (max-width: 2559px) {
+  .no-data-message {
+    height: 69.5vh;
+    width: 99.5%;
+    margin: auto;
+    align-content: center;
+    align-items: center;
+    background-color: white;
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    color: #333;
+    font-size: 16px;
+  }
+}
+
+
+
+.data-room-grid, .file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}

@@ -96,7 +96,7 @@ export class DataroomdetailsComponent implements OnInit {
 
   searchExpanded: boolean = false;
   searchTerm: string = '';
-  filteredDataRooms: DataRoom[] = [];
+  filteredDataRooms: any[] = [];
   filteredExpiredRooms: DataRoom[] = [];
   filteredAuditLogs: AuditLog[] = [];
 
@@ -109,6 +109,12 @@ export class DataroomdetailsComponent implements OnInit {
   userPermission: string = '';
   dataRoomPermission: string = '';
   canAddDocument: boolean = false;
+
+  // Sorting properties for matSort
+  activeSort = 'name';
+  sortDirection: 'asc' | 'desc' = 'asc';
+  auditActiveSort = 'dataRoomName';
+  auditSortDirection: 'asc' | 'desc' = 'asc';
 
   constructor(
     private translationService: TranslationService,
@@ -179,6 +185,15 @@ export class DataroomdetailsComponent implements OnInit {
     } else if (this.selectedTabIndex === 1) {
       this.isExpiredListView = !this.isExpiredListView;
       this.isExpiredListView ? this.setListView() : this.setCardView();
+    }
+  }
+  getDocumentSize(sizeInKB: number): string {
+    if (sizeInKB < 1024) {
+      return `${sizeInKB.toFixed(2)} KB`;
+    } else if (sizeInKB < 1048576) {
+      return `${(sizeInKB / 1024).toFixed(2)} MB`;
+    } else {
+      return `${(sizeInKB / 1048576).toFixed(2)} GB`;
     }
   }
 
@@ -655,6 +670,33 @@ getMimeTypeFromExtension(extension: string): string {
     } else if (this.selectedTabIndex === 1) {
       console.log('Audit Log tab selected');
     }
+  }
+
+  onSortChange(event: {active: string, direction: string}) {
+    this.activeSort = event.active;
+    this.sortDirection = event.direction as 'asc' | 'desc';
+   
+    this.filteredDataRooms = [...this.filteredDataRooms].sort((a: any, b: any) => {
+      const aValue = (a.document?.[event.active] || a[event.active] || '').toString().toLowerCase();
+      const bValue = (b.document?.[event.active] || b[event.active] || '').toString().toLowerCase();
+      if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+    this.updatePagedData();
+  }
+
+  onAuditSortChange(event: {active: string, direction: string}) {
+    this.auditActiveSort = event.active;
+    this.auditSortDirection = event.direction as 'asc' | 'desc';
+    this.filteredAuditLogs = [...this.filteredAuditLogs].sort((a: any, b: any) => {
+      const aValue = (a[event.active] || '').toString().toLowerCase();
+      const bValue = (b[event.active] || '').toString().toLowerCase();
+      if (aValue < bValue) return this.auditSortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return this.auditSortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+    this.updatePagedAuditLogs();
   }
 
   ngOnDestroy() {

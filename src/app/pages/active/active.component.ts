@@ -97,6 +97,10 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
   userPermissions: any[] = [];
   documentPermissions: any[] = [];
 
+  // Sorting properties for matSort
+  activeSort = 'name';
+  sortDirection: 'asc' | 'desc' = 'asc';
+
   constructor(
     private dialog: MatDialog,
     private router: Router,
@@ -110,89 +114,6 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
   ngOnInit() {
     this.getAllRoomInfo();
   }
-
-//   ngOnInit() {
-//   // this.getAllRoomInfo();
-
-//   // --- Dummy Active Rooms ---
-//   const dummyActiveRooms = [
-//     {
-//       id: 1,
-//       name: 'Project Alpha',
-//       expires: '12/12/2025',
-//       permission: 'Editor',
-//       files: 2,
-//       documents: [
-//         { id: 101, name: 'Design Spec.pdf', url: '/files/spec.pdf', size: '1.2MB', type: 'pdf' },
-//         { id: 102, name: 'Overview.docx', url: '/files/overview.docx', size: '850KB', type: 'docx' }
-//       ]
-//     },
-//     {
-//       id: 2,
-//       name: 'HR Policies',
-//       expires: 'No Expiry',
-//       permission: 'Viewer',
-//       files: 1,
-//       documents: [
-//         { id: 103, name: 'HR_Guidelines.pdf', url: '/files/hr.pdf', size: '500KB', type: 'pdf' }
-//       ]
-//     }
-//   ];
-
-//   // --- Dummy Expired Rooms ---
-//   const dummyExpiredRooms = [
-//     {
-//       id: 3,
-//       name: 'Q1 Reports',
-//       expires: '03/31/2024',
-//       permission: 'Admin',
-//       files: 3,
-//       documents: [
-//         { id: 104, name: 'Summary.xlsx', url: '/files/summary.xlsx', size: '2MB', type: 'xlsx' },
-//         { id: 105, name: 'Budget.pdf', url: '/files/budget.pdf', size: '750KB', type: 'pdf' },
-//         { id: 106, name: 'Forecast.ppt', url: '/files/forecast.ppt', size: '1.5MB', type: 'ppt' }
-//       ]
-//     }
-//   ];
-
-//   // --- Dummy Audit Logs ---
-//   const dummyAuditLogs = [
-//     {
-//       dataRoomName: 'Project Alpha',
-//       documentName: 'Design Spec.pdf',
-//       UserName: 'John Doe',
-//       actionName: 'Viewed',
-//       actionBy: 'John Doe',
-//       actionDate: '06/24/2025'
-//     },
-//     {
-//       dataRoomName: 'HR Policies',
-//       documentName: 'HR_Guidelines.pdf',
-//       UserName: 'Jane Smith',
-//       actionName: 'Downloaded',
-//       actionBy: 'Jane Smith',
-//       actionDate: '06/22/2025'
-//     },
-//     {
-//       dataRoomName: 'Q1 Reports',
-//       documentName: 'Budget.pdf',
-//       UserName: 'Admin User',
-//       actionName: 'Deleted',
-//       actionBy: 'Admin User',
-//       actionDate: '03/30/2024'
-//     }
-//   ];
-
-//   this.dataRooms = dummyActiveRooms;
-//   this.filteredDataRooms = dummyActiveRooms;
-//   this.expiredRooms = dummyExpiredRooms;
-//   this.auditLogs = dummyAuditLogs;
-//   this.filteredAuditLogs = dummyAuditLogs;
-
-//   this.updatePagedData?.();
-//   this.updatePagedAuditLogs?.();
-// }
-
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginatorActive;
@@ -437,5 +358,19 @@ deleteExpiredDataRoom(room: DataRoom): void {
 
   ngOnDestroy() {
     this.sub$.unsubscribe();
+  }
+
+  // Sorting logic
+  onSortChange(event: {active: string, direction: string}) {
+    this.activeSort = event.active;
+    this.sortDirection = event.direction as 'asc' | 'desc';
+    this.filteredDataRooms = [...this.filteredDataRooms].sort((a: any, b: any) => {
+      const aValue = (a[event.active] || '').toString().toLowerCase();
+      const bValue = (b[event.active] || '').toString().toLowerCase();
+      if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
+      if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+    this.updatePagedData();
   }
 }

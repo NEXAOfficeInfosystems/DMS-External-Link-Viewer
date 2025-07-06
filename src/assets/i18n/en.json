@@ -723,26 +723,23 @@
 },
 "DATA_ROOM_DETAILS": {
   "NAME": "Name",
+  "NAME_SHORT": "Name",
   "SIZE": "Size",
+  "SIZE_SHORT": "Size",
   "TYPE": "Type",
   "PERMISSION": "Permission",
+  "CREATED_DATE": "Created Date",
   "ACTIONS": "Actions",
-  "DOWNLOAD": "Download",
-  "EDIT": "Edit",
-  "DELETE": "Delete",
-  "VIEW": "View",
-   "ADD_DOCUMENT": "Add Document",
-   "EXPIRES": "Expires:",
-   "FILES_IN_THIS_DATA_ROOM": "Files in this Data Room",
+  "DATA_ROOM": "Data Room",
+  "DATA_ROOM_SHORT": "Room",
+  "FILE_INFO": "File Info",
+  "USER_NAME": "User Name",
+  "ACTION": "Action",
+  "ACTION_BY": "Action By",
   "AUDIT_LOG": "Audit Log",
-  "DOCUMENT_NAME": "Document Name",
-  "APPROVAL_NAME": "Approval Name",
-  "APPROVAL_STATUS": "Approval Status",
-  "COMMENTS": "Comments",
-  "WORKFLOW_NAME": "Workflow Name",
-  "COMMENT": "Comment",
-  "APPROVAL_STEP": "Approval Step",
-  "ACTION_DATE": "Action Date"
+  "FILES_IN_THIS_DATA_ROOM": "Files in this Data Room",
+  "ADD_DOCUMENT": "Add Document",
+  "EXPIRES": "Expires"
 }
 }
 

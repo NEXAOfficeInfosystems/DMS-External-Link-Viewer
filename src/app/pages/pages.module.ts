@@ -22,6 +22,8 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { SafeUrlPipe } from './safe-url.pipe';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileDetailsModule } from './profile-details/profile-details.module';
+import { MatGridListModule } from '@angular/material/grid-list'; // Import MatGridListModule
+import { MatCardModule } from '@angular/material/card'; // Import MatCardModule
 
 
 @NgModule({
@@ -49,6 +51,8 @@ import { ProfileDetailsModule } from './profile-details/profile-details.module';
     FormsModule,
     TranslateModule,
     MatTooltipModule,
+    MatGridListModule,
+    MatCardModule,
   ],
   exports : [
     DataroomdetailsComponent
