@@ -21,6 +21,7 @@ ngOnInit(): void {
   if (token && !this.shortCode)  {
     try {
       const path = EncryptionService.decryptFromToken(token);
+      
       this.router.navigateByUrl(path, { skipLocationChange: true });
     } catch (err) {
       const urlParams = new URLSearchParams(window.location.search);

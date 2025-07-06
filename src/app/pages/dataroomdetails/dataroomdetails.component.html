@@ -9,7 +9,7 @@
     
         <div class="expires-info d-flex align-center gap-1">
           <mat-icon class="calendar-icon small">calendar_today</mat-icon>
-          <span class="expire-label">{{ 'DATA_ROOM_DETAILS.EXPIRES' | translate }}</span>
+          <span class="expire-label">{{ 'Expires' | translate }}</span>
           <span class="expire-date">{{ dataRoom?.expirationDate | date: 'MMMM d, y' }}</span>
         </div>
 
@@ -35,7 +35,7 @@
       </button> -->
 
         <button class="btn btn-success btn-sm" (click)="openUploadModal()">
-          <i class="las la-plus"></i> {{ 'DATA_ROOM_DETAILS.ADD_DOCUMENT' | translate }}
+          <i class="las la-plus"></i> {{ 'Add Document' | translate }}
         </button>
       </div>
     </div>

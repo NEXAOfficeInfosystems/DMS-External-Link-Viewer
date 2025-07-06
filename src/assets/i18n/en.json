@@ -730,16 +730,12 @@
   "PERMISSION": "Permission",
   "CREATED_DATE": "Created Date",
   "ACTIONS": "Actions",
-  "DATA_ROOM": "Data Room",
-  "DATA_ROOM_SHORT": "Room",
-  "FILE_INFO": "File Info",
-  "USER_NAME": "User Name",
-  "ACTION": "Action",
-  "ACTION_BY": "Action By",
-  "AUDIT_LOG": "Audit Log",
+  "DOWNLOAD": "Download",
+  "EDIT": "Edit",
+  "DELETE": "Delete",
+  "VIEW": "View",
   "FILES_IN_THIS_DATA_ROOM": "Files in this Data Room",
-  "ADD_DOCUMENT": "Add Document",
-  "EXPIRES": "Expires"
+  "AUDIT_LOG": "Audit Log"
 }
 }
 

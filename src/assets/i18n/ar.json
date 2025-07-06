@@ -257,6 +257,10 @@
   "PERMISSION": "الصلاحية",
   "CREATED_DATE": "تاريخ الإنشاء",
   "ACTIONS": "الإجراءات",
+  "DOWNLOAD": "تحميل",
+  "EDIT": "تعديل",
+  "DELETE": "حذف",
+  "VIEW": "عرض",
   "DATA_ROOM": "غرفة البيانات",
   "DATA_ROOM_SHORT": "الغرفة",
   "FILE_INFO": "معلومات الملف",
@@ -264,7 +268,7 @@
   "ACTION": "الإجراء",
   "ACTION_BY": "تم بواسطة",
   "AUDIT_LOG": "سجل التدقيق",
-  "FILES_IN_THIS_DATA_ROOM": "الملفات في غرفة البيانات هذه",
+  "FILES_IN_THIS_DATA_ROOM": "الملفات في غرفة البيانات",
   "ADD_DOCUMENT": "أضف وثيقة",
   "EXPIRES": "تاريخ الانتهاء"
 }

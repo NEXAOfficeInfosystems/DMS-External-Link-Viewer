@@ -4,50 +4,53 @@ import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 @Injectable({ providedIn: 'root' })
 export class SecurityService {
+  private inactivityTimer: any;
 
-     constructor(private cookieService: CookieService) {}
-  isUserAuthenticate(): boolean {
-    const token = this.getCookie('UserToken');
-    if (!token) {
-  
-      return false;
-    }
+  constructor(private cookieService: CookieService) {
+    this.initInactivityListener();
+  }
 
-    try {
-      const decoded: JwtPayload = jwtDecode(token);
-      const currentTime = Math.floor(Date.now() / 1000);
-
-      if (decoded.exp && decoded.exp > currentTime) {
-
-        return true; 
-      } else {
-     
-        return false; 
+  private initInactivityListener() {
+    const resetTimer = () => {
+      if (this.inactivityTimer) {
+        clearTimeout(this.inactivityTimer);
       }
-    } catch (e) {
-      console.error('Invalid token:', e);
-      return false;
-    }
+      this.inactivityTimer = setTimeout(() => {
+        this.resetSecurityObject();
+        if ((window as any).location) {
+          (window as any).location.href = '/public/auth';
+        }
+      }, 3600000); // 1 hour = 3600000 ms
+    };
+    // Listen for user activity
+    ['mousemove', 'keydown', 'mousedown', 'touchstart', 'scroll'].forEach((event) => {
+      window.addEventListener(event, resetTimer, true);
+    });
+    resetTimer(); // Start timer on load
+  }
+
+  isUserAuthenticate(): boolean {
+   
+    return true;
   }
 
   logout(): void {
     this.resetSecurityObject();
   }
 
-private resetSecurityObject(): void {
-  const allCookies = this.cookieService.getAll();
+  private resetSecurityObject(): void {
+    const allCookies = this.cookieService.getAll();
 
-  Object.keys(allCookies).forEach((key) => {
-    this.cookieService.delete(key);
-    this.cookieService.delete(key, '/');
-    this.cookieService.delete(key, '/', location.hostname);
-  });
+    Object.keys(allCookies).forEach((key) => {
+      this.cookieService.delete(key);
+      this.cookieService.delete(key, '/');
+      this.cookieService.delete(key, '/', location.hostname);
+    });
 
-  // Clear local and session storage
-  localStorage.clear();
-  sessionStorage.clear();
-}
-
+    // Clear local and session storage
+    localStorage.clear();
+    sessionStorage.clear();
+  }
 
   private getCookie(name: string): string | null {
     const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
