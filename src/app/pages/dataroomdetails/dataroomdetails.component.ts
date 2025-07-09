@@ -251,6 +251,7 @@ export class DataroomdetailsComponent implements OnInit {
       );
     }
 
+    this.currentPage = 0;
     this.updatePagedData();
     this.updatePagedAuditLogs();
   }
@@ -511,7 +512,7 @@ export class DataroomdetailsComponent implements OnInit {
 
   updatePagedData() {
     const startIndex = this.currentPage * this.pageSize;
-    this.pagedDataRooms = this.files.slice(startIndex, startIndex + this.pageSize);
+    this.pagedDataRooms = this.filteredDataRooms.slice(startIndex, startIndex + this.pageSize);
   }
 
   updatePagedExpiredData() {
@@ -519,11 +520,11 @@ export class DataroomdetailsComponent implements OnInit {
     this.pagedExpiredRooms = this.filteredExpiredRooms.slice(startIndex, startIndex + this.expiredPageSize);
   }
 
-  updatePagedAuditLogs() {
-    const startIndex = this.auditCurrentPage * this.auditPageSize;
-    this.pagedAuditLogs = this.filteredAuditLogs.slice(startIndex, startIndex + this.auditPageSize);
-    this.auditDataSource.data = this.pagedAuditLogs;
-  }
+  // updatePagedAuditLogs() {
+  //   const startIndex = this.auditCurrentPage * this.auditPageSize;
+  //   this.pagedAuditLogs = this.filteredAuditLogs.slice(startIndex, startIndex + this.auditPageSize);
+  //   this.auditDataSource.data = this.pagedAuditLogs;
+  // }
 
   openManageDataRoomModal(room: DataRoom): void {
     console.log('Manage Data Room clicked for:', room);
@@ -683,6 +684,7 @@ getMimeTypeFromExtension(extension: string): string {
       if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
       return 0;
     });
+    this.currentPage = 0;
     this.updatePagedData();
   }
 
@@ -696,7 +698,14 @@ getMimeTypeFromExtension(extension: string): string {
       if (aValue > bValue) return this.auditSortDirection === 'asc' ? 1 : -1;
       return 0;
     });
+    this.auditCurrentPage = 0;
     this.updatePagedAuditLogs();
+  }
+
+  updatePagedAuditLogs() {
+    const startIndex = this.auditCurrentPage * this.auditPageSize;
+    this.pagedAuditLogs = this.filteredAuditLogs.slice(startIndex, startIndex + this.auditPageSize);
+    this.auditDataSource.data = this.pagedAuditLogs;
   }
 
   ngOnDestroy() {

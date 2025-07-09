@@ -34,7 +34,7 @@
           }}</mat-icon>
       </button> -->
 
-        <button class="btn btn-success btn-sm" (click)="openUploadModal()">
+        <button class="btn btn-success btn-sm" (click)="openUploadModal()" [disabled]="!canAddDocuments">
           <i class="las la-plus"></i> {{ 'Add Document' | translate }}
         </button>
       </div>
@@ -78,7 +78,7 @@
     <!-- List View Table -->
     <table *ngIf="isListView"
            mat-table
-           [dataSource]="filteredDataRooms"
+           [dataSource]="pagedDataRooms"
            matSort
            class="table"
            #sort="matSort"
@@ -145,7 +145,7 @@
             <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DOWNLOAD' | translate }}" [disabled]="!perms.canDownload" (click)="downloadDocument(file.document)">
               <mat-icon class="download-icon">download</mat-icon>
             </button>
-            <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.EDIT' | translate }}" [disabled]="!perms.canEdit" (click)="editFile(file)">
+            <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.EDIT' | translate }}" [disabled]="true" (click)="editFile(file)">
               <mat-icon class="edit-icon">edit</mat-icon>
             </button>
             <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DELETE' | translate }}" [disabled]="!perms.canDelete" (click)="deleteFile(file)">
@@ -196,21 +196,7 @@
                 </div>
               </div>
 
-              <!-- Action Buttons -->
-              <!-- <div class="grid-actions d-flex gap-2" *ngIf="file.permissionFlags as perms">
-                <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DOWNLOAD' | translate }}" [disabled]="!perms.canDownload" (click)="downloadDocument(file.document)">
-                  <mat-icon class="download-icon">download</mat-icon>
-                </button>
-                <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.EDIT' | translate }}" [disabled]="!perms.canEdit" (click)="editFile(file)">
-                  <mat-icon class="edit-icon">edit</mat-icon>
-                </button>
-                <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DELETE' | translate }}" [disabled]="!perms.canDelete" (click)="deleteFile(file)">
-                  <mat-icon class="delete-icon">delete</mat-icon>
-                </button>
-                <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.VIEW' | translate }}" [disabled]="!perms.canView" (click)="viewFile(file)">
-                  <mat-icon class="view-icon">visibility</mat-icon>
-                </button>
-              </div> -->
+            
             </div>
           </mat-card>
         </mat-grid-tile>
@@ -294,10 +280,10 @@
 
   <mat-paginator
     [length]="filteredAuditLogs.length"
-    [pageSize]="pageSize"
+    [pageSize]="auditPageSize"
     [pageSizeOptions]="[10, 20, 30]"
     showFirstLastButtons
-    (page)="currentPage = $event.pageIndex; pageSize = $event.pageSize; updatePagedAuditLogs()"
+    (page)="auditCurrentPage = $event.pageIndex; auditPageSize = $event.pageSize; updatePagedAuditLogs()"
   >
   </mat-paginator>
 

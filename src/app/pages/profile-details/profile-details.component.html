@@ -46,7 +46,7 @@
               </div>
             </div>
           </div>
-          <div class="row" style="display: flex; gap: 16px;">
+          <!-- <div class="row" style="display: flex; gap: 16px;">
           
             <div class="col" style="flex: 1;">
               <div class="form-field" style="margin-bottom: 16px;">
@@ -64,7 +64,7 @@
                 <input type="hidden" name="department" [(ngModel)]="userDetails.user.department" />
               </div>
             </div>
-          </div>
+          </div> -->
           <div class="form-actions" style="text-align: center; margin-top: 24px;">
             <button class="btn btn-success btn-sm" style="margin-right: 12px;" type="submit" [disabled]="userDetails.user.password && newPassword && userDetails.user.password === newPassword"
   [ngClass]="{'btn-disabled': userDetails.user.password && newPassword && userDetails.user.password === newPassword}">

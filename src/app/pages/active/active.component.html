@@ -16,7 +16,7 @@
       <ng-container matColumnDef="expires">
   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'ACTIVE.EXPIRATION_DATE' | translate }}</th>
         <td mat-cell *matCellDef="let room">
-          <i class="far fa-calendar-alt"></i> {{ room.expires }}
+          <i class="far fa-calendar-alt"></i> {{ room.expires |date: 'MMMM dd, y'}}
         </td>
       </ng-container>
 
