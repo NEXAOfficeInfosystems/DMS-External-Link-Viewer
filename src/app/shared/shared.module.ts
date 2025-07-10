@@ -18,9 +18,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { TranslateModule } from '@ngx-translate/core';
 import { Error404Component } from './components/error-404/error-404.component';
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
-
-
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { SafeUrlPipe } from './pipes/safe-url.pipe';
+
 @NgModule({
   declarations: [
     HeaderComponent,
@@ -32,12 +32,11 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     ImagePreviewComponent,
     OfficeViewerComponent,
     PdfViewerComponent,
-    Error404Component
-    
+    Error404Component,
+    SafeUrlPipe
   ],
   imports: [
-        NgxExtendedPdfViewerModule,
-
+    NgxExtendedPdfViewerModule,
     CommonModule,
     RouterModule,
     MatTabsModule,
@@ -58,7 +57,8 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
     ImagePreviewComponent,
     OfficeViewerComponent,
     Error404Component,
-    PdfViewerComponent // <-- Export PdfViewerComponent
+    PdfViewerComponent,
+    SafeUrlPipe
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

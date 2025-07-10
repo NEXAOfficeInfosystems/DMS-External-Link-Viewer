@@ -34,7 +34,7 @@
           }}</mat-icon>
       </button> -->
 
-        <button class="btn btn-success btn-sm" (click)="openUploadModal()" [disabled]="!canAddDocuments">
+        <button class="btn btn-success btn-sm" (click)="openUploadModal()" >
           <i class="las la-plus"></i> {{ 'Add Document' | translate }}
         </button>
       </div>
@@ -104,9 +104,10 @@
           <img *ngIf="isVideoFile(file.document.url)" src="assets/images/svg/mp4.svg" alt="Video" width="20px" [title]="'DATA_ROOM_DETAILS.VIDEO' | translate" />
           <img *ngIf="isImageFile(file.document.url)" src="assets/images/login_banner/img.png" alt="Image" width="20px" [title]="'DATA_ROOM_DETAILS.IMAGE' | translate" />
           
-          <span class="truncate-data p-2 pointer-hover" [title]="file.document.name">
-            {{ file.document.name | slice: 0:15 }}{{ file.document.name.length > 15 ? '...' : '' }}
-          </span>
+        <span class="truncate-data p-2 pointer-hover" [title]="file.document.name">
+  {{ file.document.name | slice: 0:15 }}{{ file.document.name.length > 15 ? '...' : '' }}
+</span>
+
         </td>
       </ng-container>
 

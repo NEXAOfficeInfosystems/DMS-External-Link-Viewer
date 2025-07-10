@@ -40,26 +40,56 @@ export class SidebarComponent implements OnInit {
     this.activeMenu = menu;
   }
 
+  // setActiveMenuFromUrl(url: string) {
+  //   if (url.includes('/dashboard')) this.activeMenu = 'dashboard';
+  //   else if (url.includes('/profile')) this.activeMenu = 'profile';
+  //   else if (url.includes('/layout')) this.activeMenu = 'dataRooms';
+  //   else this.activeMenu = '';
+  // }
+
+
   setActiveMenuFromUrl(url: string) {
-    if (url.includes('/dashboard')) this.activeMenu = 'dashboard';
-    else if (url.includes('/profile')) this.activeMenu = 'profile';
-    else if (url.includes('/layout')) this.activeMenu = 'dataRooms';
-    else this.activeMenu = '';
+  if (url.includes('/dashboard')) {
+    this.activeMenu = 'dashboard';
+  } else if (url.includes('/layout/profile')) {
+    this.activeMenu = 'profile';
+  } else if (url.includes('/layout/notilist')) {
+    this.activeMenu = 'notificationlist';
+  } else if (url.includes('/layout')) {
+    this.activeMenu = 'dataRooms';
+  } else {
+    this.activeMenu = '';
   }
+}
+
+
+  // navigateTo(menu: string, route: string) {
+  //   this.setActiveMenu(menu);
+
+  //   if (menu === 'dataRooms') {
+  //     const token = EncryptionService.encryptToToken(route);
+  //     this.router.navigate(['/p', token]);
+  //   } else if (menu === 'profile') {
+  //        const token = EncryptionService.encryptToToken(route);
+  //     this.router.navigate(['/p', token]);
+  //   } else {
+  //     this.router.navigate([route]);
+  //   }
+  // }
+
 
   navigateTo(menu: string, route: string) {
-    this.setActiveMenu(menu);
+  this.setActiveMenu(menu);
 
-    if (menu === 'dataRooms') {
-      const token = EncryptionService.encryptToToken(route);
-      this.router.navigate(['/p', token]);
-    } else if (menu === 'profile') {
-         const token = EncryptionService.encryptToToken(route);
-      this.router.navigate(['/p', token]);
-    } else {
-      this.router.navigate([route]);
-    }
+  const token = EncryptionService.encryptToToken(route);
+
+  if (menu === 'dataRooms' || menu === 'profile' || menu === 'notificationlist') {
+    this.router.navigate(['/p', token]);
+  } else {
+    this.router.navigate([route]);
   }
+}
+
 
   logoutUser(): void {
     this.securityService.logout();

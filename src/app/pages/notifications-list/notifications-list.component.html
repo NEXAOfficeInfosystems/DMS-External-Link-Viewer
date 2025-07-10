@@ -1,0 +1,23 @@
+<div class="notifications-list-container">
+  <h2 class="notifications-heading">{{ 'NOTIFICATIONS' | translate }}</h2>
+
+  <div class="notification-scroll-wrapper">
+    <ng-container *ngIf="notifications$ | async as notifications">
+      <ng-container *ngIf="notifications.length > 0; else noNotificationsTpl">
+        <div *ngFor="let notif of notifications" 
+             class="notification-card" 
+             [class.unread]="!notif.isRead">
+          <div class="notification-header">
+            <div class="notification-title">{{ notif.title }}</div>
+            <div class="notification-time">{{ notif.createdAt | date:'MMMM d, y'}}</div>
+          </div>
+          <div class="notification-message">{{ notif.message }}</div>
+        </div>
+      </ng-container>
+
+      <ng-template #noNotificationsTpl>
+        <div class="no-notifications">{{ 'NO_NOTIFICATIONS' | translate }}</div>
+      </ng-template>
+    </ng-container>
+  </div>
+</div>

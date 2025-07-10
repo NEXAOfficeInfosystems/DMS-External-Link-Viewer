@@ -135,3 +135,125 @@
 }
 
  
+
+.notification-container {
+  position: relative;
+  display: inline-block;
+}
+
+.notification-bell {
+  position: relative;
+  cursor: pointer;
+  font-size: 20px;
+  color: #555;
+
+
+   display: flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+}
+
+.notification-bell:hover {
+  color: #007bff;
+}
+
+.badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  background: red;
+  color: white;
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.dropdown {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  width: 300px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.dropdown-header {
+  padding: 10px 15px;
+  background-color: #f7f7f7;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+
+.dropdown-body {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 10px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background: #f5faff;
+}
+
+.notification-item.unread {
+  background: #e6f0ff;
+  font-weight: 500;
+}
+
+.title {
+  font-size: 14px;
+  color: #333;
+}
+
+.message {
+  font-size: 13px;
+  color: #555;
+  margin-top: 3px;
+}
+
+.time {
+  font-size: 12px;
+  color: #888;
+  margin-top: 5px;
+}
+
+.no-notifications {
+  padding: 15px;
+  text-align: center;
+  color: #888;
+  font-style: italic;
+}
+
+
+.view-all-btn {
+  text-align: center;
+  padding: 8px;
+}
+
+.view-all-btn button {
+  background-color: transparent;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.view-all-btn button:hover {
+  text-decoration: underline;
+}

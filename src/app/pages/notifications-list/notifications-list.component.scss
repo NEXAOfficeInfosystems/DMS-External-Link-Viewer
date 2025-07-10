@@ -1,0 +1,115 @@
+.notifications-list-container {
+  background-color: #f9fafb;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 120px); // Adjust as per header/footer
+  overflow: hidden;
+  box-sizing: border-box;
+
+  @media (min-width: 768px) {
+    margin-left: 240px;
+  }
+
+  :host-context(.collapsed) & {
+    margin-left: 65px;
+  }
+}
+
+.notifications-heading {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #2c3e50;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+/* SCROLL AREA */
+.notification-scroll-wrapper {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding-right: 6px; // prevent text cutoff
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+
+  /* Chrome, Edge, Safari */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #bbb;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #999;
+  }
+}
+
+.notification-card {
+  background-color: #ffffff;
+  border-left: 4px solid transparent;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+
+  &.unread {
+    border-left-color: #3498db;
+    background-color: #eef7ff;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  display: flex;
+  align-items: center;
+
+  i {
+    margin-right: 8px;
+    font-size: 18px;
+    color: #3498db;
+  }
+}
+
+.notification-time {
+  font-size: 12px;
+  color: #888;
+}
+
+.notification-message {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #555;
+}
+
+.no-notifications {
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+  margin-top: 50px;
+}

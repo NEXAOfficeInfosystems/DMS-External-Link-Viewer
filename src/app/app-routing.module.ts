@@ -6,6 +6,8 @@ import { MainContentComponent } from './shared/components/main-content/main-cont
 import { AuthGuard } from './core/guards/auth.guard';
 import { PublicRedirectComponent } from './core/helpers/PublicRedirectComponent';
 import { ProfileDetailsComponent } from './pages/profile-details/profile-details.component';
+import { UserDashboardComponent } from './pages/user-dashboard/user-dashboard.component';
+import { NotificationsListComponent } from './pages/notifications-list/notifications-list.component';
 
 const routes: Routes = [
   {
@@ -19,7 +21,9 @@ const routes: Routes = [
     children: [
       { path: '', component: MainContentComponent },
       { path: 'data-room-detail/:id', component: DataroomdetailsComponent },
-      { path: 'profile', component: ProfileDetailsComponent }
+      { path: 'profile', component: ProfileDetailsComponent },
+      // { path: 'Dashboard', component: UserDashboardComponent }
+     { path: 'notilist', component: NotificationsListComponent }
 
     ]
   },

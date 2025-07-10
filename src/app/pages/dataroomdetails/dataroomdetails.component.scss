@@ -229,6 +229,14 @@ button.btn[disabled] {
   }
 }
 
+.truncate-data {
+  display: inline-block;
+  max-width: 150px; /* or adjust as per your layout */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
 
 
 :host ::ng-deep .mat-grid-tile-content {

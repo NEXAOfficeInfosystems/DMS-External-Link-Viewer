@@ -1,8 +1,8 @@
 <aside class="app-sidebar" [class.collapsed]="collapsed">
   <div class="sidebar-menu">
-    <!-- <a href="#" class="menu-item" 
+    <!-- <a  class="menu-item"  
        [class.active]="activeMenu === 'dashboard'" 
-       (click)="navigateTo('dashboard', '/layout')">
+       (click)="navigateTo('dashboard', '/layout/Dashboard')">
       <i class="fas fa-dashboard"></i>
       <span *ngIf="!collapsed">{{ 'SIDEBAR.DASHBOARD' | translate }}</span>
     </a> -->
@@ -20,7 +20,12 @@
       <i class="fas fa-cog"></i>
       <span *ngIf="!collapsed">{{ 'SIDEBAR.PROFILE' | translate }}</span>
     </a>
-
+    <a  class="menu-item"  
+       [class.active]="activeMenu === 'notificationlist'" 
+       (click)="navigateTo('notificationlist', '/layout/notilist')">
+      <i class="fas fa-bell"></i>
+      <span *ngIf="!collapsed">{{ 'Notifications' | translate }}</span>
+    </a>
     <a class="menu-item" 
        [class.active]="activeMenu === 'logout'" 
        (click)="setActiveMenu('logout'); onLogout()">

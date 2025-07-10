@@ -19,7 +19,44 @@
   <option value="ar">{{ 'HEADER.LANGUAGE.ARABIC' | translate }}</option>
 </select> -->
 <!-- Profile -->
+
+
 <div class="right-section" *ngIf="userDetails$ | async as userDetails">
+
+<div class="right-section notification-container">
+  <div class="notification-bell" (click)="toggleDropdown()">
+    <i class="fa fa-bell"></i>
+    <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+  </div>
+
+  <div class="dropdown" *ngIf="showDropdown">
+    <div class="dropdown-header">Notifications</div>
+    <div class="dropdown-body">
+      <div
+         *ngFor="let notif of unreadNotifications | slice:0:4"
+        class="notification-item"
+        [class.unread]="!notif.isRead"
+        (click)="onNotificationClick(notif)">
+        <div class="title">{{ notif.title }}</div>
+        <div class="message">{{ notif.message }}</div>
+        <div class="time">{{ notif.createdAt | date:'short' }}</div>
+      </div>
+
+      <div *ngIf="notifications.length === 0" class="no-notifications">
+        No notifications
+      </div>
+
+      <!-- View All button -->
+      <div *ngIf="notifications.length > 4" class="view-all-btn">
+        <button (click)="navigateToAllNotifications()">View All</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
   <img class="profile-img" src="assets/images/logo/img.webp" alt="Profile" />
   <div class="profile-info">
     <div class="name" [matTooltip]="userDetails.user.name">
@@ -27,6 +64,9 @@
     </div>
     <div class="role">{{ 'HEADER.ROLE.USER' | translate }}</div>
   </div>
+
+
+  
 </div>
 </header>
 

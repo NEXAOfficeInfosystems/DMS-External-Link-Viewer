@@ -735,8 +735,21 @@
   "DELETE": "Delete",
   "VIEW": "View",
   "FILES_IN_THIS_DATA_ROOM": "Files in this Data Room",
-  "AUDIT_LOG": "Audit Log"
-}
+  "AUDIT_LOG": "Audit Log",
+  "DATA_ROOM": "Data Room",
+  "FILE_INFO": "File Info",
+  "USER_NAME": "User Name",
+  "ACTION": "Action",
+  "ACTION_BY": "Action By"
+},
+"NO_NOTIFICATIONS" : "No Notifications",
+  "NO_DATA_ROOMS" : "No Data Rooms Found",
+  "NO_FILES_IN_THIS_DATA_ROOM" : "No Files in this Data Room",
+  "NO_AUDIT_LOGS" : "No Audit Logs Found",
+  "NO_FILES_FOUND" : "No Files Found"
+ 
+
+
 }
 
 

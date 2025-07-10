@@ -23,7 +23,9 @@ import { SafeUrlPipe } from './safe-url.pipe';
 import { ProfileDetailsComponent } from './profile-details/profile-details.component';
 import { ProfileDetailsModule } from './profile-details/profile-details.module';
 import { MatGridListModule } from '@angular/material/grid-list'; // Import MatGridListModule
-import { MatCardModule } from '@angular/material/card'; // Import MatCardModule
+import { MatCardModule } from '@angular/material/card';
+import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
+import { NotificationsListComponent } from './notifications-list/notifications-list.component'; // Import MatCardModule
 
 
 @NgModule({
@@ -32,6 +34,8 @@ import { MatCardModule } from '@angular/material/card'; // Import MatCardModule
     UploadDocDataRoomComponent,
     FileViewerDialogComponent,
     SafeUrlPipe,
+    UserDashboardComponent,
+    NotificationsListComponent,
   ],
   imports: [
     CommonModule,

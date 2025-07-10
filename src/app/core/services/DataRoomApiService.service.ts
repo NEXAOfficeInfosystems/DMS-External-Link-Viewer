@@ -16,6 +16,7 @@ export class DataRoomApiService {
   private BaseapiUrl = `${environment.apiBaseUrl}`;
 
   private userDetailsSubject = new BehaviorSubject<any>(null);
+  private notificationsSubject = new BehaviorSubject<any[]>([]); // NEW: notifications BehaviorSubject
 
   constructor(
        private httpClient: HttpClient,
@@ -52,10 +53,29 @@ this.getUserDetailsById(response.user.id)
 
 //
 
-
-
-  // ...
 // for user
+ getUserNotifications(userId: any): Observable<any[]> {
+    this.httpClient.get<any[]>(`${this.BaseapiUrl}/api/UserInformation/UserNotification/${userId}`).subscribe(
+      (notifications: any[]) => {
+        this.notificationsSubject.next(notifications); 
+      },
+      (error: HttpErrorResponse) => {
+        console.error('Error fetching notifications:', error);
+        this.notificationsSubject.next([]); 
+      }
+    );
+    return this.notificationsSubject.asObservable(); 
+  }
+getNotificationsObservable(): Observable<any[]> {
+  return this.notificationsSubject.asObservable();
+}
+markAsRead(notificationId: string, isRead: boolean): Observable<any> {
+  return this.httpClient.put(`${this.BaseapiUrl}/api/UserInformation/MarkAsRead/${notificationId}`, {
+    isRead: !isRead // send opposite to toggle
+  });
+}
+
+
 
 updateUserDetails(userDetails: any): Observable<any | CommonError> {
   const apiUrl = `${this.BaseapiUrl}/api/UserInformation/UpdateUserDetails`;
@@ -115,6 +135,8 @@ getUserDetailsObservable(): Observable<any> {
   return this.userDetailsSubject.asObservable();
 }
 
+
+
 // end of user
 
 
@@ -171,7 +193,6 @@ deleteExpiredDataRoomById(dataRoomId: any): Observable<any | CommonError> {
     catchError((error: HttpErrorResponse) => throwError(() => error.error as CommonError))
   );
 }
-
 
 
 //update user access
