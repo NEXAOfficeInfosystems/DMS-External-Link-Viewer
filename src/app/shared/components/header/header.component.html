@@ -42,12 +42,12 @@
         <div class="time">{{ notif.createdAt | date:'short' }}</div>
       </div>
 
-      <div *ngIf="notifications.length === 0" class="no-notifications">
+      <div *ngIf="unreadNotifications.length === 0" class="no-notifications">
         No notifications
       </div>
 
       <!-- View All button -->
-      <div *ngIf="notifications.length > 4" class="view-all-btn">
+      <div *ngIf="unreadNotifications.length > 4" class="view-all-btn">
         <button (click)="navigateToAllNotifications()">View All</button>
       </div>
     </div>

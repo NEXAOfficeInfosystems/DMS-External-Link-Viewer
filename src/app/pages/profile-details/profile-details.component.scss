@@ -4,6 +4,7 @@
   color: #888888 !important;
   cursor: not-allowed !important;
   pointer-events: none;
+  
 }
 
 
@@ -13,7 +14,13 @@
 
 .edit-profile {
   flex: 1;
+    height: calc(100vh - 120px);
   overflow-y: auto;
+    flex-direction: column;
+      overflow: hidden;
+  box-sizing: border-box;
+    display: flex;
+      padding: 20px;
 }
  
 @media (min-width: 768px) {

@@ -11,65 +11,67 @@ import { TranslationService } from 'src/app/core/services/TranslationService';
   templateUrl: './profile-details.component.html',
   styleUrls: ['./profile-details.component.scss']
 })
-export class ProfileDetailsComponent implements OnInit  {
+export class ProfileDetailsComponent implements OnInit {
   userDetails$: Observable<any> = new Observable();
-  showPassword = false;
   showOldPassword = false;
   showNewPassword = false;
-  departments: string[] = ['NEXA Officeinfosystems', 'Officeinfosystems'];
+  showConfirmPassword = false;
 
+  departments: string[] = [];
   oldPassword: string = '';
   newPassword: string = '';
+  confirmPassword: string = '';
+
+  userId: any;
 
   constructor(
     private dataRoomApiService: DataRoomApiService,
-    private translationService:TranslationService,
+    private translationService: TranslationService,
     private cookieservice: CookieService,
-  private toasterservice: ToastrService,
-  private router: Router
+    private toasterservice: ToastrService,
+    private router: Router
   ) {}
-userId :any;
+
   ngOnInit(): void {
-    this.userDetails$ = this.dataRoomApiService.getUserDetailsObservable();
     this.userId = this.cookieservice.get('MasterUserId');
+
+    this.dataRoomApiService.getUserDetailsObservable().subscribe(userDetails => {
+      this.userDetails$ = new Observable(observer => {
+        observer.next(userDetails);
+        observer.complete();
+      });
+
+      if (userDetails && userDetails.companyNames) {
+        this.departments = userDetails.companyNames;
+      }
+    });
   }
 
   onSave(form: any) {
-    if (form.valid && this.oldPassword !== this.newPassword) {
-    
-      let email = '';
-      if (this.userDetails$ && (form.controls['email']?.model || form.value.email)) {
-        email = form.controls['email']?.model || form.value.email;
-      } else if (form.controls['name']?.model?.email) {
-        email = form.controls['name']?.model?.email;
-      } else if ((form.value && form.value.name && form.value.name.email)) {
-        email = form.value.name.email;
-      }
-      if (!email && typeof document !== 'undefined') {
-        const emailInput = document.querySelector('input[name="email"]') as HTMLInputElement;
-        if (emailInput) email = emailInput.value;
-      }
-      if (!email && this.userDetails$ && (this.userDetails$ as any).user?.email) {
-        email = (this.userDetails$ as any).user.email;
-      }
-   
+
+    if (form.invalid) {
+      this.toasterservice.error('Please fill in all required fields');
+      return;
+    }
+    if (form.valid &&
+        this.oldPassword !== this.newPassword &&
+        this.newPassword === this.confirmPassword) {
+
+      let email = form.value.email || (this.userDetails$ as any).user?.email;
+
       const payload = {
         ...form.value,
-        userId: this.userId ,
+        userId: this.userId,
         email: email
       };
+
       this.dataRoomApiService.updateUserDetails(payload).subscribe(
         response => {
-          console.log('User details updated successfully:', response);
-
           this.toasterservice.success('Password updated successfully');
           const urlParams = new URLSearchParams(window.location.search);
           if (!urlParams.has('s')) {
             this.router.navigate(['/auth']);
           }
-          //  this.userDetails$ = this.dataRoomApiService.getUserDetailsObservable();
-
-    
         },
         error => {
           console.error('Error updating user details:', error);
