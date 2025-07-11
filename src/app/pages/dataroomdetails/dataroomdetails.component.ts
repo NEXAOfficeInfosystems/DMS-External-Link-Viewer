@@ -132,9 +132,9 @@ export class DataroomdetailsComponent implements OnInit {
 
   ngOnInit() {
 
-    console.log(this.route.snapshot.paramMap.get('id'))
+    // console.log(this.route.snapshot.paramMap.get('id'))
     this.dataRoomId = this.route.snapshot.paramMap.get('id');
-    console.log('Decrypted Data Room ID:', this.dataRoomId);
+    // console.log('Decrypted Data Room ID:', this.dataRoomId);
     this.getAllRoomInfo();
     // this.getMockRoomInfo();
 
@@ -301,7 +301,7 @@ export class DataroomdetailsComponent implements OnInit {
     };
 
     this.dataRoom = res.dataRoom;
-    console.log(this.dataRoom)
+    // console.log(this.dataRoom)
     if (this.commonHeader) {
       this.commonHeader.dataRoom = this.dataRoom;
     }
@@ -330,14 +330,14 @@ export class DataroomdetailsComponent implements OnInit {
     this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
     this.dataSource.data = this.files;
 
-    console.log('Mock Files with permissions:', this.files);
+    // console.log('Mock Files with permissions:', this.files);
   }
 
   getAllRoomInfo() {
     const MasterUserId = this.getCookie('MasterUserId') || '';
     this.manageDataRoomService.getDataRoomDetailsById(MasterUserId, this.dataRoomId)
       .subscribe((res: any) => {
-        console.log('Data Room Details:', res);
+        // console.log('Data Room Details:', res);
         this.dataRoom = res.dataRoom;
         if (this.commonHeader) {
           this.commonHeader.dataRoom = this.dataRoom;
@@ -362,7 +362,7 @@ export class DataroomdetailsComponent implements OnInit {
           }
         }));
         this.filteredDataRooms = this.files;
-        console.log('Files with permissions:', this.files);
+        // console.log('Files with permissions:', this.files);
         this.canAddDocuments = this.hasPermission(this.dataRoom, 'add');
         this.dataSource.data = this.files;
         this.updatePagedData();
@@ -390,7 +390,7 @@ export class DataroomdetailsComponent implements OnInit {
     });
 
     dialogRef.componentInstance.dataChanged.subscribe(() => {
-      console.log('Data changed in UploadDocDataRoomComponent');
+      // console.log('Data changed in UploadDocDataRoomComponent');
       this.getAllRoomInfo();
     });
   }
@@ -424,12 +424,12 @@ export class DataroomdetailsComponent implements OnInit {
 
   downloadDocument(documentInfo: any) {
 
-    console.log(documentInfo);
+    // console.log(documentInfo);
     this.sub$.add(
       this.commonService.downloadDocument(documentInfo.id, false).subscribe({
         next: (event) => {
 
-          console.log('Download event:', event);
+          // console.log('Download event:', event);
           if (event.type === HttpEventType.Response) {
             this.downloadFile(event, documentInfo);
           }
@@ -460,9 +460,6 @@ export class DataroomdetailsComponent implements OnInit {
     // Ensure extension is appended if not already
     const fileName = safeName.endsWith(extensionFromUrl) ? safeName : `${safeName}${extensionFromUrl}`;
 
-    console.log('Content-Type:', mimeType);
-    console.log('Blob size:', blobData.size);
-    console.log('Download filename:', fileName);
 
     const a = document.createElement('a');
     a.style.display = 'none';
@@ -527,7 +524,6 @@ export class DataroomdetailsComponent implements OnInit {
   // }
 
   openManageDataRoomModal(room: DataRoom): void {
-    console.log('Manage Data Room clicked for:', room);
     this.toastrService.info('Manage Data Room clicked for: ' + room.name);
   }
 
@@ -536,7 +532,7 @@ export class DataroomdetailsComponent implements OnInit {
 
   deleteFile(data: any) {
 
-    console.log('Deleting file:', data);
+    // console.log('Deleting file:', data);
     this.sub$.add(
       this.commonDialogService
         .deleteConformationDialog(`${this.translationService.getValue('ARE_YOU_SURE_YOU_WANT_TO_DELETE')}?`)
@@ -545,7 +541,7 @@ export class DataroomdetailsComponent implements OnInit {
             data.dataRoomId = this.dataRoomId;
             data.UserId = this.getCookie('MasterUserId') || '';
 
-            console.log(data, 'data in deleteDataRoomFile');
+            // console.log(data, 'data in deleteDataRoomFile');
 
             this.manageDataRoomService.deleteDocumentFromDataRoom(data.documentId, data.dataRoomId, data.UserId).subscribe(
               (response: any) => {
@@ -583,12 +579,12 @@ export class DataroomdetailsComponent implements OnInit {
     return url.split('.').pop()?.toLowerCase() || '';
   }
   editFile(file: any): void {
-    console.log('Editing file:', file);
+    // console.log('Editing file:', file);
     // Add logic for editing the file
   }
   viewFile(file: any): void {
 
-    console.log(file)
+    // console.log(file)
     const documentId = file?.documentId;
     if (!documentId) {
       this.toastrService.error('Invalid document ID.');
@@ -663,13 +659,13 @@ getMimeTypeFromExtension(extension: string): string {
 
   onTabChange(event: MatTabChangeEvent): void {
     this.selectedTabIndex = event.index;
-    console.log('Tab changed to index:', this.selectedTabIndex);
+    // console.log('Tab changed to index:', this.selectedTabIndex);
 
     // Ensure the tab content updates correctly
     if (this.selectedTabIndex === 0) {
-      console.log('Files tab selected');
+      // console.log('Files tab selected');
     } else if (this.selectedTabIndex === 1) {
-      console.log('Audit Log tab selected');
+      // console.log('Audit Log tab selected');
     }
   }
 

@@ -393,13 +393,13 @@ this.updatePagedExpiredData?.();
   }
 openManageDataRoomModal(room: DataRoom): void {
   // Open your manage data room modal
-  console.log('Manage Data Room clicked for:', room);
+  // console.log('Manage Data Room clicked for:', room);
   this.toastrService.info('Manage Data Room clicked for: ' + room.name);
 }
 
 deleteExpiredDataRoom(room: DataRoom): void {
   // Add your delete logic here
-  console.log('Delete Expired Data Room clicked for:', room);
+  // console.log('Delete Expired Data Room clicked for:', room);
   const confirmed = confirm(`Are you sure you want to delete "${room.name}"?`);
   if (confirmed) {
     this.toastrService.success(`Data Room "${room.name}" deleted.`);

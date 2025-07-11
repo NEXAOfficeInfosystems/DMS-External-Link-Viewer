@@ -75,4 +75,23 @@ static decryptFromToken(token: string): string {
     }
     return result;
   }
+
+
+  ///..belwo is for decrypt from response
+static decryptResponse(encryptedData: string, encryptedKey: string, encryptedIV: string): any {
+
+  const key = CryptoJS.enc.Base64.parse(encryptedKey);
+  const iv = CryptoJS.enc.Base64.parse(encryptedIV);
+
+
+  const decrypted = CryptoJS.AES.decrypt(encryptedData, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7
+  });
+
+  const plainText = decrypted.toString(CryptoJS.enc.Utf8);
+  return JSON.parse(plainText);
+}
+
 }

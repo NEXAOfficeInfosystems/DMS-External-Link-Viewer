@@ -21,7 +21,7 @@
 <!-- Profile -->
 
 
-<div class="right-section" *ngIf="userDetails$ | async as userDetails">
+<div class="right-section" *ngIf="UserDetails">
 
 <div class="right-section notification-container">
   <div class="notification-bell" (click)="toggleDropdown()">
@@ -35,11 +35,11 @@
       <div
          *ngFor="let notif of unreadNotifications | slice:0:4"
         class="notification-item"
-        [class.unread]="!notif.isRead"
+        [class.unread]="!notif.IsRead"
         (click)="onNotificationClick(notif)">
-        <div class="title">{{ notif.title }}</div>
-        <div class="message">{{ notif.message }}</div>
-        <div class="time">{{ notif.createdAt | date:'short' }}</div>
+        <div class="title">{{ notif.Title }}</div>
+        <div class="message">{{ notif.Message }}</div>
+        <div class="time">{{ notif.CreatedAt | date:'short' }}</div>
       </div>
 
       <div *ngIf="unreadNotifications.length === 0" class="no-notifications">
@@ -59,8 +59,8 @@
 
   <img class="profile-img" src="assets/images/logo/imgs.jpg" alt="Profile" />
   <div class="profile-info">
-    <div class="name" [matTooltip]="userDetails.user.name">
-      {{ 'HEADER.WELCOME' | translate }}, {{ userDetails.user.name | slice:0:6 }}<span *ngIf="userDetails.user.name.length > 6">...</span>
+    <div class="name" [matTooltip]="UserDetails.User.Name">
+      {{ 'HEADER.WELCOME' | translate }}, {{ UserDetails.User.Name | slice:0:6 }}<span *ngIf="UserDetails.User.Name.length > 6">...</span>
     </div>
     <div class="role">{{ 'HEADER.ROLE.USER' | translate }}</div>
   </div>

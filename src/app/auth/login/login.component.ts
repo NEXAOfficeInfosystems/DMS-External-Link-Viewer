@@ -42,7 +42,7 @@ private toastr: ToastrService,
     // Check for remembered credentials
     const encryptedStr = localStorage.getItem('rememberedLogin');
 
-    console.log('Encrypted remembered login:', encryptedStr);
+    // console.log('Encrypted remembered login:', encryptedStr);
     if (encryptedStr) {
       try {
         const encryptedObj = JSON.parse(encryptedStr);

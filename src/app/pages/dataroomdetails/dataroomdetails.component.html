@@ -106,35 +106,31 @@
               <table *ngIf="isListView" mat-table [dataSource]="pagedDataRooms" matSort class="table" #sort="matSort"
                 [matSortActive]="activeSort" [matSortDirection]="sortDirection" (matSortChange)="onSortChange($event)">
 
-                <!-- File Name Column -->
-                <ng-container matColumnDef="name">
-                  <th mat-header-cell *matHeaderCellDef mat-sort-header>
-                    <span class="d-none d-md-inline">{{ 'DATA_ROOM_DETAILS.NAME' | translate }}</span>
-                    <span class="d-md-none">{{ 'DATA_ROOM_DETAILS.NAME_SHORT' | translate }}</span>
-                  </th>
-                  <td mat-cell *matCellDef="let file">
-                    <ng-container *ngIf="getFileExtension(file.document.url) as extension">
-                      <img *ngIf="extension === 'pdf'" src="assets/images/login_banner/pdf.png" alt="PDF" width="20px"
-                        [title]="'DATA_ROOM_DETAILS.PDF' | translate" />
-                      <img *ngIf="extension === 'doc' || extension === 'docx'" src="assets/images/svg/word.svg"
-                        alt="Word" width="20px" [title]="'DATA_ROOM_DETAILS.DOC' | translate" />
-                      <img *ngIf="extension === 'xls' || extension === 'xlsx'" src="assets/images/svg/excel.svg"
-                        alt="Excel" width="20px" [title]="'DATA_ROOM_DETAILS.EXCEL' | translate" />
-                      <img *ngIf="extension === 'ppt' || extension === 'pptx'" src="assets/images/svg/ppt.svg" alt="PPT"
-                        width="20px" [title]="'DATA_ROOM_DETAILS.PPT' | translate" />
-                      <img *ngIf="extension === 'csv' || extension === 'txt'" src="assets/images/svg/text-2.svg"
-                        alt="Text" width="20px" [title]="'DATA_ROOM_DETAILS.TEXT' | translate" />
-                    </ng-container>
-                    <img *ngIf="isAudioFile(file.document.url)" src="assets/images/svg/mp3.svg" alt="Audio" width="20px"
-                      [title]="'DATA_ROOM_DETAILS.AUDIO' | translate" />
-                    <img *ngIf="isVideoFile(file.document.url)" src="assets/images/svg/mp4.svg" alt="Video" width="20px"
-                      [title]="'DATA_ROOM_DETAILS.VIDEO' | translate" />
-                    <img *ngIf="isImageFile(file.document.url)" src="assets/images/login_banner/img.png" alt="Image"
-                      width="20px" [title]="'DATA_ROOM_DETAILS.IMAGE' | translate" />
+      <!-- File Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>
+          <span class="d-none d-md-inline">{{ 'DATA_ROOM_DETAILS.NAME' | translate }}</span>
+          <span class="d-md-none">{{ 'DATA_ROOM_DETAILS.NAME_SHORT' | translate }}</span>
+        </th>
+        <td mat-cell *matCellDef="let file">
+          <ng-container *ngIf="getFileExtension(file.document.url) as extension">
+            <img *ngIf="extension === 'pdf'" src="assets/images/login_banner/pdf.png" alt="PDF" width="20px" [title]="'DATA_ROOM_DETAILS.PDF' | translate" />
+            <img *ngIf="extension === 'doc' || extension === 'docx'" src="assets/images/svg/word.svg" alt="Word" width="20px" [title]="'DATA_ROOM_DETAILS.DOC' | translate" />
+            <img *ngIf="extension === 'xls' || extension === 'xlsx'" src="assets/images/svg/excel.svg" alt="Excel" width="20px" [title]="'DATA_ROOM_DETAILS.EXCEL' | translate" />
+            <img *ngIf="extension === 'ppt' || extension === 'pptx'" src="assets/images/svg/ppt.svg" alt="PPT" width="20px" [title]="'DATA_ROOM_DETAILS.PPT' | translate" />
+            <img *ngIf="extension === 'csv' || extension === 'txt'" src="assets/images/svg/text-2.svg" alt="Text" width="20px" [title]="'DATA_ROOM_DETAILS.TEXT' | translate" />
+          </ng-container>
+          <img *ngIf="isAudioFile(file.document.url)" src="assets/images/svg/mp3.svg" alt="Audio" width="20px" [title]="'DATA_ROOM_DETAILS.AUDIO' | translate" />
+          <img *ngIf="isVideoFile(file.document.url)" src="assets/images/svg/mp4.svg" alt="Video" width="20px" [title]="'DATA_ROOM_DETAILS.VIDEO' | translate" />
+          <img *ngIf="isImageFile(file.document.url)" src="assets/images/login_banner/img.png" alt="Image" width="20px" [title]="'DATA_ROOM_DETAILS.IMAGE' | translate" />
+          
+        <span class="truncate-data p-2 pointer-hover" [title]="file.document.name">
+  {{ file.document.name | slice: 0:10 }}{{ file.document.name.length > 10 ? '...' : '' }}
+</span>
 
-                    <span class="truncate-data p-2 pointer-hover" [title]="file.document.name">
+                    <!-- <span class="truncate-data p-2 pointer-hover" [title]="file.document.name">
                       {{ file.document.name | slice: 0:15 }}{{ file.document.name.length > 15 ? '...' : '' }}
-                    </span>
+                    </span> -->
 
                   </td>
                 </ng-container>

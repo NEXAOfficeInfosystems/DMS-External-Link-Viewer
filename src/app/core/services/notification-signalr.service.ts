@@ -35,7 +35,7 @@ export class NotificationSignalRService {
     this.hubConnection
       .start()
       .then(() => {
-        console.log('✅ SignalR connected.');
+        // console.log('✅ SignalR connected.');
         this.registerOnServerEvents();
       })
       .catch(err => console.error('❌ SignalR connection error:', err));
@@ -46,7 +46,7 @@ export class NotificationSignalRService {
    */
   private registerOnServerEvents(): void {
     this.hubConnection.on('NotificationUpdated', (data: any) => {
-      console.log('📩 Notification update received:', data);
+      // console.log('📩 Notification update received:', data);
       this.notificationUpdatedSubject.next(data);
     });
 
@@ -55,11 +55,11 @@ export class NotificationSignalRService {
     });
 
     this.hubConnection.onreconnected(connectionId => {
-      console.log(`✅ Reconnected to SignalR with ID: ${connectionId}`);
+      // console.log(`✅ Reconnected to SignalR with ID: ${connectionId}`);
     });
 
     this.hubConnection.onclose(error => {
-      console.warn('⚠️ SignalR connection closed.', error);
+      // console.warn('⚠️ SignalR connection closed.', error);
     });
   }
 

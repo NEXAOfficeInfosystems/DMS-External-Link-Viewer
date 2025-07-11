@@ -242,7 +242,7 @@ getCookie(name: string): string | null {
   getAllRoomInfo() {
   const MasterUserId = this.getCookie('MasterUserId') || '';
    this.manageDataRoomService.getAllActiveExpiredDataRooms(MasterUserId).subscribe((res: any) => {
-  console.log('Active and Expired Data Rooms:', res);
+  // console.log('Active and Expired Data Rooms:', res);
    const dataRoomPermissions = res.permissions?.dataRoomPermissions || [];
     const userPermissions = res.permissions?.userPermissions || [];
     const documentPermissions = res.permissions?.documentPermissions || [];
@@ -253,9 +253,6 @@ getCookie(name: string): string | null {
     this.documentPermissions = documentPermissions;
 
   
-    console.log('DataRoom Permissions:', this.dataRoomPermissions);
-    console.log('User Permissions:', this.userPermissions);
-    console.log('Document Permissions:', this.documentPermissions);
   if (res && res.activeRooms) {
     const activeRooms = res.activeRooms.map((roomWrapper: any) => {
       const room = roomWrapper.room;
@@ -340,13 +337,13 @@ getCookie(name: string): string | null {
   }
 openManageDataRoomModal(room: DataRoom): void {
   // Open your manage data room modal
-  console.log('Manage Data Room clicked for:', room);
+  // console.log('Manage Data Room clicked for:', room);
   this.toastrService.info('Manage Data Room clicked for: ' + room.name);
 }
 
 deleteExpiredDataRoom(room: DataRoom): void {
   // Add your delete logic here
-  console.log('Delete Expired Data Room clicked for:', room);
+  // console.log('Delete Expired Data Room clicked for:', room);
   const confirmed = confirm(`Are you sure you want to delete "${room.name}"?`);
   if (confirmed) {
     this.toastrService.success(`Data Room "${room.name}" deleted.`);

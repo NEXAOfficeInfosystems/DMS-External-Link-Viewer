@@ -25,10 +25,18 @@ private toastr: ToastrService,
     private cookieservice: CookieService
   ) {}
  hubConnection!: signalR.HubConnection; 
+ UserDetails:any;
 ngOnInit(): void {
   const userId = this.cookieservice.get('MasterUserId');
   this.dataRoomApiService.getUserDetailsById(userId);
   this.userDetails$ = this.dataRoomApiService.getUserDetailsObservable();
+this.userDetails$.subscribe(data => {
+  console.log("Decrypted user details inside component:", data);
+
+
+  this.UserDetails = data;
+});
+
    this.fetchNotifications();
 
 //    this.hubConnection.on("SendNotificationDataRoom", (notification:any) => {
@@ -69,7 +77,7 @@ showDropdown = false;
     this.dataRoomApiService.getUserNotifications(userId).subscribe({
       next: (data:any) => {
         this.notifications = data;
-        this.unreadCount = data.filter((n:any) => !n.isRead).length;
+        this.unreadCount = data.filter((n:any) => !n.IsRead).length;
       },
       error: (err) => {
         console.error('Error fetching notifications:', err);
@@ -77,7 +85,7 @@ showDropdown = false;
     });
   }
 get unreadNotifications(): any[] {
-  return this.notifications.filter(n => !n.isRead);
+  return this.notifications.filter(n => !n.IsRead);
 }
 
 toggleDropdown(): void {

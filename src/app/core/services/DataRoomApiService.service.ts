@@ -7,6 +7,7 @@ import { Observable, BehaviorSubject, throwError } from 'rxjs';
 import { environment } from 'src/environments/environment'; // Adjusted the path to correctly import the environment configuration
 import { catchError, filter, map, tap } from 'rxjs/operators';
 import { CommonError } from '../helpers/CommonError';
+import { EncryptionService } from './encryption.service';
 
 @Injectable({
   providedIn: 'root'
@@ -54,18 +55,37 @@ this.getUserDetailsById(response.user.id)
 //
 
 // for user
- getUserNotifications(userId: any): Observable<any[]> {
-    this.httpClient.get<any[]>(`${this.BaseapiUrl}/api/UserInformation/UserNotification/${userId}`).subscribe(
-      (notifications: any[]) => {
-        this.notificationsSubject.next(notifications); 
-      },
-      (error: HttpErrorResponse) => {
-        console.error('Error fetching notifications:', error);
-        this.notificationsSubject.next([]); 
-      }
-    );
-    return this.notificationsSubject.asObservable(); 
-  }
+getUserNotifications(userId: any): Observable<any[]> {
+  this.httpClient.get<any>(`${this.BaseapiUrl}/api/UserInformation/UserNotification/${userId}`).subscribe(
+    (notification: any) => {
+      // console.log('Fetched Notification:', notification);
+
+      const decryptedNotification = EncryptionService.decryptResponse(
+        notification.encryptedData,
+        notification.encryptedKey,
+        notification.encryptedIV
+      );
+
+      // console.log('Decrypted Notification:', decryptedNotification);
+
+      this.notificationsSubject.next(decryptedNotification);
+
+
+    },
+    (error: HttpErrorResponse) => {
+      console.error('Error fetching notifications:', error);
+      this.notificationsSubject.next([]);
+    }
+  );
+
+  return this.notificationsSubject.asObservable();
+}
+
+
+
+
+
+
 getNotificationsObservable(): Observable<any[]> {
   return this.notificationsSubject.asObservable();
 }
@@ -121,14 +141,26 @@ getUserDetailsById(userId: any): void {
 
 
   const apiUrl = `${this.BaseapiUrl}/api/UserInformation/UserInfo/${userId}`;
-  this.httpClient.get(apiUrl).subscribe(
-    (response: any) => {
-      this.userDetailsSubject.next(response);
-    },
-    (error: HttpErrorResponse) => {
-      console.error('Error fetching user details:', error);
-    }
-  );
+
+
+this.httpClient.get(apiUrl).subscribe(
+  (response: any) => {
+    // console.log('Encrypted Response:', response);
+
+ const decryptedData = EncryptionService.decryptResponse(
+      response.encryptedData,
+      response.encryptedKey,
+      response.encryptedIV
+    );
+    // console.log('Decrypted User Details:', decryptedData);
+
+    this.userDetailsSubject.next(decryptedData);
+  },
+  (error: HttpErrorResponse) => {
+    console.error('Error fetching user details:', error);
+  }
+);
+
 }
 
 getUserDetailsObservable(): Observable<any> {

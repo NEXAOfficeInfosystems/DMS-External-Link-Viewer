@@ -41,8 +41,8 @@ export class ProfileDetailsComponent implements OnInit {
         observer.complete();
       });
 
-      if (userDetails && userDetails.companyNames) {
-        this.departments = userDetails.companyNames;
+      if (userDetails && userDetails.CompanyNames) {
+        this.departments = userDetails.CompanyNames;
       }
     });
   }
@@ -57,7 +57,7 @@ export class ProfileDetailsComponent implements OnInit {
         this.oldPassword !== this.newPassword &&
         this.newPassword === this.confirmPassword) {
 
-      let email = form.value.email || (this.userDetails$ as any).user?.email;
+      let email = form.value.email || (this.userDetails$ as any).user?.Email;
 
       const payload = {
         ...form.value,

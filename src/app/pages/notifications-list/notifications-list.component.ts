@@ -28,6 +28,11 @@ export class NotificationsListComponent implements OnInit {
     this.userDetails$ = this.dataRoomApiService.getUserDetailsObservable();
     if (userId) {
       this.notifications$ = this.dataRoomApiService.getNotificationsObservable();
+
+      this.notifications$.subscribe(
+        notifications => {
+        }
+      );
     }
   }
 }

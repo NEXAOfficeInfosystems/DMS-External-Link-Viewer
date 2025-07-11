@@ -6,12 +6,12 @@
       <ng-container *ngIf="notifications.length > 0; else noNotificationsTpl">
         <div *ngFor="let notif of notifications" 
              class="notification-card" 
-             [class.unread]="!notif.isRead">
+             [class.unread]="!notif.IsRead">
           <div class="notification-header">
-            <div class="notification-title">{{ notif.title }}</div>
-            <div class="notification-time">{{ notif.createdAt | date:'MMMM d, y'}}</div>
+            <div class="notification-title">{{ notif.Title }}</div>
+            <div class="notification-time">{{ notif.CreatedAt | date:'MMMM d, y'}}</div>
           </div>
-          <div class="notification-message">{{ notif.message }}</div>
+          <div class="notification-message">{{ notif.Message }}</div>
         </div>
       </ng-container>
 

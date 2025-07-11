@@ -29,7 +29,7 @@ export class FileViewerDialogComponent implements OnInit {
     this.fileExtension = data.fileExtension?.toLowerCase() || '';
     this.fileUrl = data.fileUrl || '';
     this.Documents = data.Documents
-    console.log(data, 'File Viewer Dialog Data');
+    // console.log(data, 'File Viewer Dialog Data');
   }
 
   Documents: any;
@@ -64,7 +64,7 @@ export class FileViewerDialogComponent implements OnInit {
     this.Documents = this.data.Documents
 
 
-    console.log(this.Documents, 'Documents Data');
+    // console.log(this.Documents, 'Documents Data');
   }
 
   getDocumentToken() {
@@ -125,9 +125,9 @@ export class FileViewerDialogComponent implements OnInit {
     
     const blobUrl = URL.createObjectURL(blob);
     this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(blobUrl); 
-    console.log(this.fileUrl, 'Blob URL');
+    // console.log(this.fileUrl, 'Blob URL');
     this.fileExtension = fileExtension;
-    console.log(this.fileExtension, 'File Extension');
+    // console.log(this.fileExtension, 'File Extension');
   }
 
  
