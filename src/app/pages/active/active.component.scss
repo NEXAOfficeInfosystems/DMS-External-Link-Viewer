@@ -73,3 +73,13 @@
   border-color: #0d5cb9;
   outline: none;
 }
+
+
+.truncate-data {
+  display: inline-block;
+  max-width: 150px; /* or adjust as per your layout */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}

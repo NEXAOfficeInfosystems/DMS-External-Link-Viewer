@@ -10,14 +10,21 @@
       <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'ACTIVE.NAME' | translate }}</th>
         <td mat-cell *matCellDef="let room">
-          {{ room.name }}
-        </td>
+
+
+
+            <span class="truncate-text" [title]="room.name">
+              {{ room.name | slice: 0:10 }}{{ room.name.length > 10 ? '...' : '' }}
+            </span>
+          </td>
       </ng-container>
 
   <ng-container matColumnDef="companyname">
       <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'ACTIVE.COMPANY_NAME' | translate }}</th>
         <td mat-cell *matCellDef="let room">
-          {{ room.companyName }}
+          <span class="truncate-text" [title]="room.companyName">
+            {{ room.companyName | slice: 0:15 }}{{ room.companyName.length > 15 ? '...' : '' }}
+          </span>
         </td>
       </ng-container>
 

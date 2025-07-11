@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie-service';
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { DataRoomApiService } from 'src/app/core/services/DataRoomApiService.service';
+import { EncryptionService } from 'src/app/core/services/encryption.service';
 import { TranslationService } from 'src/app/core/services/TranslationService';
 
 @Component({
@@ -13,6 +14,7 @@ import { TranslationService } from 'src/app/core/services/TranslationService';
 })
 export class ProfileDetailsComponent implements OnInit {
   userDetails$: Observable<any> = new Observable();
+  latestUserDetails: any = null;
   showOldPassword = false;
   showNewPassword = false;
   showConfirmPassword = false;
@@ -40,12 +42,27 @@ export class ProfileDetailsComponent implements OnInit {
         observer.next(userDetails);
         observer.complete();
       });
+      this.latestUserDetails = userDetails;
 
+      console.log( this.latestUserDetails,"Dsddsdsdsds")
       if (userDetails && userDetails.CompanyNames) {
         this.departments = userDetails.CompanyNames;
       }
     });
   }
+
+
+  navigateTo(menu: string, route: string) {
+
+  const token = EncryptionService.encryptToToken(route);
+
+  if (menu === 'dataRooms') {
+    this.router.navigate(['/p', token]);
+  } else {
+    this.router.navigate([route]);
+  }
+}
+
 
   onSave(form: any) {
 
@@ -57,8 +74,8 @@ export class ProfileDetailsComponent implements OnInit {
         this.oldPassword !== this.newPassword &&
         this.newPassword === this.confirmPassword) {
 
-      let email = form.value.email || (this.userDetails$ as any).user?.Email;
-
+      let email = form.value.email || this.latestUserDetails?.User?.Email;
+console.log(this.latestUserDetails,"emaidlsdlsd");
       const payload = {
         ...form.value,
         userId: this.userId,
