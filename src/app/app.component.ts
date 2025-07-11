@@ -39,7 +39,7 @@ export class AppComponent implements OnInit {
       return;
     }
 
-    this.http.get(`${environment.apiBaseUrl}/ExternalLinkDMSService/${this.shortCode}`).subscribe({
+    this.http.get(`${environment.apiBaseUrl}/${this.shortCode}`).subscribe({
       next: (res: any) => this.handleMetadataResponse(res, this.shortCode),
       error: (error) => this.handleApiError(error)
     });
@@ -70,7 +70,7 @@ export class AppComponent implements OnInit {
   }
 
   private handleBlobResponse(response: HttpResponse<Blob>): void {
-    const contentType = response.headers.get('Content-Type') || '';
+    let contentType = response.headers.get('Content-Type') || '';
     if (contentType.includes('application/json')) {
       response.body?.text().then((text: string) => {
         const json = JSON.parse(text);
@@ -78,7 +78,6 @@ export class AppComponent implements OnInit {
       });
       return;
     }
-
     const blob = new Blob([response.body!], { type: contentType });
     this.url = URL.createObjectURL(blob);
 
@@ -117,7 +116,7 @@ export class AppComponent implements OnInit {
 
   private promptPasswordAndVerify(url: string | null, onSuccess: () => void): void {
     // Use the password from the input field
-    this.http.get(`${environment.apiBaseUrl}/ExternalLinkDMSService/verify/${this.shortCode}/${this.password}`).subscribe({
+    this.http.get(`${environment.apiBaseUrl}/verify/${this.shortCode}/${this.password}`).subscribe({
       next: (res: any) => {
         if (res?.status) {
           this.showPasswordPrompt = false;
@@ -143,6 +142,17 @@ export class AppComponent implements OnInit {
     if (this.isDisplayable(mimeType, fileType)) {
       this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
       this.download = true;
+    } else if (this.isMSOfficeDocument()) {
+      // Only use Office viewer for http/https URLs, otherwise show error or fallback
+      if (typeof url === 'string' && (url.startsWith('http://') || url.startsWith('https://'))) {
+        this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(
+          `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`
+        );
+      } else {
+        this.downloadHref = url;
+        this.download = true;
+        this.errorMessage = `Preview not supported. <a href="${url}" download="${this.fileName}">Download the file to view.</a>`;
+      }
     } else {
       this.downloadHref = url;
       this.download = true;
@@ -153,7 +163,7 @@ export class AppComponent implements OnInit {
 
   private processApiResponse(response: any): void {
     this.isLoading = false;
-    let url: string | null = null;
+    let url: any = null;
     let fileType = this.getFileExtension(response.documentUrl || '') || 'pdf';
     const mimeType = this.getMimeType(fileType);
 
@@ -171,6 +181,10 @@ export class AppComponent implements OnInit {
 
     if (url && this.isDisplayable(mimeType, fileType)) {
       this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+    } else if (this.isMSOfficeDocument()) {
+      this.iframeSrc = this.sanitizer.bypassSecurityTrustResourceUrl(
+        `https://view.officeapps.live.com/op/embed.aspx?src=${url}`
+      );
     } else if (url) {
       this.downloadHref = url;
       this.download = true;
@@ -178,6 +192,11 @@ export class AppComponent implements OnInit {
     } else {
       this.setErrorState('Unsupported file type or missing file URL.');
     }
+  }
+
+  private isMSOfficeDocument(): boolean {
+    const ext = this.getFileExtension(this.fileName || '') || 'pdf';
+    return ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext);
   }
 
   private isDisplayable(mimeType: string, fileType: string): boolean {

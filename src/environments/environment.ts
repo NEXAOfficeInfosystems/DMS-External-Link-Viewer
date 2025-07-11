@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  // apiBaseUrl: 'http://localhost:23734'
-  apiBaseUrl: 'https://www.officeinfosystems.com/ExternalLinkDMSService/' // Change as needed
+  apiBaseUrl: 'http://localhost:23734', // Change as needed
+  // apiBaseUrl: 'https://www.officeinfosystems.com/ExternalLinkDMSService/' // Change as needed
 };
