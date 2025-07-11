@@ -34,7 +34,9 @@
           }}</mat-icon>
       </button> -->
 
-        <button class="btn btn-success btn-sm" (click)="openUploadModal()" >
+        <button class="btn btn-success btn-sm" (click)="openUploadModal()" 
+                [disabled]="!canAddDocuments"
+                >
           <i class="las la-plus"></i> {{ 'Add Document' | translate }}
         </button>
       </div>
