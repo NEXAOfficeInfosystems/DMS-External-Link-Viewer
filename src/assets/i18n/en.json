@@ -712,7 +712,8 @@
   "DEFAULT_PERMISSION": "Default Permission",
   "FILES": "Files",
   "ACTIONS": "Actions",
-  "VIEW": "View"
+  "VIEW": "View",
+  "COMPANY_NAME"  : "Company Name"
 },
 "COMMON_HEADER": {
   "MY_DATA_ROOMS": "My Data Rooms"

@@ -12,11 +12,19 @@
         </td>
       </ng-container>
 
+  <ng-container matColumnDef="companyname">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'ACTIVE.COMPANY_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let room">
+          {{ room.companyName }}
+        </td>
+      </ng-container>
+
+
       <!-- Expiration Date Column -->
       <ng-container matColumnDef="expires">
   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'ACTIVE.EXPIRATION_DATE' | translate }}</th>
         <td mat-cell *matCellDef="let room">
-          <i class="far fa-calendar-alt"></i> {{ room.expires |date: 'MMMM dd, y'}}
+          <i class="far fa-calendar-alt"></i> {{ room.expires }}
         </td>
       </ng-container>
 

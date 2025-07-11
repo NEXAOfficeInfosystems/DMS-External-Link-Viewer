@@ -54,7 +54,7 @@ export class ActiveComponent implements AfterViewInit, OnInit, OnDestroy {
   expiredDataSource = new MatTableDataSource<DataRoom>(this.expiredRooms);
   auditDataSource = new MatTableDataSource<AuditLog>(this.auditLogs);
 
-  displayedColumns: string[] = ['name', 'expires', 'users', 'files', 'actions'];
+  displayedColumns: string[] = ['name', 'companyname', 'expires', 'users', 'files', 'actions'];
   expiredDisplayedColumns: string[] = ['name', 'expiredDate', 'users', 'files', 'actions'];
   auditDisplayedColumns: string[] = [
     'dataRoomName',
@@ -264,6 +264,7 @@ getCookie(name: string): string | null {
       return {
         id: room.id,
         name: room.name,
+        companyName: room.companyName || '',
         expires: room.expirationDate ? new Date(room.expirationDate).toLocaleDateString() : 'No Expiry',
         permission: room.defaultPermission,
         files: files.length,
