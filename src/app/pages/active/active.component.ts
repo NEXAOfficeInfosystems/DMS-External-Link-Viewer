@@ -243,9 +243,9 @@ getCookie(name: string): string | null {
   const MasterUserId = this.getCookie('MasterUserId') || '';
    this.manageDataRoomService.getAllActiveExpiredDataRooms(MasterUserId).subscribe((res: any) => {
   // console.log('Active and Expired Data Rooms:', res);
-   const dataRoomPermissions = res.permissions?.dataRoomPermissions || [];
-    const userPermissions = res.permissions?.userPermissions || [];
-    const documentPermissions = res.permissions?.documentPermissions || [];
+   const dataRoomPermissions = res.Permissions?.DataRoomPermissions || [];
+    const userPermissions = res.Permissions?.UserPermissions || [];
+    const documentPermissions = res.Permissions?.DocumentPermissions || [];
 
 
     this.dataRoomPermissions = dataRoomPermissions;
@@ -253,26 +253,26 @@ getCookie(name: string): string | null {
     this.documentPermissions = documentPermissions;
 
   
-  if (res && res.activeRooms) {
-    const activeRooms = res.activeRooms.map((roomWrapper: any) => {
-      const room = roomWrapper.room;
-      const files = roomWrapper.files || [];
+  if (res && res.ActiveRooms) {
+    const activeRooms = res.ActiveRooms.map((roomWrapper: any) => {
+      const room = roomWrapper.Room;
+      const files = roomWrapper.Files || [];
 
       return {
-        id: room.id,
-        name: room.name,
-        companyName: room.companyName || '',
-        expires: room.expirationDate ? new Date(room.expirationDate).toLocaleDateString() : 'No Expiry',
-        permission: room.defaultPermission,
+        id: room.Id,
+        name: room.Name,
+        companyName: room.CompanyName || '',
+        expires: room.ExpirationDate ? new Date(room.ExpirationDate).toLocaleDateString() : 'No Expiry',
+        permission: room.DefaultPermission,
         files: files.length,
         documents: files.map((fileWrapper: any) => {
-          const doc = fileWrapper.document;
+          const doc = fileWrapper.Document;
           return {
-            id: doc.id,
-            name: doc.name,
-            url: doc.url,
-            size: doc.documentSize,
-            type: doc.docType
+            id: doc.Id,
+            name: doc.Name,
+            url: doc.Url,
+            size: doc.DocumentSize,
+            type: doc.DocType
           };
         })
       };
@@ -316,6 +316,7 @@ getCookie(name: string): string | null {
       UserLoggedIn: 'User Logged In',
       UserDeleted: 'User Deleted',
       EmailSended: 'Email Sent',
+      view_download: 'View & Download',
     };
     return actionMap[actionName] || actionName || 'Unknown Action';
   }

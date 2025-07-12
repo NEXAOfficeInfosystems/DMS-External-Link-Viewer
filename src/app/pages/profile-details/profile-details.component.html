@@ -1,132 +1,147 @@
-
-
-<!-- <div class="mat-elevation-z8"> -->
-
-
 <div class="edit-profile mat-elevation-z8">
-  <div class="profile-container" style=" border-radius: 12px; padding: 15px;">
+  <div class="profile-container" style="border-radius: 12px; padding: 24px;">
     <div class="section-header">
       <h2 style="margin-bottom: 24px; text-align: center;">Profile Details</h2>
     </div>
+
     <div class="profile-body">
       <ng-container *ngIf="userDetails$ | async as userDetails">
-        
         <form #profileForm="ngForm" (ngSubmit)="onSave(profileForm)">
+          
+<!--       
+          <div class="row mb-3" style="display: flex; align-items: center; gap: 16px;">
+            <div class="col-auto">
+              <img 
+                [src]="profileImageUrl || 'assets/images/default-profile.png'" 
+                alt="Profile Picture" 
+                style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 2px solid #ccc;" />
+            </div>
+            <div class="col">
+              <input type="file" accept="image/*" (change)="onProfileImageSelected($event)" />
+            </div>
+          </div> -->
+
           <div class="row" style="display: flex; gap: 16px;">
             <div class="col" style="flex: 1;">
-              <div class="form-field" style="margin-bottom: 16px;">
-                <label>Full Name <span style="color: #d32f2f;">*</span></label>
-                <input type="text" class="form-control" name="name" [(ngModel)]="userDetails.User.Name" required #nameModel="ngModel" />
-                <div *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)" style="color: #d32f2f; font-size: 0.9em; margin-top: 4px;">
-                  <span *ngIf="nameModel.errors?.['required']">Full Name is required.</span>
-                </div>
+              <label for="name">Full Name <span style="color: red;">*</span></label>
+              <input id="name" type="text" class="form-control" name="name" [(ngModel)]="userDetails.User.Name" required #nameModel="ngModel" />
+              <div *ngIf="nameModel.invalid && (nameModel.dirty || nameModel.touched)" style="color: red; font-size: 0.9em;">
+                <span *ngIf="nameModel.errors?.['required']">Full Name is required.</span>
               </div>
             </div>
+
             <div class="col" style="flex: 1;">
-              <div class="form-field" style="margin-bottom: 16px;">
-                <label>Email</label>
-                <input type="email" class="form-control" name="email" [(ngModel)]="userDetails.User.Email" required email #emailModel="ngModel" disabled />
-                <input type="hidden" name="email" [(ngModel)]="userDetails.User.Email" />
-                <div *ngIf="emailModel.invalid && (emailModel.dirty || emailModel.touched)" style="color: #d32f2f; font-size: 0.9em; margin-top: 4px;">
-                  <span *ngIf="emailModel.errors?.['required']">Email is required.</span>
-                  <span *ngIf="emailModel.errors?.['email']">Please enter a valid email address.</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row" style="display: flex; gap: 16px;">
-            <div class="col" style="flex: 1;">
-              <div class="form-field" style="margin-bottom: 16px; position: relative;">
-                <label>Old Password <span style="color: #d32f2f;">*</span></label>
-                <input [type]="showOldPassword ? 'text' : 'password'"
-                       class="form-control"
-                       name="oldPassword"
-                       [(ngModel)]="userDetails.User.Password"
-                       required
-                       #oldPasswordModel="ngModel"
-                       style="padding-right: 36px;" />
-                <button type="button"
-                        (click)="showOldPassword = !showOldPassword"
-                        style="position: absolute; right: 8px; top: 32px; background: none; border: none; cursor: pointer;">
-                  <i class="fas" [ngClass]="showOldPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-                </button>
-                <div *ngIf="oldPasswordModel.invalid && (oldPasswordModel.dirty || oldPasswordModel.touched)"
-                     style="color: #d32f2f; font-size: 0.9em; margin-top: 4px;">
-                  <span *ngIf="oldPasswordModel.errors?.['required']">Old Password is required.</span>
-                </div>
-              </div>
-            </div>
-            <div class="col" style="flex: 1;">
-              <div class="form-field" style="margin-bottom: 16px; position: relative;">
-                <label>New Password</label>
-                <input [type]="showNewPassword ? 'text' : 'password'" class="form-control" name="newPassword" [(ngModel)]="newPassword" required style="padding-right: 36px;" />
-                <button type="button" (click)="showNewPassword = !showNewPassword" style="position: absolute; right: 8px; top: 32px; background: none; border: none; cursor: pointer;">
-                  <i class="fas" [ngClass]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-                </button>
-                <span *ngIf="userDetails.User.Password && newPassword && userDetails.User.Password === newPassword" style="color: #d32f2f; font-size: 0.9em; margin-top: 4px; display: block;">New password cannot be the same as the old password.</span>
-              </div>
+              <label>Email</label>
+              <input type="email" class="form-control" name="email" [(ngModel)]="userDetails.User.Email" required disabled />
+              <input type="hidden" name="email" [(ngModel)]="userDetails.User.Email" />
             </div>
           </div>
 
-<div class="row" style="display: flex; gap: 16px;">
-  <div class="col-12 col-md-6">
-    <div class="form-field" style="margin-bottom: 16px; position: relative;">
-      <label>Confirm Password</label>
-      <input [type]="showConfirmPassword ? 'text' : 'password'"
+          <div class="row mt-3" style="display: flex; align-items: end; gap: 16px;">
+
+  <div class="col-6">
+    <label for="oldPassword">Old Password <span style="color: red;">*</span></label>
+    <div class="form-field" style="position: relative;">
+      <input [type]="showOldPassword ? 'text' : 'password'"
              class="form-control"
-             name="confirmPassword"
-             [(ngModel)]="confirmPassword"
-             required
-             style="padding-right: 36px;" />
+             id="oldPassword"
+             name="oldPassword"
+             [(ngModel)]="oldPassword"
+             required />
       <button type="button"
-              (click)="showConfirmPassword = !showConfirmPassword"
-              style="position: absolute; right: 8px; top: 32px; background: none; border: none; cursor: pointer;">
-        <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+              (click)="showOldPassword = !showOldPassword"
+              style="position: absolute; right: 8px; top: 8px; background: none; border: none;">
+        <i class="fas" [ngClass]="showOldPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
       </button>
-      <span *ngIf="confirmPassword && newPassword && confirmPassword !== newPassword"
-            style="color: #d32f2f; font-size: 0.9em; margin-top: 4px; display: block;">
-        Confirm password does not match.
-      </span>
     </div>
+  </div>
+
+  <div class="col-auto">
+    <button type="button" class="btn btn-outline-primary btn-sm" (click)="enablePasswordFields = !enablePasswordFields">
+      {{ enablePasswordFields ? 'Cancel' : 'Change Password' }}
+    </button>
   </div>
 </div>
 
 
+          <div *ngIf="enablePasswordFields" class="mt-3">
+            <div class="row" style="display: flex; gap: 16px;">
+          <div class="col" style="flex: 1;">
+  <label>New Password</label>
+  <div class="form-field" style="position: relative;">
+    <input [type]="showNewPassword ? 'text' : 'password'"
+           class="form-control"
+           name="newPassword"
+           [(ngModel)]="newPassword"
+           required />
+    <button type="button" (click)="showNewPassword = !showNewPassword"
+            style="position: absolute; right: 8px; top: 8px; background: none; border: none;">
+      <i class="fas" [ngClass]="showNewPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+    </button>
+  </div>
 
-         <div class="row" style="display: flex; gap: 16px;">
-  <div class="col" style="flex: 1;">
-    <div class="form-field" style="margin-bottom: 16px;">
-      <label>Companies</label>
-      <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 8px;">
-        <mat-chip *ngFor="let dept of departments"
-                  selectable="true"
-                  (click)="userDetails.CompanyNames = dept"
-                  [color]="userDetails.CompanyNames === dept ? 'primary' : undefined"
-                  [ngClass]="{'mat-chip-selected': userDetails.CompanyNames === dept}"
-                  style="cursor: pointer;">
-          {{ dept }}
-        </mat-chip>
-      </div>
-      <input type="hidden" name="department" [(ngModel)]="userDetails.CompanyNames" />
-    </div>
+  <div *ngIf="newPassword && oldPassword && newPassword === oldPassword"
+       style="color: red; font-size: 0.85em; margin-top: 4px;">
+    New password cannot be the same as the old password.
   </div>
 </div>
 
 
+           <div class="col" style="flex: 1;">
+  <label>Confirm Password</label>
+  <div class="form-field" style="position: relative;">
+    <input [type]="showConfirmPassword ? 'text' : 'password'"
+           class="form-control"
+           name="confirmPassword"
+           [(ngModel)]="confirmPassword"
+           required />
+    <button type="button"
+            (click)="showConfirmPassword = !showConfirmPassword"
+            style="position: absolute; right: 8px; top: 8px; background: none; border: none;">
+      <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+    </button>
+  </div>
 
-          <div class="form-actions" style="text-align: center; margin-top: 24px;">
-            <button class="btn btn-success btn-sm" style="margin-right: 12px;" type="submit" [disabled]="userDetails.User.Password && newPassword && userDetails.User.Password === newPassword"
-  [ngClass]="{'btn-disabled': userDetails.User.Password && newPassword && userDetails.User.Password === newPassword}">
-  <i class="fas fa-save"></i> Save
-</button>
-            <button class="btn btn-danger btn-sm" type="button" (click)="navigateTo('dataRooms', '/layout')"><i class="fas fa-times-circle"
-              ></i> Cancel</button>
+  <div *ngIf="confirmPassword && newPassword && confirmPassword !== newPassword"
+       style="color: red; font-size: 0.85em; margin-top: 4px;">
+    Confirm password does not match the new password.
+  </div>
+</div>
+
+            </div>
           </div>
+
+          <!-- Companies -->
+          <div class="mt-4">
+            <label>Companies</label>
+            <div style="margin-top: 6px; display: flex; flex-wrap: wrap; gap: 8px;">
+              <mat-chip *ngFor="let dept of departments"
+                        selectable="true"
+                        (click)="userDetails.CompanyNames = dept"
+                        [color]="userDetails.CompanyNames === dept ? 'primary' : undefined"
+                        [ngClass]="{'mat-chip-selected': userDetails.CompanyNames === dept}"
+                        style="cursor: pointer;">
+                {{ dept }}
+              </mat-chip>
+            </div>
+            <input type="hidden" name="department" [(ngModel)]="userDetails.CompanyNames" />
+          </div>
+
+          <!-- Actions -->
+          <div class="form-actions mt-4" style="text-align: center;">
+            <button class="btn btn-success btn-sm"
+                    type="submit"
+                    [disabled]="!checkIfFormChanged() || (newPassword && newPassword === oldPassword)">
+              <i class="fas fa-save"></i> Save
+            </button>
+            &nbsp;
+            <button class="btn btn-danger btn-sm" type="button" (click)="navigateTo('dataRooms', '/layout')">
+              <i class="fas fa-times-circle"></i> Cancel
+            </button>
+          </div>
+
         </form>
       </ng-container>
     </div>
   </div>
 </div>
-
-
-<!-- </div> -->

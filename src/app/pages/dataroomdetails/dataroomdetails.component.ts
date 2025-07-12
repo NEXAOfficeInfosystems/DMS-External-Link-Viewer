@@ -30,12 +30,12 @@ interface DataRoom {
 }
 
 interface AuditLog {
-  dataRoomName: string;
-  documentName: string;
+  DataRoomName: string;
+  DocumentName: string;
   UserName: string;
-  actionName: string;
-  actionBy: string;
-  actionDate: string;
+  ActionName: string;
+  ActionBy: string;
+  ActionDate: string;
 }
 
 @Component({
@@ -236,18 +236,18 @@ export class DataroomdetailsComponent implements OnInit {
       this.filteredAuditLogs = this.auditLogs;
     } else {
       this.filteredDataRooms = this.files.filter((file) =>
-        (file.document?.name?.toLowerCase() || '').includes(term) ||
-        (file.documentId?.toLowerCase() || '').includes(term) ||
-        (file.documentPermission?.toLowerCase() || '').includes(term)
+        (file.Document?.Name?.toLowerCase() || '').includes(term) ||
+        (file.DocumentId?.toLowerCase() || '').includes(term) ||
+        (file.DocumentPermission?.toLowerCase() || '').includes(term)
       );
-
+// console.log('Filtered Data Rooms:', this.filteredDataRooms);
       this.filteredAuditLogs = this.auditLogs.filter((log) =>
-        log.dataRoomName.toLowerCase().includes(term) ||
-        log.documentName.toLowerCase().includes(term) ||
+        log.DataRoomName.toLowerCase().includes(term) ||
+        log.DocumentName.toLowerCase().includes(term) ||
         log.UserName.toLowerCase().includes(term) ||
-        log.actionName.toLowerCase().includes(term) ||
-        log.actionBy.toLowerCase().includes(term) ||
-        log.actionDate.toLowerCase().includes(term)
+        log.ActionName.toLowerCase().includes(term) ||
+        log.ActionBy.toLowerCase().includes(term) ||
+        log.ActionDate.toLowerCase().includes(term)
       );
     }
 
@@ -337,20 +337,20 @@ export class DataroomdetailsComponent implements OnInit {
     const MasterUserId = this.getCookie('MasterUserId') || '';
     this.manageDataRoomService.getDataRoomDetailsById(MasterUserId, this.dataRoomId)
       .subscribe((res: any) => {
-        // console.log('Data Room Details:', res);
-        this.dataRoom = res.dataRoom;
+        console.log('Data Room Details:', res);
+        this.dataRoom = res.DataRoom;
         if (this.commonHeader) {
           this.commonHeader.dataRoom = this.dataRoom;
         }
-        this.files = res.files || [];
+        this.files = res.Files || [];
 
-        this.userPermission = res.permission?.userPermission || '';
-        this.dataRoomPermission = res.permission?.dataRoomPermission || '';
+        this.userPermission = res.Permission?.UserPermission || '';
+        this.dataRoomPermission = res.Permission?.DataRoomPermission || '';
 
         this.documentPermissions = this.files.map(f => ({
-          documentId: f.documentId,
-          permission: f.documentPermission,
-          documentName: f.document?.name
+          documentId: f.DocumentId,
+          permission: f.DocumentPermission,
+          documentName: f.Document?.Name
         }));
         this.files = this.files.map(file => ({
           ...file,
@@ -368,13 +368,13 @@ export class DataroomdetailsComponent implements OnInit {
         this.updatePagedData();
 
         // --- AUDIT LOGS MAPPING ---
-        this.auditLogs = (res.auditLogs || []).map((log: any) => ({
-          dataRoomName: log.dataRoomName,
-          documentName: log.documentName,
-          UserName: log.createdByName || log.UserName || '',
-          actionName: log.actionName,
-          actionBy: log.createdByName || log.actionBy || '',
-          actionDate: log.createdDate || log.actionDate || ''
+        this.auditLogs = (res.AuditLogs || []).map((log: any) => ({
+          dataRoomName: log.DataRoomName,
+          documentName: log.DocumentName,
+          UserName: log.CreatedByName || log.UserName || '',
+          actionName: log.ActionName,
+          actionBy: log.CreatedByName || log.ActionBy || '',
+          actionDate: log.CreatedDate || log.ActionDate || ''
         }));
         this.filteredAuditLogs = this.auditLogs;
         this.updatePagedAuditLogs();
@@ -426,7 +426,7 @@ export class DataroomdetailsComponent implements OnInit {
 
     // console.log(documentInfo);
     this.sub$.add(
-      this.commonService.downloadDocument(documentInfo.id, false).subscribe({
+      this.commonService.downloadDocument(documentInfo.Id, false).subscribe({
         next: (event) => {
 
           // console.log('Download event:', event);
@@ -454,8 +454,8 @@ export class DataroomdetailsComponent implements OnInit {
     const blob = new Blob([blobData], { type: mimeType });
 
     // Extract extension from URL (e.g. .pdf)
-    const extensionFromUrl = this.getFileExtensionFromUrl(documentInfo.url);
-    const safeName = documentInfo.name?.trim().replace(/\s+/g, '_') || 'downloaded_file';
+    const extensionFromUrl = this.getFileExtensionFromUrl(documentInfo.Url);
+    const safeName = documentInfo.Name?.trim().replace(/\s+/g, '_') || 'downloaded_file';
 
     // Ensure extension is appended if not already
     const fileName = safeName.endsWith(extensionFromUrl) ? safeName : `${safeName}${extensionFromUrl}`;
@@ -503,6 +503,8 @@ export class DataroomdetailsComponent implements OnInit {
       UserLoggedIn: 'User Logged In',
       UserDeleted: 'User Deleted',
       EmailSended: 'Email Sent',
+      view_download: 'View & Download',
+      contributor: 'Contributor',
     };
     return actionMap[actionName] || actionName || 'Unknown Action';
   }
@@ -585,7 +587,7 @@ export class DataroomdetailsComponent implements OnInit {
   viewFile(file: any): void {
 
     // console.log(file)
-    const documentId = file?.documentId;
+    const documentId = file?.DocumentId;
     if (!documentId) {
       this.toastrService.error('Invalid document ID.');
       return;
@@ -603,25 +605,25 @@ export class DataroomdetailsComponent implements OnInit {
       }
 
       // Get extension from URL
-      const extension = file.document.url?.split('.')?.pop()?.toLowerCase() || '';
+      const extension = file.Document.Url?.split('.')?.pop()?.toLowerCase() || '';
       const contentType = this.getMimeTypeFromExtension(extension) || 'application/octet-stream'; // fallback
 
       // Create blob with correct content type
       const blob = new Blob([response.body!], { type: contentType });
 
-      const safeName = (file?.document?.name || 'document').replace(/\s+/g, '_');
+      const safeName = (file?.Document?.Name || 'document').replace(/\s+/g, '_');
       const finalName = safeName.endsWith(extension) ? safeName : `${safeName}.${extension}`;
 
       const dialogRef = this.dialog.open(FileViewerDialogComponent, {
         width: '80vw',
         height: '80vh',
         data: {
-          id: file?.documentId,
-          url: file.document.url,
+          id: file?.DocumentId,
+          url: file.Document.Url,
           fileUrl: "",
-          fileName: file.document.name,
+          fileName: file.Document.Name,
           fileExtension: extension,
-          Documents: file?.document
+          Documents: file?.Document
         },
         disableClose: true
       });
@@ -672,10 +674,27 @@ getMimeTypeFromExtension(extension: string): string {
   onSortChange(event: {active: string, direction: string}) {
     this.activeSort = event.active;
     this.sortDirection = event.direction as 'asc' | 'desc';
-   
+
+    const getValue = (item: any) => {
+      switch (event.active) {
+        case 'name':
+          return item.Document?.Name?.toString().toLowerCase() || '';
+        case 'size':
+          return item.Document?.Size || item.Size || 0;
+        case 'docType':
+          return item.Document?.Type?.toString().toLowerCase() || '';
+        case 'permission':
+          return item.DocumentPermission?.toString().toLowerCase() || '';
+        case 'createdDate':
+          return item.Document?.CreatedDate?.toString().toLowerCase() || '';
+        default:
+          return item[event.active]?.toString().toLowerCase() || '';
+      }
+    };
+
     this.filteredDataRooms = [...this.filteredDataRooms].sort((a: any, b: any) => {
-      const aValue = (a.document?.[event.active] || a[event.active] || '').toString().toLowerCase();
-      const bValue = (b.document?.[event.active] || b[event.active] || '').toString().toLowerCase();
+      const aValue = getValue(a);
+      const bValue = getValue(b);
       if (aValue < bValue) return this.sortDirection === 'asc' ? -1 : 1;
       if (aValue > bValue) return this.sortDirection === 'asc' ? 1 : -1;
       return 0;
@@ -687,9 +706,30 @@ getMimeTypeFromExtension(extension: string): string {
   onAuditSortChange(event: {active: string, direction: string}) {
     this.auditActiveSort = event.active;
     this.auditSortDirection = event.direction as 'asc' | 'desc';
+
+    // Map column keys to actual audit log properties
+    const getValue = (item: any) => {
+      switch (event.active) {
+        case 'dataRoomName':
+          return item.DataRoomName?.toString().toLowerCase() || '';
+        case 'documentName':
+          return item.DocumentName?.toString().toLowerCase() || '';
+        case 'UserName':
+          return item.UserName?.toString().toLowerCase() || '';
+        case 'actionName':
+          return item.ActionName?.toString().toLowerCase() || '';
+        case 'actionBy':
+          return item.ActionBy?.toString().toLowerCase() || '';
+        case 'actionDate':
+          return item.ActionDate?.toString().toLowerCase() || '';
+        default:
+          return item[event.active]?.toString().toLowerCase() || '';
+      }
+    };
+
     this.filteredAuditLogs = [...this.filteredAuditLogs].sort((a: any, b: any) => {
-      const aValue = (a[event.active] || '').toString().toLowerCase();
-      const bValue = (b[event.active] || '').toString().toLowerCase();
+      const aValue = getValue(a);
+      const bValue = getValue(b);
       if (aValue < bValue) return this.auditSortDirection === 'asc' ? -1 : 1;
       if (aValue > bValue) return this.auditSortDirection === 'asc' ? 1 : -1;
       return 0;

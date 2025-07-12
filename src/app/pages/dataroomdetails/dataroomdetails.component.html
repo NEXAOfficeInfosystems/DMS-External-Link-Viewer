@@ -12,7 +12,7 @@
 
           <div>
             <span class="expire-label">{{ 'Expires' | translate }}</span> 
-            <span class="expire-date" style="padding-left: 5px;">{{ dataRoom?.expirationDate | date: 'MMMM d, y' }}</span>
+            <span class="expire-date" style="padding-left: 5px;">{{ dataRoom?.ExpirationDate | date: 'MMMM d, y' }}</span>
           </div>
 
         </div>
@@ -113,19 +113,19 @@
           <span class="d-md-none">{{ 'DATA_ROOM_DETAILS.NAME_SHORT' | translate }}</span>
         </th>
         <td mat-cell *matCellDef="let file">
-          <ng-container *ngIf="getFileExtension(file.document.url) as extension">
+          <ng-container *ngIf="getFileExtension(file.Document.Url) as extension">
             <img *ngIf="extension === 'pdf'" src="assets/images/login_banner/pdf.png" alt="PDF" width="20px" [title]="'DATA_ROOM_DETAILS.PDF' | translate" />
             <img *ngIf="extension === 'doc' || extension === 'docx'" src="assets/images/svg/word.svg" alt="Word" width="20px" [title]="'DATA_ROOM_DETAILS.DOC' | translate" />
             <img *ngIf="extension === 'xls' || extension === 'xlsx'" src="assets/images/svg/excel.svg" alt="Excel" width="20px" [title]="'DATA_ROOM_DETAILS.EXCEL' | translate" />
             <img *ngIf="extension === 'ppt' || extension === 'pptx'" src="assets/images/svg/ppt.svg" alt="PPT" width="20px" [title]="'DATA_ROOM_DETAILS.PPT' | translate" />
             <img *ngIf="extension === 'csv' || extension === 'txt'" src="assets/images/svg/text-2.svg" alt="Text" width="20px" [title]="'DATA_ROOM_DETAILS.TEXT' | translate" />
           </ng-container>
-          <img *ngIf="isAudioFile(file.document.url)" src="assets/images/svg/mp3.svg" alt="Audio" width="20px" [title]="'DATA_ROOM_DETAILS.AUDIO' | translate" />
-          <img *ngIf="isVideoFile(file.document.url)" src="assets/images/svg/mp4.svg" alt="Video" width="20px" [title]="'DATA_ROOM_DETAILS.VIDEO' | translate" />
-          <img *ngIf="isImageFile(file.document.url)" src="assets/images/login_banner/img.png" alt="Image" width="20px" [title]="'DATA_ROOM_DETAILS.IMAGE' | translate" />
-          
-        <span class="truncate-data p-2 pointer-hover" [title]="file.document.name">
-  {{ file.document.name | slice: 0:10 }}{{ file.document.name.length > 10 ? '...' : '' }}
+          <img *ngIf="isAudioFile(file.Document.Url)" src="assets/images/svg/mp3.svg" alt="Audio" width="20px" [title]="'DATA_ROOM_DETAILS.AUDIO' | translate" />
+          <img *ngIf="isVideoFile(file.Document.Url)" src="assets/images/svg/mp4.svg" alt="Video" width="20px" [title]="'DATA_ROOM_DETAILS.VIDEO' | translate" />
+          <img *ngIf="isImageFile(file.Document.Url)" src="assets/images/login_banner/img.png" alt="Image" width="20px" [title]="'DATA_ROOM_DETAILS.IMAGE' | translate" />
+
+        <span class="truncate-data p-2 pointer-hover" [title]="file.Document.Name">
+  {{ file.Document.Name | slice: 0:10 }}{{ file.Document.Name.length > 10 ? '...' : '' }}
 </span>
 
                     <!-- <span class="truncate-data p-2 pointer-hover" [title]="file.document.name">
@@ -141,26 +141,26 @@
                     <span class="d-none d-md-inline">{{ 'DATA_ROOM_DETAILS.SIZE' | translate }}</span>
                     <span class="d-md-none">{{ 'DATA_ROOM_DETAILS.SIZE_SHORT' | translate }}</span>
                   </th>
-                  <td mat-cell *matCellDef="let file"> {{ formatFileSize(file.document.documentSize) || '0 KB' }} </td>
+                  <td mat-cell *matCellDef="let file"> {{ formatFileSize(file.Document.DocumentSize) || '0 KB' }} </td>
                 </ng-container>
 
                 <!-- Type Column -->
                 <ng-container matColumnDef="docType">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'DATA_ROOM_DETAILS.TYPE' | translate }}</th>
-                  <td mat-cell *matCellDef="let file"> {{ file.document.docType }} </td>
+                  <td mat-cell *matCellDef="let file"> {{ file.Document.DocType }} </td>
                 </ng-container>
 
                 <!-- Permission Column -->
                 <ng-container matColumnDef="permission">
                   <th mat-header-cell *matHeaderCellDef>{{ 'DATA_ROOM_DETAILS.PERMISSION' | translate }}</th>
-                  <td mat-cell *matCellDef="let file"> {{ file.documentPermission }} </td>
+                  <td mat-cell *matCellDef="let file"> {{ file.DocumentPermission }} </td>
                 </ng-container>
 
                 <!-- Created Date Column -->
                 <ng-container matColumnDef="createdDate">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'DATA_ROOM_DETAILS.CREATED_DATE' | translate
                     }}</th>
-                  <td mat-cell *matCellDef="let file"> {{ file.document.createdDate | date: 'MMMM dd, y' }} </td>
+                  <td mat-cell *matCellDef="let file"> {{ file.Document.CreatedDate | date: 'MMMM dd, y' }} </td>
                 </ng-container>
 
                 <!-- Actions Column -->
@@ -169,7 +169,7 @@
                   <td mat-cell *matCellDef="let file">
                     <ng-container *ngIf="file.permissionFlags as perms">
                       <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.DOWNLOAD' | translate }}"
-                        [disabled]="!perms.canDownload" (click)="downloadDocument(file.document)">
+                        [disabled]="!perms.canDownload" (click)="downloadDocument(file.Document)">
                         <mat-icon class="download-icon">download</mat-icon>
                       </button>
                       <button mat-icon-button matTooltip="{{ 'DATA_ROOM_DETAILS.EDIT' | translate }}" [disabled]="true"
@@ -200,7 +200,7 @@
                       style="background-color: transparent; box-shadow: none;">
                       <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
                         <!-- File Type Icon -->
-                        <ng-container [ngSwitch]="getFileExtension(file.document.url)">
+                        <ng-container [ngSwitch]="getFileExtension(file.Document.Url)">
                           <img *ngSwitchCase="'pdf'" src="assets/images/login_banner/pdf.png" alt="PDF" class="img_size"
                             [title]="'DATA_ROOM_DETAILS.PDF' | translate" />
                           <img *ngSwitchCase="'doc'" src="assets/images/svg/word.svg" alt="Word" class="img_size"
@@ -221,21 +221,21 @@
                             [title]="'DATA_ROOM_DETAILS.TEXT' | translate" />
                         </ng-container>
 
-                        <img *ngIf="isAudioFile(file.document.url)" src="assets/images/svg/mp3.svg" alt="Audio"
+                        <img *ngIf="isAudioFile(file.Document.Url)" src="assets/images/svg/mp3.svg" alt="Audio"
                           class="img_size" [title]="'DATA_ROOM_DETAILS.AUDIO' | translate" />
-                        <img *ngIf="isVideoFile(file.document.url)" src="assets/images/svg/mp4.svg" alt="Video"
+                        <img *ngIf="isVideoFile(file.Document.Url)" src="assets/images/svg/mp4.svg" alt="Video"
                           class="img_size" [title]="'DATA_ROOM_DETAILS.VIDEO' | translate" />
-                        <img *ngIf="isImageFile(file.document.url)" src="assets/images/login_banner/img.png" alt="Image"
+                        <img *ngIf="isImageFile(file.Document.Url)" src="assets/images/login_banner/img.png" alt="Image"
                           class="img_size" [title]="'DATA_ROOM_DETAILS.IMAGE' | translate" />
 
                         <!-- File Name and Size -->
                         <div>
-                          <span class="truncate-data p-2 pointer-hover" [matTooltip]="file.document.name"
-                            [title]="file.document.name">
-                            {{ file.document.name }}
+                          <span class="truncate-data p-2 pointer-hover" [matTooltip]="file.Document.Name"
+                            [title]="file.Document.Name">
+                            {{ file.Document.Name }}
                           </span>
                           <div class="document-size">
-                            {{ formatFileSize(file.document.documentSize) || '0 KB' }}
+                            {{ formatFileSize(file.Document.DocumentSize) || '0 KB' }}
                           </div>
                         </div>
 
@@ -280,14 +280,14 @@
                     <span class="d-none d-md-inline">{{ 'DATA_ROOM_DETAILS.DATA_ROOM' | translate }}</span>
                     <span class="d-md-none">{{ 'DATA_ROOM_DETAILS.DATA_ROOM_SHORT' | translate }}</span>
                   </th>
-                  <td mat-cell *matCellDef="let log">{{ log.dataRoomName }}</td>
+                  <td mat-cell *matCellDef="let log">{{ log.DataRoomName }}</td>
                 </ng-container>
 
                 <!-- Document Name Column -->
                 <ng-container matColumnDef="documentName">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'DATA_ROOM_DETAILS.FILE_INFO' | translate }}
                   </th>
-                  <td mat-cell *matCellDef="let log">{{ log.documentName }}</td>
+                  <td mat-cell *matCellDef="let log">{{ log.DocumentName }}</td>
                 </ng-container>
 
                 <!-- User Name Column -->
@@ -301,21 +301,21 @@
                 <ng-container matColumnDef="actionName">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'DATA_ROOM_DETAILS.ACTION' | translate }}
                   </th>
-                  <td mat-cell *matCellDef="let log">{{ log.actionName }}</td>
+                  <td mat-cell *matCellDef="let log">{{ log.ActionName }}</td>
                 </ng-container>
 
                 <!-- Created By Column -->
                 <ng-container matColumnDef="actionBy">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'DATA_ROOM_DETAILS.ACTION_BY' | translate }}
                   </th>
-                  <td mat-cell *matCellDef="let log">{{ log.actionBy }}</td>
+                  <td mat-cell *matCellDef="let log">{{ log.ActionBy }}</td>
                 </ng-container>
 
                 <!-- Created Date Column -->
                 <ng-container matColumnDef="actionDate">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'DATA_ROOM_DETAILS.CREATED_DATE' | translate
                     }}</th>
-                  <td mat-cell *matCellDef="let log">{{ log.actionDate | date:'MMMM dd, y' }}</td>
+                  <td mat-cell *matCellDef="let log">{{ log.ActionDate | date:'MMMM dd, y' }}</td>
                 </ng-container>
 
                 <!-- Header and Row Definitions -->

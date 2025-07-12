@@ -28,28 +28,34 @@ export class DataRoomApiService {
 
   }
 
-  login(email: string, password: string): Observable<any> {
+login(email: string, password: string): Observable<any> {
+  const apiUrl = `${this.BaseapiUrl}/api/DataRoomLogin`;
+  const payload = { email, password, IsExternal: true };
 
-    const apiUrl = `${this.BaseapiUrl}/api/DataRoomLogin`;
-    const payload = { email, password ,IsExternal: true};
-    return this.httpClient.post(`${apiUrl}/login`, payload).pipe(
-      tap((response: any) => {
-        if (response?.success && response?.token) {
-          this.cookieservice.set('UserToken', response.token); 
+  const encryptedPayload = EncryptionService.encryptRequestPayload(payload);
 
+  return this.httpClient.post(`${apiUrl}/login`, encryptedPayload).pipe(
+    map((response: any) => {
+    
+      const decrypted = EncryptionService.decryptResponse(
+        response.encryptedData,
+        response.encryptedKey,
+        response.encryptedIV
+      );
 
-
-          if (response?.user?.id) {
-            this.cookieservice.set('MasterUserId', response.user.id); 
-
-this.getUserDetailsById(response.user.id)
-
-          
-          }
+      if (decrypted?.Token) {
+        this.cookieservice.set('UserToken', decrypted.Token);
+        if (decrypted?.User?.Id) {
+          this.cookieservice.set('MasterUserId', decrypted.User.Id);
+          this.getUserDetailsById(decrypted.User.Id);
         }
-      })
-    );
-  }
+      }
+
+      return decrypted;
+    })
+  );
+}
+
 
 
 //
@@ -97,29 +103,62 @@ markAsRead(notificationId: string, isRead: boolean): Observable<any> {
 
 
 
-updateUserDetails(userDetails: any): Observable<any | CommonError> {
+// updateUserDetails(userDetails: any): Observable<any | CommonError> {
+//   const apiUrl = `${this.BaseapiUrl}/api/UserInformation/UpdateUserDetails`;
+//   return this.httpClient.put<any>(apiUrl, userDetails).pipe(
+//     map(response => response),
+//     catchError((error: HttpErrorResponse) => {
+//       return throwError(() => error.error as CommonError);
+//     })
+//   );}
+
+
+
+updateUserDetails(userDetails: FormData): Observable<any | CommonError> {
   const apiUrl = `${this.BaseapiUrl}/api/UserInformation/UpdateUserDetails`;
-  return this.httpClient.put<any>(apiUrl, userDetails).pipe(
+  return this.httpClient.post<any>(apiUrl, userDetails).pipe(
     map(response => response),
     catchError((error: HttpErrorResponse) => {
       return throwError(() => error.error as CommonError);
     })
-  );}
-
- getAllActiveExpiredDataRooms(masterUserId: string): Observable<any> {
-
-   const apiUrl = `${this.BaseapiUrl}/api/ActiveExpiredAuditRoom`;
-  const url = `${apiUrl}/Active-Expired/${masterUserId}`;
-  return this.httpClient.get<any>(url).pipe(
-    map(response => response)
   );
 }
+
+
+getAllActiveExpiredDataRooms(masterUserId: string): Observable<any> {
+  const apiUrl = `${this.BaseapiUrl}/api/ActiveExpiredAuditRoom`;
+  const url = `${apiUrl}/Active-Expired/${masterUserId}`;
+
+  return this.httpClient.get<any>(url).pipe(
+    map(response => {
+      const decryptedData = EncryptionService.decryptResponse(
+        response.encryptedData,
+        response.encryptedKey,
+        response.encryptedIV
+      );
+
+      return typeof decryptedData === 'string' ? JSON.parse(decryptedData) : decryptedData;
+    })
+  );
+}
+
 
 
 getDataRoomDetailsById(userId: any, dataroomid: any): Observable<any | CommonError> {
   const apiUrl = `${this.BaseapiUrl}/api/ActiveExpiredAuditRoom/DataRoomDetails/${userId}/${dataroomid}`;
   return this.httpClient.get<any>(apiUrl).pipe(
-    map(response => response),
+    // map(response => response),
+
+
+      map(response => {
+      const decryptedData = EncryptionService.decryptResponse(
+        response.encryptedData,
+        response.encryptedKey,
+        response.encryptedIV
+      );
+
+      return typeof decryptedData === 'string' ? JSON.parse(decryptedData) : decryptedData;
+    }),
     catchError((error: HttpErrorResponse) => throwError(() => error.error as CommonError))
   );
 }

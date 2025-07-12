@@ -77,7 +77,7 @@ static decryptFromToken(token: string): string {
   }
 
 
-  ///..belwo is for decrypt from response
+  ///..belwo is for decrypt from response..start.............................................
 static decryptResponse(encryptedData: string, encryptedKey: string, encryptedIV: string): any {
 
   const key = CryptoJS.enc.Base64.parse(encryptedKey);
@@ -94,4 +94,32 @@ static decryptResponse(encryptedData: string, encryptedKey: string, encryptedIV:
   return JSON.parse(plainText);
 }
 
+
+
+// /../encrypt the payload 
+
+static encryptRequestPayload(payload: any): {
+  encryptedData: string;
+  encryptedKey: string;
+  encryptedIV: string;
+} {
+  const jsonString = JSON.stringify(payload);
+
+  const key = CryptoJS.lib.WordArray.random(32);
+  const iv = CryptoJS.lib.WordArray.random(16);  
+
+  const encrypted = CryptoJS.AES.encrypt(jsonString, key, {
+    iv: iv,
+    mode: CryptoJS.mode.CBC,
+    padding: CryptoJS.pad.Pkcs7,
+  });
+
+  return {
+    encryptedData: encrypted.toString(),
+    encryptedKey: CryptoJS.enc.Base64.stringify(key),
+    encryptedIV: CryptoJS.enc.Base64.stringify(iv),
+  };
+}
+
+// .............................................end of encrypt and decrypt payload  response.................................................
 }

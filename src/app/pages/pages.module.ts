@@ -25,7 +25,8 @@ import { ProfileDetailsModule } from './profile-details/profile-details.module';
 import { MatGridListModule } from '@angular/material/grid-list'; // Import MatGridListModule
 import { MatCardModule } from '@angular/material/card';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
-import { NotificationsListComponent } from './notifications-list/notifications-list.component'; // Import MatCardModule
+import { NotificationsListComponent } from './notifications-list/notifications-list.component';
+import { UserChatBotComponent } from './user-chat-bot/user-chat-bot.component'; // Import MatCardModule
 
 
 @NgModule({
@@ -36,6 +37,7 @@ import { NotificationsListComponent } from './notifications-list/notifications-l
     SafeUrlPipe,
     UserDashboardComponent,
     NotificationsListComponent,
+    UserChatBotComponent,
   ],
   imports: [
     CommonModule,
@@ -59,7 +61,8 @@ import { NotificationsListComponent } from './notifications-list/notifications-l
     MatCardModule,
   ],
   exports : [
-    DataroomdetailsComponent
+    DataroomdetailsComponent,
+    UserChatBotComponent
   ]
 })
 export class PagesModule { }

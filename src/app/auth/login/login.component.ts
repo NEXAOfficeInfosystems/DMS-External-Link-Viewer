@@ -142,9 +142,13 @@ const encryptedToken = EncryptionService.encryptToToken('/layout');
     }
     this.dataRoomApiService.login(this.loginForm.value.email, this.loginForm.value.password).subscribe({
       next: (response) => {
-        if (response?.success) {
+
+// console.log('Login response:', response);
+
+        
+        if (response?.Success) {
           this.toastr.success('Login successful');
-          document.cookie = `UserToken=${response.token}; path=/; max-age=3600; SameSite=Strict`;
+          document.cookie = `UserToken=${response.Token}; path=/; max-age=3600; SameSite=Strict`;
           // Remember Me logic
           if (this.rememberMe) {
             const creds = JSON.stringify({
@@ -159,7 +163,7 @@ const encryptedToken = EncryptionService.encryptToToken('/layout');
           const encryptedToken = EncryptionService.encryptToToken('/layout');
           this.router.navigate(['/p', encryptedToken]);
         } else {
-          this.toastr.error(response?.message || 'Login failed');
+          this.toastr.error(response?.Message || 'Login failed');
           localStorage.removeItem('rememberedLogin');
         }
       },

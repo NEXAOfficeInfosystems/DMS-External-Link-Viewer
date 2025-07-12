@@ -4,9 +4,9 @@
       -->
 
       <h2 (click)="goToMyDataRooms()">{{ 'COMMON_HEADER.MY_DATA_ROOMS' | translate }}</h2>
-    <ng-container *ngIf="dataRoom && dataRoom.name">
+    <ng-container *ngIf="dataRoom && dataRoom.Name">
       <span class="breadcrumb-separator"> → </span>
-      <span class="breadcrumb-current">{{ dataRoom.name }}</span>
+      <span class="breadcrumb-current">{{ dataRoom.Name }}</span>
     </ng-container>
   </nav>
 </div>

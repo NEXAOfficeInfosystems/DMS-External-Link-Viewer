@@ -25,7 +25,9 @@ export class ProfileDetailsComponent implements OnInit {
   confirmPassword: string = '';
 
   userId: any;
-
+isFormDirty = false;
+showChangePasswordFields = false;
+originalUserDetails: any = null;
   constructor(
     private dataRoomApiService: DataRoomApiService,
     private translationService: TranslationService,
@@ -42,8 +44,12 @@ export class ProfileDetailsComponent implements OnInit {
         observer.next(userDetails);
         observer.complete();
       });
-      this.latestUserDetails = userDetails;
-
+    
+    this.latestUserDetails = JSON.parse(JSON.stringify(userDetails)); // clone for comparison
+    this.originalUserDetails = JSON.parse(JSON.stringify(userDetails));
+   if (userDetails?.User?.Password) {
+      this.oldPassword = userDetails.User.Password; 
+    }
       console.log( this.latestUserDetails,"Dsddsdsdsds")
       if (userDetails && userDetails.CompanyNames) {
         this.departments = userDetails.CompanyNames;
@@ -51,6 +57,34 @@ export class ProfileDetailsComponent implements OnInit {
     });
   }
 
+profileImageUrl: string | ArrayBuffer | null = null;
+selectedImageFile: File | null = null;
+
+onProfileImageSelected(event: any): void {
+  const file = event.target.files[0];
+  if (file) {
+    this.selectedImageFile = file;
+    this.profileImageUrl = URL.createObjectURL(file);
+    this.isFormDirty = true;
+  }
+}
+onInputChange(): void {
+  this.isFormDirty = this.checkIfFormChanged();
+}
+enablePasswordFields: boolean = false;
+isFormChanged = false;
+
+checkIfFormChanged(): boolean {
+  const current = this.latestUserDetails?.User;
+  const original = this.originalUserDetails?.User;
+
+  const isNameChanged = current?.Name !== original?.Name;
+  const isPasswordBeingChanged = !!this.oldPassword || !!this.newPassword || !!this.confirmPassword;
+  const isImageChanged = !!this.selectedImageFile;
+
+  this.isFormChanged = isNameChanged || isPasswordBeingChanged || isImageChanged;
+  return this.isFormChanged;
+}
 
   navigateTo(menu: string, route: string) {
 
@@ -63,37 +97,47 @@ export class ProfileDetailsComponent implements OnInit {
   }
 }
 
-
-  onSave(form: any) {
-
-    if (form.invalid) {
-      this.toasterservice.error('Please fill in all required fields');
-      return;
-    }
-    if (form.valid &&
-        this.oldPassword !== this.newPassword &&
-        this.newPassword === this.confirmPassword) {
-
-      let email = form.value.email || this.latestUserDetails?.User?.Email;
-console.log(this.latestUserDetails,"emaidlsdlsd");
-      const payload = {
-        ...form.value,
-        userId: this.userId,
-        email: email
-      };
-
-      this.dataRoomApiService.updateUserDetails(payload).subscribe(
-        response => {
-          this.toasterservice.success('Password updated successfully');
-          const urlParams = new URLSearchParams(window.location.search);
-          if (!urlParams.has('s')) {
-            this.router.navigate(['/auth']);
-          }
-        },
-        error => {
-          console.error('Error updating user details:', error);
-        }
-      );
-    }
+onSave(form: any) {
+  if (form.invalid) {
+    this.toasterservice.error('Please fill in all required fields');
+    return;
   }
+
+  if (form.valid &&
+      this.oldPassword !== this.newPassword &&
+      this.newPassword === this.confirmPassword) {
+
+    const email = form.value.email || this.latestUserDetails?.User?.Email;
+const name = form.value.name || this.latestUserDetails?.User?.Name;
+    // Construct FormData for file + fields
+    const formData = new FormData();
+    formData.append('userId', this.userId);
+    formData.append('email', email);
+    formData.append('oldPassword', this.oldPassword);
+    formData.append('newPassword', this.newPassword);
+    formData.append('confirmPassword', this.confirmPassword);
+      formData.append('name', name);
+
+    // Attach file if selected
+    if (this.selectedImageFile) {
+      formData.append('profilePicture', this.selectedImageFile);
+    }
+
+    this.dataRoomApiService.updateUserDetails(formData).subscribe(
+      response => {
+        this.toasterservice.success('Password updated successfully');
+        const urlParams = new URLSearchParams(window.location.search);
+        if (!urlParams.has('s')) {
+          this.router.navigate(['/auth']);
+        }
+      },
+      error => {
+        console.error('Error updating user details:', error);
+          const message = error?.message || 'An unexpected error occurred.';
+    this.toasterservice.error(message);
+      }
+    );
+  }
+}
+
 }

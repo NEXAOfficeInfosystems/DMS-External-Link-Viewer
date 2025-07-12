@@ -1,0 +1,22 @@
+<div class="chatbot-window">
+  <div class="chat-header">
+    Ask Assistant
+ <span class="close-btn" (click)="closeChatWindow()">&times;</span>
+
+  </div>
+
+  <div class="chat-body">
+    <div *ngFor="let msg of messages" [ngClass]="msg.sender">
+      {{ msg.text }}
+    </div>
+  </div>
+
+  <div class="chat-footer">
+    <input
+      [(ngModel)]="userInput"
+      (keyup.enter)="sendMessage()"
+      placeholder="Type your message..."
+    />
+    <button (click)="sendMessage()">Send</button>
+  </div>
+</div>
